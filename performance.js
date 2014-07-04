@@ -87,7 +87,14 @@ function getFirstScreenTime(chrome){
  * @returns {*[]}
  */
 function getClientScreenImages(){
-	//获取指定的标签内的样式属性
+	/**
+	 *
+	 * 获取指定的标签内的样式属性
+	 *
+	 * @param tagElements
+	 * @param property
+	 * @returns {Array}
+	 */
 	function getStylePropertyDoms(tagElements, property){
 		var result = [];
 		var len = tagElements.length;
@@ -99,7 +106,13 @@ function getClientScreenImages(){
 		return result;
 	}
 
-	//转化为标准Array
+	/**
+	 *
+	 * 转化为标准Array
+	 *
+	 * @param obj
+	 * @returns {Array}
+	 */
 	function makeArray(obj){
 		try{
 			return [].slice.call( obj );
@@ -111,57 +124,91 @@ function getClientScreenImages(){
 		}
 	}
 
-	//获取所有图片资源
-	var imageDoms = makeArray( document.getElementsByTagName( "img" ) );
-	var allBackgroundImageDoms = getStylePropertyDoms( document.getElementsByTagName( "*" ), "background-image" );
-	var doms = imageDoms.concat( allBackgroundImageDoms );
-
-	var calOffset = function(node, offsetLeft, offsetTop){
-		var parentNode = node.parentNode;
-		if( parentNode && parentNode.offsetLeft != undefined ){
-			var parentOffsetLeft = parentNode.offsetLeft;
-			var parentOffsetTop = parentNode.offsetTop;
-			return calOffset( parentNode, offsetLeft + parentOffsetLeft, offsetTop + parentOffsetTop );
-		}else{
-			return {ol:offsetLeft, ot:offsetTop};
+	/**
+	 * 获取浏览器窗口宽度和高度
+	 *
+	 * @returns {{width: (Number|number), height: (Number|number|NodeList)}}
+	 */
+	function getClientSize(){
+		var w = window.innerWidth || window.outerWidth || document.documentElement.clientWidth ||
+				document.body.clientWidth || document.getElementsByTagName( 'body' )[0].clientWidth;
+		var h = window.innerHeight || window.outerHeight || document.documentElement.clientHeight ||
+				document.body.clientHeight || document.getElementsByTagName( ('body')[0].clientHeight );
+		return {
+			'width':w,
+			'height':h
 		}
-	};
-	var availableDoms = [];
-	var len = doms.length;
-	for( var i = 0; i < len; i++ ){
-		var dom = doms[i];
-		if( dom.src ){
-			var offset = calOffset( dom.parentNode, dom.offsetLeft, dom.offsetTop );
-			offset["src"] = dom.src;
-			availableDoms.push( offset );
-		}else if( window.getComputedStyle( dom, "" ).getPropertyValue( "background-image" ) != "none" ){
-			var url = window.getComputedStyle( dom, "" ).getPropertyValue( "background-image" );
-			if( url ) url = /url\(['"]?([^")]+)/.exec( url ) || [];
-			url = url[1];
-			if( url ){
+	}
+
+	/**
+	 *
+	 * 获取所有图片资源
+	 *
+	 * @returns {Array}
+	 */
+	function getallImagesInfo(){
+		var imageDoms = makeArray( document.getElementsByTagName( "img" ) );
+		var allBackgroundImageDoms = getStylePropertyDoms( document.getElementsByTagName( "*" ), "background-image" );
+		var doms = imageDoms.concat( allBackgroundImageDoms );
+
+		var calOffset = function(node, offsetLeft, offsetTop){
+			var parentNode = node.parentNode;
+			if( parentNode && parentNode.offsetLeft != undefined ){
+				var parentOffsetLeft = parentNode.offsetLeft;
+				var parentOffsetTop = parentNode.offsetTop;
+				return calOffset( parentNode, offsetLeft + parentOffsetLeft, offsetTop + parentOffsetTop );
+			}else{
+				return {ol:offsetLeft, ot:offsetTop};
+			}
+		};
+		var imagesInfo = [];
+		var len = doms.length;
+		for( var i = 0; i < len; i++ ){
+			var dom = doms[i];
+			if( dom.src ){
 				var offset = calOffset( dom.parentNode, dom.offsetLeft, dom.offsetTop );
-				offset['src'] = url;
-				availableDoms.push( offset );
+				offset["src"] = dom.src;
+				imagesInfo.push( offset );
+			}else if( window.getComputedStyle( dom, "" ).getPropertyValue( "background-image" ) != "none" ){
+				var url = window.getComputedStyle( dom, "" ).getPropertyValue( "background-image" );
+				if( url ) url = /url\(['"]?([^")]+)/.exec( url ) || [];
+				url = url[1];
+				if( url ){
+					var offset = calOffset( dom.parentNode, dom.offsetLeft, dom.offsetTop );
+					offset['src'] = url;
+					imagesInfo.push( offset );
+				}
 			}
 		}
+		return imagesInfo;
 	}
 
-	//判断是否在首屏区域内,并返回在首屏内的所有图片
-	var inClientResult = {};
-	var clientWidth = window.innerWidth || window.outerWidth || document.documentElement.clientWidth || document.body.clientWidth || document.getElementsByTagName( 'body' )[0].clientWidth;
-	var clientHeight = window.innerHeight || window.outerHeight || document.documentElement.clientHeight || document.body.clientHeight || document.getElementsByTagName( ('body')[0].clientHeight );
-	len = availableDoms.length;
-	for( i = 0; i < len; i++ ){
-		var domInfo = availableDoms[i];
-		var domSrc = domInfo['src'];
-		var domOffsetLeft = domInfo['ol'];
-		var domOffsetTop = domInfo['ot'];
+	/**
+	 * 获取首屏内的所有图片
+	 *
+	 * @returns {{}}
+	 */
+	function getInClientImages(){
+		var imagesInfo = getallImagesInfo();
+		var clientSize = getClientSize();
+		var clientWidth = clientSize.width;
+		var clientHeight = clientSize.height;
+		var len = imagesInfo.length;
+		var inClientImages = {};
+		for( var i = 0; i < len; i++ ){
+			var imageInfo = imagesInfo[i];
+			var src = imageInfo['src'];
+			var offsetLeft = imageInfo['ol'];
+			var offsetTop = imageInfo['ot'];
 
-		if( domOffsetLeft < clientWidth || domOffsetTop < clientHeight ){
-			if( !inClientResult[domSrc] ){
-				inClientResult[domSrc] = domSrc;
+			if( offsetLeft < clientWidth || offsetTop < clientHeight ){
+				if( !inClientImages[src] ){
+					inClientImages[src] = src;
+				}
 			}
 		}
+		return inClientImages;
 	}
-	return inClientResult;
+
+	return getInClientImages();
 }
