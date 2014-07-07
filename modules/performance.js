@@ -1,11 +1,9 @@
 /**
  * 通过chrome debugging protocol进行性能分析的脚本，
- * 需要真实chrome浏览器及开启chrome debugging protocol服务：
- * ./chrome --remote-debugging-port=9222
- *
- * 暂时不支持命令行传入url，可以通过Commander扩展
  * 暂时支持的功能：
  *     首屏
+ *     白屏
+ *     加载时间
  *
  * Created by nant on 2014/5/28.
  */
@@ -14,34 +12,67 @@ var Chrome = require( 'chrome-remote-interface' );
 var startTime = 0;
 var requestId_info = {};
 var request_info = {};
+var done = false;
 
-Chrome( function(chrome){
-	with( chrome ){
-		on( 'Network.requestWillBeSent', function(message){
-			var requestId = message.requestId;
-			var url = message.request.url;
-			if( !requestId_info[requestId] ){
-				requestId_info[requestId] = {
-					'url':url
+function work(program){
+	Chrome( {host:'localhost',port:program.port},function(chrome){
+		with( chrome ){
+			on( 'Network.requestWillBeSent', function(message){
+				var requestId = message.requestId;
+				var url = message.request.url;
+				var timestamp = message.timestamp;
+				if( !requestId_info[requestId] ){
+					requestId_info[requestId] = {
+						'url':url
+					}
 				}
-			}
-		} );
-		on( 'Network.loadingFinished', function(data){
-			var requestId = data['requestId'];
-			var timestamp = data['timestamp'];
-			requestId_info[requestId]['timestamp'] = timestamp;
-		} );
+			} );
+			on( 'Network.loadingFinished', function(data){
+				var requestId = data['requestId'];
+				var timestamp = data['timestamp'];
+				if( !requestId_info[requestId] ){
+					requestId_info[requestId] = {}
+				}
+				requestId_info[requestId]['timestamp'] = timestamp;
+			} );
 
-		Runtime.enable();
-		Network.enable();
-		Page.enable();
-		startTime = new Date().getTime();
-		Page.navigate( {'url':'http://www.pconline.com.cn'} );
+			//todo, async
+			send('Page.enable',{}, function(err,response){
+				if( !err ){
+					send('Runtime.enable',{}, function(err,response){
+						"use strict";
+						if( !err ){
+							send('Network.enable',{}, function(err,response){
+								if( !err ){
+									startTime = new Date().getTime();
+									Page.navigate( {'url':program.url} );
 
-		//很重要
-		setTimeout( getFirstScreenTime, 5000, chrome );
-	}
-} );
+									//很重要
+									setTimeout( analyzePerformance, 5000, chrome );
+								}
+							});
+						}
+					});
+				}
+			})
+		}
+	} );
+}
+/**
+ * 分析性能
+ *
+ * @param chrome
+ */
+function analyzePerformance(chrome){
+	//首屏时间
+	getFirstScreenTime( chrome );
+
+	//总加载时间
+	getLoadTime( chrome );
+
+	//白屏时间
+	getWhiteScreenTime( chrome );
+}
 
 /**
  * 获取首屏时间
@@ -76,10 +107,50 @@ function getFirstScreenTime(chrome){
 			// to ms
 			slowestTime = parseInt( slowestTime * 1000 );
 			var firstScreenTime = slowestTime - startTime;
-			console.log( 'first screen time(ms):\n', firstScreenTime + 'ms' );
-			console.log( 'first screen time(s):\n', ( firstScreenTime / 1000 ) + 's' );
+			console.log( 'first screen time(ms):\n', firstScreenTime + 'ms', ( firstScreenTime / 1000 ) + 's' );
 		} );
 	}
+}
+
+/**
+ * 获取整个页面的加载时间
+ */
+function getLoadTime(chrome){
+	function actualGetLoadTime(){
+		var timing = performance.timing;
+		return timing.loadEventEnd - timing.navigationStart;
+	};
+
+	with( chrome ){
+		var str = actualGetLoadTime.toString() + ';actualGetLoadTime()';
+		send( 'Runtime.evaluate', {'expression':str, returnByValue:true}, function(err, data){
+			var loadTime = data.result['value'];
+			console.log( 'load time:\n', loadTime + 'ms', ( loadTime / 1000 ) + 'ms');
+		});
+	}
+}
+
+/**
+ * 获取白屏时间
+ *
+ * @param chrome
+ */
+function getWhiteScreenTime(chrome){
+	function actualGetWhiteScreenTime(){
+		var loadtimes = chrome.loadTimes();
+		var firstPaintTime = loadtimes.firstPaintTime;
+		var requestTime = loadtimes.requestTime;
+		return firstPaintTime - requestTime;
+	}
+
+	with( chrome ){
+		var str = actualGetWhiteScreenTime.toString() + ';actualGetWhiteScreenTime()';
+		send( 'Runtime.evaluate', {'expression':str, returnByValue:true}, function(err, data){
+			var whiteScreenTime = data.result['value'];
+			exports.done = true;
+			console.log( 'white screen time:\n', whiteScreenTime + 'ms', ( whiteScreenTime / 1000 ) + 's' );
+		});
+	};
 }
 
 /**
@@ -212,3 +283,6 @@ function getClientScreenImages(){
 
 	return getInClientImages();
 }
+
+exports.work = work;
+exports.done = done;
