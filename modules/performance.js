@@ -13,6 +13,7 @@ var startTime = 0;
 var requestId_info = {};
 var request_info = {};
 var done = false;
+var chromeOpened = false;
 
 function work(program){
 	Chrome( {host:'localhost',port:program.port},function(chrome){
@@ -20,7 +21,6 @@ function work(program){
 			on( 'Network.requestWillBeSent', function(message){
 				var requestId = message.requestId;
 				var url = message.request.url;
-				var timestamp = message.timestamp;
 				if( !requestId_info[requestId] ){
 					requestId_info[requestId] = {
 						'url':url
@@ -36,19 +36,38 @@ function work(program){
 				requestId_info[requestId]['timestamp'] = timestamp;
 			} );
 
+			on('Timeline.eventRecorded',function(record){
+				var children = record.record.children;
+				if( children ){
+					var len = children.length;
+					for( var i = 0; i < len; i++ ){
+						var child = children[i];
+						//console.log( child.type )
+					}
+				}
+			});
+
 			//todo, async
 			send('Page.enable',{}, function(err,response){
+				exports.chromeOpened = true;
+				console.log('page.enable', err);
 				if( !err ){
 					send('Runtime.enable',{}, function(err,response){
-						"use strict";
+						console.log('runtime.enable', err);
 						if( !err ){
 							send('Network.enable',{}, function(err,response){
+								console.log('network.enable', err);
 								if( !err ){
-									startTime = new Date().getTime();
-									Page.navigate( {'url':program.url} );
+									send( 'Timeline.start', {}, function(err, response){
+										console.log('timeline.enable', err);
+										if( !err ){
+											startTime = new Date().getTime();
+											Page.navigate( {'url':program.url} );
 
-									//很重要
-									setTimeout( analyzePerformance, 5000, chrome );
+											//很重要
+											setTimeout( analyzePerformance, 5000, chrome );
+										}
+									} );
 								}
 							});
 						}
@@ -116,18 +135,20 @@ function getFirstScreenTime(chrome){
  * 获取整个页面的加载时间
  */
 function getLoadTime(chrome){
-	function actualGetLoadTime(){
-		var timing = performance.timing;
-		return timing.loadEventEnd - timing.navigationStart;
-	};
-
-	with( chrome ){
-		var str = actualGetLoadTime.toString() + ';actualGetLoadTime()';
-		send( 'Runtime.evaluate', {'expression':str, returnByValue:true}, function(err, data){
-			var loadTime = data.result['value'];
-			console.log( 'load time:\n', loadTime + 'ms', ( loadTime / 1000 ) + 'ms');
-		});
+	function getSlowestTime(){
+		var slowestTime = 0;
+		for( var requestId in requestId_info ){
+			var requestInfo = requestId_info[requestId];
+			var url = requestInfo['url'];
+			var timestamp = requestInfo['timestamp'];
+			if( timestamp > slowestTime ){
+				slowestTime = timestamp;
+			}
+		}
+		return slowestTime * 1000;
 	}
+	var loadTime = getSlowestTime() - startTime;
+	console.log( 'load time:\n', loadTime + 'ms', ( loadTime / 1000 ) + 's');
 }
 
 /**
@@ -136,17 +157,16 @@ function getLoadTime(chrome){
  * @param chrome
  */
 function getWhiteScreenTime(chrome){
-	function actualGetWhiteScreenTime(){
+	function getFirstPaintTime(){
 		var loadtimes = chrome.loadTimes();
-		var firstPaintTime = loadtimes.firstPaintTime;
-		var requestTime = loadtimes.requestTime;
-		return firstPaintTime - requestTime;
+		return loadtimes.firstPaintTime;
 	}
 
 	with( chrome ){
-		var str = actualGetWhiteScreenTime.toString() + ';actualGetWhiteScreenTime()';
+		var str = getFirstPaintTime.toString() + ';getFirstPaintTime()';
 		send( 'Runtime.evaluate', {'expression':str, returnByValue:true}, function(err, data){
-			var whiteScreenTime = data.result['value'];
+			var firstPaintTime = data.result['value'] * 1000;
+			var whiteScreenTime = firstPaintTime - startTime;
 			exports.done = true;
 			console.log( 'white screen time:\n', whiteScreenTime + 'ms', ( whiteScreenTime / 1000 ) + 's' );
 		});
@@ -286,3 +306,4 @@ function getClientScreenImages(){
 
 exports.work = work;
 exports.done = done;
+exports.chromeOpened = chromeOpened;
