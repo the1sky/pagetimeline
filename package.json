@@ -1,0 +1,53 @@
+{
+  "name": "phantomas",
+  "version": "0.11.1",
+  "author": "macbre <maciej.brencz@gmail.com> (http://macbre.net)",
+  "description": "PhantomJS-based web performance metrics collector",
+  "main": "./lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/macbre/phantomas.git"
+  },
+  "keywords": [
+    "high performance web sites",
+    "metrics",
+    "monitoring",
+    "phantomas",
+    "phantomjs",
+    "web development",
+    "webperf"
+  ],
+  "license": "BSD",
+  "engines": {
+    "node": ">=0.6"
+  },
+  "dependencies": {
+    "analyze-css": "0.2.x",
+    "ansicolors": "~0.3.2",
+    "ansistyles": "~0.1.0",
+    "debug": "0.7.x",
+    "fast-stats": ">=0.0.2",
+    "optimist": "0.6.x",
+    "phantomjs": ">=1.9",
+    "tap-eater": ">=0.0.1",
+    "travis-fold": ">=0.1.2",
+    "yamlish": ">=0.0.5"
+  },
+  "devDependencies": {
+    "jshint": ">=2.1.11",
+    "mockery": ">=1.4",
+    "vows": ">=0.7"
+  },
+  "optionalDependencies": {},
+  "bin": "./bin/phantomas.js",
+  "preferGlobal": true,
+  "scripts": {
+    "test": "vows --spec",
+    "lint": "jshint --verbose core/ modules/ scripts/ test/ lib/*.js run-multiple.js"
+  },
+  "jshintConfig": {
+    "node": true,
+    "-W020": false,
+    "-W030": false
+  }
+}

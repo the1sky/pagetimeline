@@ -1,0 +1,49 @@
+notifications:
+  email: false
+
+language: node_js
+
+node_js:
+  - '0.10'
+
+before_script:
+  - "npm install -g bower"
+  - "cd test/site/www && bower install && cd ../../../"
+  - "curl -O http://selenium.googlecode.com/files/selenium-server-standalone-2.39.0.jar"
+  - "java -jar selenium-server-standalone-2.39.0.jar 2>&1 >/dev/null &"
+  - "2>/dev/null 1>/dev/null python -m SimpleHTTPServer 8080 &"
+
+script: "if [[ $TRAVIS_BRANCH == 'master' && $_BROWSER == 'phantomjs' ]] || [[ $TRAVIS_BRANCH != 'master' && $_BROWSER != 'phantomjs' ]]; then echo 'This test was skipped' && exit 0; else npm run coverage; fi"
+
+after_script:
+  - "[ -d ./coverage ] && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+
+addons:
+  sauce_connect: true
+
+env:
+  global:
+    - SAUCE_USERNAME=camme-webdriverjs
+    - secure: lSzNpGQXV8HlReK2meTE7ySWoYnVy1n1BIln0pZGcJ0jovHpitVGnR2S/0Bu91td8agjlNUWksBR72PCSDoTQyAH105EVDVkUXkGQoKvKrdnvszGGO/aDu0Ly2Mwc47zR9BILleAtOiW+yQGd7fRdgVy1sPYPDydlUDdRpqXi0w=
+
+  matrix:
+    - _BROWSER: "chrome"
+      _PLATFORM: "Windows_8"
+      _VERSION: "31"
+    - _BROWSER: "firefox"
+      _PLATFORM: "Windows_8"
+      _VERSION: "25"
+    - _BROWSER: "internet_explorer"
+      _PLATFORM: "Windows_7"
+      _VERSION: "10"
+    - _PLATFORM: "Mac"
+      _APP: "safari"
+      _DEVICE: "iPhone_Simulator"
+      _VERSION: "7"
+      _ENV: "mobile"
+    - _PLATFORM: "Mac"
+      _APP: "safari"
+      _DEVICE: "iPad_Simulator"
+      _VERSION: "7"
+      _ENV: "mobile"
+    - _BROWSER: "phantomjs"

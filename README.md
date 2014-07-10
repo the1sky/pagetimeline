@@ -17,8 +17,9 @@
     
 参考：
     weinre
+    webdriver
 
-
+    http://remotedebug.org/integrations/
 
 //todo，更多参数
 //todo，chrome的silent模式无法获取数据
@@ -28,5 +29,6 @@
 //更多浏览器
 //网速模拟
 //更多参数
+//todo,har文件
 
 
