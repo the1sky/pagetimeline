@@ -10,10 +10,11 @@
  */
 
 var async = require('async');
-var exec_argv = [];
 var stdin = process.stdin;
 var stdout = process.stdout;
 var stderr = process.stderr;
+var browserScript = require('./../libs/browserScript.js');
+var bs = null;
 var params = require('commander');
 
 params
@@ -30,31 +31,31 @@ params
 	.option('--verbose [value]','write debug messages to console')
 	.option('--silent [value]','dont\'t write anything to the console')
 	.option('--format [value]', 'output format')
+	.option('--browser [value]','chrome,firefox')
 	.parse(process.argv);
 
 //指定端口或自动获取可用端口
 if( params.port ){
-	exec_argv.push( params.port );
-	run(exec_argv);
+	run(params);
 }else{
 	async.series([getAvailablePort],function(err,result){
 		if( !err ){
 			var port = result[0];
-			exec_argv.push( port );
 			params.port = port;
-			run( exec_argv );
+			run( params );
 		}
 	})
 }
-
 
 /**
  * 运行
  *
  * @param execArgv
  */
-function run(execArgv){
-	async.series([async.apply(openBrowser,execArgv), async.apply(analyzePerformance,params ), closeBrowser],function(err,result){
+function run(params){
+	bs = new browserScript(params);
+	browserScript( params );
+	async.series([openBrowser, async.apply(analyzePerformance,params ), closeBrowser],function(err,result){
 		process.exit();
 	})
 }
@@ -65,14 +66,10 @@ function run(execArgv){
  * @param execArgv
  * @param callback
  */
-function openBrowser(execArgv,callback){
-	var chromeScript = require('./../libs/chromeScript.js');
-	var execFile = require('child_process').execFile;
-	execFile( chromeScript.scriptName.run, execArgv,{cwd:'./libs'},function(err, stdout, stderr) {
-		callback(err, stdout);
+function openBrowser(callback){
+	bs.openBrowser(function(err,result){
+		callback(err, result);
 	});
-	//todo，应该使用execFile的回调函数
-	callback(false,'open browser sucessfully!');
 }
 
 /**
@@ -94,11 +91,9 @@ function analyzePerformance(params,callback){
  * @param callback
  */
 function closeBrowser(callback){
-	var chromeScript = require('./../libs/chromeScript.js');
-	var execFile = require('child_process').execFile;
-	execFile( chromeScript.scriptName.close, {cwd:'./libs'}, function(error, stdout, stderr){
-		callback(error,stdout);
-	} );
+	bs.closeBrowser(function(err,result){
+		callback(err, result);
+	});
 }
 
 /**
