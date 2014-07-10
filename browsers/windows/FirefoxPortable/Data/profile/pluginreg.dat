@@ -1,0 +1,680 @@
+Generated File. Do not edit.
+
+[HEADER]
+Version|0.17|$
+Arch|x86-msvc|$
+
+[PLUGINS]
+npGoogleUpdate3.dll|$
+C:\Users\nant\AppData\Local\Google\Update\1.3.24.15\npGoogleUpdate3.dll|$
+1.3.24.15|$
+1404121510390|0|0|0|$
+Google Update|$
+Google Update|$
+2
+0|application/x-vnd.google.update3webcontrol.3|||$
+1|application/x-vnd.google.oneclickctrl.9|||$
+npQQLive.dll|$
+d:\Program Files (x86)\Tencent\QQLive\9.2.283.0\npQQLive.dll|$
+9.2.283.0|$
+1403600902000|0|0|0|$
+腾讯视频 version:9.02.0283.0|$
+腾讯视频|$
+1
+0|application/tecent-qqlive-plugin|||$
+npkkbrowseraddin.dll|$
+C:\Program Files (x86)\duowan\gamebox\npkkbrowseraddin.dll|$
+1.0.0.0|$
+1403566757045|0|0|0|$
+NOTFOUND|$
+kkbrowseraddin|$
+1
+0|application/x-kkbrowseraddin|kkbrowseraddin||$
+npyycalbrowseraddin.dll|$
+C:\Users\nant\AppData\Roaming\duowan\yycalendar\CalendarApp\npyycalbrowseraddin.dll|$
+1.0.0.0|$
+1403411395640|0|0|0|$
+YY日历浏览器支持插件|$
+yycalbrowseraddin|$
+1
+0|application/x-yycalbrowseraddin|yycalbrowseraddin||$
+npQMExtensionsMozilla.dll|$
+d:\Program Files (x86)\Tencent\QQPCMgr\8.12.11692.225\npQMExtensionsMozilla.dll|$
+3.0.0.1|$
+1402657169671|0|0|0|$
+QQPCMgr Mozilla Extenstion|$
+QQPCMgr Detector|$
+1
+0|application/qqpcmgr-extensions-mozilla|||$
+NPSWF32_14_0_0_125.dll|$
+C:\WINDOWS\SysWOW64\Macromed\Flash\NPSWF32_14_0_0_125.dll|$
+14.0.0.125|$
+1402655973657|0|0|0|$
+Shockwave Flash 14.0 r0|$
+Shockwave Flash|$
+2
+0|application/x-shockwave-flash|Adobe Flash movie|swf|$
+1|application/futuresplash|FutureSplash movie|spl|$
+npBDSoftHelperPlug.dll|$
+C:\Users\nant\AppData\Roaming\baidu\BaiduRJDownloader\1.3.0.3\npBDSoftHelperPlug.dll|$
+1.2.2.0|$
+1402464974000|0|0|0|$
+baidu soft center helper npapi plugin|$
+百度软件中心助手|$
+1
+0|application/np-bdsofthelperplug|npBDSoftHelperPlug.dll||$
+npalidcp.dll|$
+C:\WINDOWS\system32\aliedit\3.8.0.0\npalidcp.dll|$
+1.0.0.1|$
+1401875874000|0|0|0|$
+npalidcp|$
+Alipay webmod control|$
+1
+0|application/alidcp|npalidcp| |$
+npAliSecCtrl.dll|$
+C:\WINDOWS\system32\aliedit\3.8.0.0\npAliSecCtrl.dll|$
+1.0.18.0|$
+1401875872000|0|0|0|$
+Alipay Security Control|$
+Alipay Security Control 3|$
+1
+0|application/x-alisecctrl-plugin|npAliSecCtrl.dll|*|$
+nphiloginplugin.dll|$
+C:\Program Files (x86)\baidu\Baidu Hi\nphiloginplugin.dll|$
+1.0.0.0|$
+1401171366000|0|0|0|$
+the SSO plugin of the BaiduHi|$
+BaiDuHiLogin|$
+1
+0|application/x-hiloginplugin|BaiDuHiLogin||$
+npWebPlayer.dll|$
+D:\PPS.tv\PPStream\npWebPlayer.dll|$
+1.0.0.56|$
+1401159210831|0|0|0|$
+The WebPlayer Plugin of PPS Network Television|$
+The WebPlayer Plugin of PPS Network Television|$
+2
+0|application/pps-webplayer-plugin|npWebPlayer.dll|rts|$
+1|application/qvod-plugin|||$
+npclient.dll|$
+D:\PPS.tv\PPStream\npclient.dll|$
+1.0.0.0|$
+1401159169351|0|0|0|$
+iQiyi Browser Plugin|$
+iQiyi Browser Plugin|$
+1
+0|application/client-activex|ActiveX|ocx|$
+nppdf32.dll|$
+C:\Program Files (x86)\Adobe\Reader 11.0\Reader\AIR\nppdf32.dll|$
+11.0.7.79|$
+1399556924000|0|0|0|$
+Adobe PDF Plug-In For Firefox and Netscape 11.0.07|$
+Adobe Acrobat|$
+7
+0|application/pdf|Acrobat Portable Document Format|pdf|$
+1|application/vnd.adobe.pdfxml|Adobe PDF in XML Format|pdfxml|$
+2|application/vnd.adobe.x-mars|Adobe PDF in XML Format|mars|$
+3|application/vnd.fdf|Acrobat Forms Data Format|fdf|$
+4|application/vnd.adobe.xfdf|XML Version of Acrobat Forms Data Format|xfdf|$
+5|application/vnd.adobe.xdp+xml| Acrobat XML Data Package|xdp|$
+6|application/vnd.adobe.xfd+xml|Adobe FormFlow99 Data File|xfd|$
+nppdf32.dll|$
+C:\Program Files (x86)\Adobe\Reader 11.0\Reader\browser\nppdf32.dll|$
+11.0.7.79|$
+1399556922000|0|0|0|$
+Adobe PDF Plug-In For Firefox and Netscape 11.0.07|$
+Adobe Acrobat|$
+7
+0|application/pdf|Acrobat Portable Document Format|pdf|$
+1|application/vnd.adobe.pdfxml|Adobe PDF in XML Format|pdfxml|$
+2|application/vnd.adobe.x-mars|Adobe PDF in XML Format|mars|$
+3|application/vnd.fdf|Acrobat Forms Data Format|fdf|$
+4|application/vnd.adobe.xfdf|XML Version of Acrobat Forms Data Format|xfdf|$
+5|application/vnd.adobe.xdp+xml| Acrobat XML Data Package|xdp|$
+6|application/vnd.adobe.xfd+xml|Adobe FormFlow99 Data File|xfd|$
+nppdf32.dll|$
+C:\Program Files (x86)\Mozilla Firefox\plugins\nppdf32.dll|$
+11.0.7.79|$
+1399556922000|0|0|0|$
+Adobe PDF Plug-In For Firefox and Netscape 11.0.07|$
+Adobe Acrobat|$
+7
+0|application/pdf|Acrobat Portable Document Format|pdf|$
+1|application/vnd.adobe.pdfxml|Adobe PDF in XML Format|pdfxml|$
+2|application/vnd.adobe.x-mars|Adobe PDF in XML Format|mars|$
+3|application/vnd.fdf|Acrobat Forms Data Format|fdf|$
+4|application/vnd.adobe.xfdf|XML Version of Acrobat Forms Data Format|xfdf|$
+5|application/vnd.adobe.xdp+xml| Acrobat XML Data Package|xdp|$
+6|application/vnd.adobe.xfd+xml|Adobe FormFlow99 Data File|xfd|$
+npGoogleUpdate3.dll|$
+C:\Program Files (x86)\Google\Update\1.3.24.7\npGoogleUpdate3.dll|$
+1.3.24.7|$
+1399518966153|0|0|0|$
+Google Update|$
+Google Update|$
+2
+0|application/x-vnd.google.update3webcontrol.3|||$
+1|application/x-vnd.google.oneclickctrl.9|||$
+npplugin2.dll|$
+C:\Program Files (x86)\Internet Explorer\PPLite\plugin\3.5.1.0132\npplugin2.dll|$
+3.5.1.132|$
+1398666448000|0|0|0|$
+pptv plugin|$
+PPLive PPTV Plugin|$
+1
+0|application/x-pptv-plugin|npplugin2|.pptv|$
+npxunlei1.0.0.2.dll|$
+C:\Program Files (x86)\Thunder Network\Thunder\Data\npxunlei1.0.0.2.dll|$
+1.0.0.2|$
+1398183540048|0|0|0|$
+Xunlei scriptability Plugin|$
+XunLei Plugin|$
+2
+0|application/np_xunlei_plugin|np_xunlei_plugin|*|$
+1|application/np_xunlei_plugin.2|||$
+npSSOAxCtrlForPTLogin.dll|$
+C:\Program Files (x86)\Common Files\Tencent\TXSSO\1.2.2.49\Bin\npSSOAxCtrlForPTLogin.dll|$
+1.0.1.15|$
+1397700296000|0|0|0|$
+QQ QuickLogin Helper|$
+Tencent SSO Platform|$
+1
+0|application/nptxsso|TXSSO||$
+npB5TPlugin.dll|$
+C:\Users\nant\AppData\LocalLow\B5TUpdate\npB5TPlugin.dll|$
+5.1.1.2|$
+1397200698053|0|0|0|$
+Bang5Tao plugin|$
+Bang5Tao Plugin|$
+1
+0|application/x-bang5taoplugin|Bang5Tao Plugin||$
+npYunWebDetect.dll|$
+C:\Users\nant\AppData\Roaming\baidu\BaiduYunGuanjia\npYunWebDetect.dll|$
+4.6.1.0|$
+1395714934000|0|0|0|$
+YunWebDetect|$
+BaiduYunGuanjia Application|$
+1
+0|application/bd-npyunwebdetect-plugin|||$
+npxbdyy.dll|$
+C:\Program Files (x86)\baidu\BaiduPlayer\3.8.0.16\npxbdyy.dll|$
+1.39.0.0|$
+1395303136000|0|0|0|$
+BaiduPlayer Browser Plugin|$
+BaiduPlayer Browser Plugin|$
+1
+0|application/player-activex|ActiveX|ocx|$
+npQQPhoneManagerExt.dll|$
+C:\Program Files (x86)\Common Files\Tencent\QQPhoneManager\2.0.201.3196\npQQPhoneManagerExt.dll|$
+2.0.201.3196|$
+1394011454000|0|0|0|$
+QQPhoneManager Onekey-Install plug-in for Android Phones|$
+应用宝一键安装插件|$
+1
+0|application/qqphonemanagerplugin|QQPhoneManager|dll|$
+nptxftnWebKit.dll|$
+C:\Program Files (x86)\QQMailPlugin\nptxftnWebKit.dll|$
+1.0.1.13|$
+1393989598000|0|0|0|$
+Tencent FTN plug-in # 1.0.1.13|$
+Tencent FTN plug-in|$
+1
+0|application/txftn-webkit|nptxftn||$
+npifox.dll|$
+d:\Program Files (x86)\搜狐影音\npifox.dll|$
+1.0.0.5|$
+1393572458000|0|0|0|$
+npifox Dynamic Link Library|$
+npifox Dynamic Link Library|$
+1
+0|application/ifox-plugin|||$
+npicbc_infosec_certenroll.dll|$
+C:\Program Files (x86)\ICBCEbankTools\ICBCEbankPlugin\npicbc_infosec_certenroll.dll|$
+1.0.7.6|$
+1393405358000|0|0|0|$
+npicbc infosec certenroll|$
+npicbc_infosec_certenroll.dll|$
+1
+0|application/npicbc_infosec_certenroll|||$
+npitunes.dll|$
+C:\Program Files (x86)\iTunes\Mozilla Plugins\npitunes.dll|$
+1.0.1.1|$
+1392879402000|0|0|0|$
+iTunes Detector Plug-in|$
+iTunes Application Detector|$
+1
+0|application/itunes-plugin|This plug-in detects the presence of iTunes when opening iTunes Store URLs in a web page with Firefox.||$
+npctrl.dll|$
+C:\Program Files (x86)\Microsoft Silverlight\5.1.30214.0\npctrl.dll|$
+5.1.30214.0|$
+1392303462000|0|0|0|$
+5.1.30214.0|$
+Silverlight Plug-In|$
+2
+0|application/x-silverlight|npctrl|scr|$
+1|application/x-silverlight-2|||$
+npqqedit.dll|$
+C:\Program Files (x86)\Common Files\Tencent\Paycenter\npqqedit.dll|$
+2.0.2.2|$
+1390529353375|0|0|0|$
+QQPassword|$
+Tenpay Security Control|$
+1
+0|application/qqedit|npqqedit||$
+npqqcert.dll|$
+C:\Program Files (x86)\Common Files\Tencent\Paycenter\npqqcert.dll|$
+2.0.2.2|$
+1390529353371|0|0|0|$
+QQCertificate|$
+Tenpay Security Control|$
+1
+0|application/qqcert|npqqcert||$
+NPSPWRAP.DLL|$
+C:\PROGRA~2\MICROS~3\Office15\NPSPWRAP.DLL|$
+15.0.4514.1000|$
+1390335104000|0|0|0|$
+The plugin allows you to have a better experience with Microsoft SharePoint|$
+Microsoft Office 2013|$
+2
+0|application/x-sharepoint|SharePoint Plug-in for Firefox||$
+1|application/x-sharepoint-uc|||$
+npwangwang.dll|$
+C:\Program Files (x86)\Mozilla Firefox\plugins\npwangwang.dll|$
+1.0.0.6|$
+1389611564000|0|0|0|$
+npwangwang|$
+AliWangWang Plug-In For Firefox and Netscape|$
+1
+0|application/ww-plugin|npwangwang|dll|$
+npwangwang.dll|$
+D:\Program Files (x86)\AliWangWang\8.00.08C\npwangwang.dll|$
+1.0.0.6|$
+1389611564000|0|0|0|$
+npwangwang|$
+AliWangWang Plug-In For Firefox and Netscape|$
+1
+0|application/ww-plugin|npwangwang|dll|$
+npAliSSOLogin.dll|$
+D:\Program Files (x86)\AliWangWang\8.00.08C\npAliSSOLogin.dll|$
+1.0.0.1|$
+1389611562000|0|0|0|$
+npAliSSOLogin Plugin|$
+AliSSOLogin plugin|$
+1
+0|application/npalissologin|AliSSOLogin|AliSSOLogin|$
+npicbc_tdr_usbkey.dll|$
+C:\Program Files (x86)\ICBCEbankTools\ICBCEbankPlugin\npicbc_tdr_usbkey.dll|$
+1.0.0.22|$
+1388112618000|0|0|0|$
+Tendyron Corporation for Industrial and Commercial Bank of China|$
+application/npicbc_tdr_usbkey|$
+1
+0|application/npicbc_tdr_usbkey|application/npicbc_tdr_usbkey||$
+npAssistComm.dll|$
+C:\Program Files\ICBCEbankTools\ICBCSetupIntegration\npAssistComm.dll|$
+1.0.0.1|$
+1387284070000|0|0|0|$
+npAssistComm Dynamic Link Library|$
+npAssistComm Dynamic Link Library|$
+1
+0|application/x-npassistcomm-plugin|||$
+npxxin.dll|$
+C:\Program Files (x86)\ICBCEbankTools\FirefoxPlugins\npxxin.dll|$
+1.0.0.8|$
+1387272712000|0|0|0|$
+icbc_ms_npxxin_1.0.0.8|$
+npxxin input plugin for fsi|$
+1
+0|application/x-icbcnpxxin-plugin-input|npxxin|rts|$
+npFullScreen.dll|$
+C:\Program Files (x86)\ICBCEbankTools\FirefoxPlugins\npFullScreen.dll|$
+1.0.0.2|$
+1387272710000|0|0|0|$
+icbc_ms_npFullScreen_1.0.0.2|$
+full screen plugin for fsi|$
+1
+0|application/x-npfullscreen-plugin||rts|$
+npsubmit.dll|$
+C:\Program Files (x86)\ICBCEbankTools\FirefoxPlugins\npsubmit.dll|$
+1.0.0.7|$
+1387272710000|0|0|0|$
+icbc_ms_npsubmit_1.0.0.7|$
+submit plugin for fsi|$
+1
+0|application/x-icbc-plugin-submit|npsubmit|rts|$
+npClientBinding.dll|$
+C:\Program Files (x86)\ICBCEbankTools\FirefoxPlugins\npClientBinding.dll|$
+1.0.0.2|$
+1387272704000|0|0|0|$
+icbc_ms_npClientBinding_1.0.0.2|$
+client binding plugin for fsi|$
+1
+0|application/x-icbc-clientbinding|ClientBinding|rts|$
+npClCache.dll|$
+C:\Program Files (x86)\ICBCEbankTools\FirefoxPlugins\npClCache.dll|$
+1.0.0.2|$
+1387272702000|0|0|0|$
+icbc_ms_npClCache_1.0.0.2|$
+clear cache plugin for fsi|$
+1
+0|application/x-npclcache-plugin||rts|$
+npChromeXXin.dll|$
+C:\Program Files (x86)\ICBCEbankTools\ICBCChromeExtension\npChromeXXin.dll|$
+1.0.0.1|$
+1386231476000|0|0|0|$
+icbc_chrome_npxxin_1.0.0.1|$
+npxxin input plugin for fsi|$
+1
+0|application/x-icbc-plugin-chrome-npxxin-input|npChromeXXin|rts|$
+npChromeSubmit.dll|$
+C:\Program Files (x86)\ICBCEbankTools\ICBCChromeExtension\npChromeSubmit.dll|$
+1.0.0.1|$
+1386231474000|0|0|0|$
+icbc_chrome_npsubmit_1.0.0.1|$
+submit plugin for fsi|$
+1
+0|application/x-icbc-plugin-chrome-npsubmit|npChromeSubmit|rts|$
+npChromeClientBinding.dll|$
+C:\Program Files (x86)\ICBCEbankTools\ICBCChromeExtension\npChromeClientBinding.dll|$
+1.0.0.0|$
+1386231472000|0|0|0|$
+icbc_chrome_npclientbinding_1.0.0.0|$
+client binding plugin for fsi|$
+1
+0|application/x-icbc-plugin-chrome-npclientbinding|npChromeClientBinding|rts|$
+npChromeFullScreen.dll|$
+C:\Program Files (x86)\ICBCEbankTools\ICBCChromeExtension\npChromeFullScreen.dll|$
+1.0.0.1|$
+1386231472000|0|0|0|$
+icbc_chrome_npfullscreen_1.0.0.1|$
+full screen plugin for fsi|$
+1
+0|application/x-icbc-plugin-chrome-npfullscreen||rts|$
+npCMBCEdit.dll|$
+C:\WINDOWS\system32\CMBC\npCMBCEdit.dll|$
+1.0.0.2|$
+1384332952000|0|0|0|$
+CMBCEDIT Version:1.0.0.2|$
+CMBCEDIT|$
+1
+0|application/x-cmbc-edit|CMBCEDIT||$
+NPWebSLLauncher.dll|$
+C:\Program Files (x86)\Common Files\Research In Motion\BBWebSLLauncher\NPWebSLLauncher.dll|$
+8.0.0.42|$
+1384323478000|0|0|0|$
+BlackBerry WebSL Browser Plug-In|$
+RIM Handheld Application Loader|$
+1
+0|application/x-rim-websllauncher|||$
+npDapCtrl.3.1.0.9.(43).dll|$
+C:\Program Files (x86)\Common Files\Thunder Network\KanKan\npDapCtrl.3.1.0.9.(43).dll|$
+3.1.0.9|$
+1383908016000|0|0|0|$
+Thunder DapCtrl NPAPI Plugin|$
+Thunder DapCtrl NPAPI Plugin|$
+1
+0|application/x-thunder-dapctrl|Thunder DapCtrl Plugin|*|$
+npactivex.dll|$
+C:\Program Files (x86)\Common Files\Tencent\Npchrome\npactivex.dll|$
+1.94.5.1|$
+1383103051112|0|0|0|$
+QQ2013 Chrome Plugin for CPHelper|$
+QQ2013|$
+1
+0|application/qscall-plugin|DLL|dll|$
+npjp2.dll|$
+C:\Program Files (x86)\Java\jre6\bin\plugin2\npjp2.dll|$
+6.0.340.4|$
+1382502343127|0|0|0|$
+Next Generation Java Plug-in 1.6.0_34 for Mozilla browsers|$
+Java(TM) Platform SE 6 U34|$
+34
+0|application/x-java-applet|Java Applet||$
+1|application/x-java-bean|JavaBeans||$
+2|application/x-java-vm|||$
+3|application/x-java-applet;version=1.1.1|||$
+4|application/x-java-bean;version=1.1.1|||$
+5|application/x-java-applet;version=1.1|||$
+6|application/x-java-bean;version=1.1|||$
+7|application/x-java-applet;version=1.2|||$
+8|application/x-java-bean;version=1.2|||$
+9|application/x-java-applet;version=1.1.3|||$
+10|application/x-java-bean;version=1.1.3|||$
+11|application/x-java-applet;version=1.1.2|||$
+12|application/x-java-bean;version=1.1.2|||$
+13|application/x-java-applet;version=1.3|||$
+14|application/x-java-bean;version=1.3|||$
+15|application/x-java-applet;version=1.2.2|||$
+16|application/x-java-bean;version=1.2.2|||$
+17|application/x-java-applet;version=1.2.1|||$
+18|application/x-java-bean;version=1.2.1|||$
+19|application/x-java-applet;version=1.3.1|||$
+20|application/x-java-bean;version=1.3.1|||$
+21|application/x-java-applet;version=1.4|||$
+22|application/x-java-bean;version=1.4|||$
+23|application/x-java-applet;version=1.4.1|||$
+24|application/x-java-bean;version=1.4.1|||$
+25|application/x-java-applet;version=1.4.2|||$
+26|application/x-java-bean;version=1.4.2|||$
+27|application/x-java-applet;version=1.5|||$
+28|application/x-java-bean;version=1.5|||$
+29|application/x-java-applet;version=1.6|||$
+30|application/x-java-bean;version=1.6|||$
+31|application/x-java-applet;jpi-version=1.6.0_34|||$
+32|application/x-java-bean;jpi-version=1.6.0_34|||$
+33|application/x-java-vm-npruntime|||$
+npdeployJava1.dll|$
+C:\Program Files (x86)\Java\jre6\bin\dtplugin\npdeployJava1.dll|$
+6.0.340.4|$
+1382502343057|0|0|0|$
+NPRuntime Script Plug-in Library for Java(TM) Deploy|$
+Java Deployment Toolkit 6.0.340.4|$
+1
+0|application/java-deployment-toolkit|||$
+npMeetingJoinPluginOC.dll|$
+C:\Program Files (x86)\Mozilla Firefox\plugins\npMeetingJoinPluginOC.dll|$
+15.0.4545.1000|$
+1381980352000|0|0|0|$
+The plugin allows you to have a better experience with Microsoft Lync|$
+Microsoft Office 2013|$
+1
+0|application/vnd.microsoft.communicator.ocsmeeting|Lync Plug-in for Firefox||$
+npQQPhotoDrawEx.dll|$
+C:\Program Files (x86)\Tencent\Qzone\npQQPhotoDrawEx.dll|$
+2.47.312.813|$
+1376385610000|0|0|0|$
+npQQPhotoDrawEx Module|$
+npQQPhotoDrawEx|$
+1
+0|application/tencent-qqphotodrawex2-plugin||rts|$
+npQzoneMusic.dll|$
+C:\Program Files (x86)\Tencent\QQMusic\QzoneMusic\npQzoneMusic.dll|$
+9.22.3136.723|$
+1374558128000|0|0|0|$
+QQMusic|$
+QQMusic|$
+1
+0|application/tecent-qzonemusic-plugin|This plug-in is transfers of QzoneMusic when opening Qzone in a web page with Firefox.|rts|$
+npaplayer.dll|$
+C:\Users\Public\Thunder Network\APlayer\codecs\npaplayer.dll|$
+1.0.0.2|$
+1373089708000|0|0|0|$
+APlayer III ActiveX hosting plugin for Firefox|$
+APlayer ActiveX hosting plugin|$
+1
+0|application/x-thunder-aplayer|ActiveX|ocx|$
+npCryptoKit.CMBC.x86.dll|$
+C:\WINDOWS\system32\npCryptoKit.CMBC.x86.dll|$
+3.2.0.5|$
+1369890962000|0|0|0|$
+CFCA CryptoKit 3.2 for Firefox, Chrome, Safari and Opera|$
+CFCA CryptoKit CMBC 3.2|$
+1
+0|application/npcryptokit.cmbc.x86|CFCA CryptoKit CMBC 3.2|*|$
+npCMBCCom86.dll|$
+C:\WINDOWS\system32\npCMBCCom86.dll|$
+1.0.0.10|$
+1368608464000|0|0|0|$
+0.3|$
+CmbcCom|$
+1
+0|application/cmbc|CmbcCom|cmbc ocx|$
+npQQMailWebKit.dll|$
+C:\Program Files (x86)\QQMailPlugin\npQQMailWebKit.dll|$
+1.0.0.22|$
+1366877940000|0|0|0|$
+QQMail plugin for WebKit #1.0.0.22|$
+QQMail Plugin|$
+2
+0|application/x-tencent-qmail-webkit|QQMailPlugin for webkit||$
+1|application/x-tencent-qmail|QQMailPlugin for webkit||$
+npCryptoKit.CMBC.U2.x86.dll|$
+C:\WINDOWS\system32\npCryptoKit.CMBC.U2.x86.dll|$
+3.2.1.0|$
+1366856996000|0|0|0|$
+CFCA CryptoKit 3.0 for Firefox, Chrome, Safari and Opera|$
+CFCA CryptoKit CMBC U2 3.0|$
+1
+0|application/npcryptokit.cmbc.u2.x86|CFCA CryptoKit CMBC U2 3.0|*|$
+npaliedit.dll|$
+C:\WINDOWS\system32\aliedit\3.8.0.0\npaliedit.dll|$
+1.3.0.2|$
+1366167492000|0|0|0|$
+npaliedit|$
+Alipay security control|$
+1
+0|application/aliedit|npaliedit| |$
+npicbc_infosec_netsign.dll|$
+C:\Program Files (x86)\ICBCEbankTools\ICBCEbankPlugin\npicbc_infosec_netsign.dll|$
+1.0.44.11|$
+1365651110000|0|0|0|$
+NetSign Plugin|$
+npicbc_infosec_netsign.dll|$
+1
+0|application/npicbc_infosec_netsign|npICBCNetSign|rts|$
+npUPEditor.dll|$
+C:\WINDOWS\system32\UPEdit\npUPEditor.dll|$
+2.0.9.0|$
+1365385876000|0|0|0|$
+UPEditor 银联在线支付密码控件 Version:2.0.9.0|$
+UPEditor|$
+1
+0|application/upeditor|UPEditor 银联在线支付密码控件||$
+npxbdyy.dll|$
+C:\Program Files (x86)\Baidu\BaiduPlayerBaiduYun\1.19.1.23\npxbdyy.dll|$
+1.38.0.0|$
+1363251898000|0|0|0|$
+BaiduPlayerWangpan Browser Plugin|$
+BaiduPlayerWangpan Browser Plugin|$
+1
+0|application/wplayer-activex|ActiveX|ocx|$
+npbaiedit.dll|$
+C:\Program Files (x86)\baidu\百度钱包安全控件\npbaiedit.dll|$
+1.0.0.1|$
+1363243374000|0|0|0|$
+npbaiedit|$
+Baidu Security Edit Control|$
+1
+0|application/x-baidu-secedit|npbaiedit|*|$
+npIntelWebAPIIPT.dll|$
+C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT\npIntelWebAPIIPT.dll|$
+3.0.72.0|$
+1363119574000|0|0|0|$
+|$
+|$
+1
+0|application/x-vnd-intel-webapi-ipt-3.0.72|npIntelWebAPIipt-2-0||$
+npIntelWebAPIUpdater.dll|$
+C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT\npIntelWebAPIUpdater.dll|$
+3.0.72.0|$
+1363119574000|0|0|0|$
+Intel web components updater - Installs and updates the Intel web components|$
+|$
+1
+0|application/x-vnd-intel-webapi-updater|npIntelWebAPIupdater-2-0|intel_webapi_updater-2-0|$
+npUploader.dll|$
+C:\Users\nant\AppData\Roaming\baidu\Baidu Uploader\npUploader.dll|$
+2.0.0.3|$
+1362569736000|0|0|0|$
+文件上传插件(2.0.0.3)|$
+|$
+1
+0|application/bd-npupload-plugin|Plugin for uploading files quickly||$
+npXFPlugin.dll|$
+C:\Program Files (x86)\Tencent\QQDownload\Browser\766\npXFPlugin.dll|$
+1.0.0.9|$
+1361782796000|0|0|0|$
+QQDownload Plugin|$
+QQDownload Plugin|$
+1
+0|application/npxf-qqdownload|npXFPlug|dll|$
+npxbdsetup.dll|$
+C:\WINDOWS\Downloaded Program Files\65342625\npxbdsetup.dll|$
+1.38.0.0|$
+1356507256000|0|0|0|$
+BaiduSetUp Plugin|$
+BaiduSetUp Plugin|$
+1
+0|application/baidusetup-activex|ActiveX|ocx|$
+npUnity3D32.dll|$
+C:\Users\nant\AppData\LocalLow\Unity\WebPlayer\loader\npUnity3D32.dll|$
+4.0.1.62093|$
+1354902554000|0|0|0|$
+Unity Player 4.0.1f1|$
+Unity Player|$
+1
+0|application/vnd.unity|Unity Player datafile|unity3d|$
+NPWLPG.dll|$
+C:\Program Files (x86)\Windows Live\Photo Gallery\NPWLPG.dll|$
+16.4.3505.912|$
+1347490658000|0|0|0|$
+NPWLPG|$
+Photo Gallery|$
+2
+0|application/x-wlpg3-detect|Photo Gallery|wlpg|$
+1|application/x-wlpg-detect|Photo Gallery|wlpg|$
+NPCMBEdit.dll|$
+C:\WINDOWS\system32\NPCMBEdit.dll|$
+1.0.0.2|$
+1340763624000|0|0|0|$
+China Merchants Bank Edit|$
+CMBEdit Plugin|$
+1
+0|application/x-cmbedit|cmbedit||$
+npalicdo.dll|$
+C:\Users\nant\AppData\Roaming\alipay\cf\npalicdo.dll|$
+1.0.0.1|$
+1313477740000|0|0|0|$
+npalicdo|$
+npalicdo plugin|$
+1
+0|application/npalicdo|npalicdo|dll|$
+NPComBrg701.dll|$
+C:\WINDOWS\system32\itruscert\NPComBrg701.dll|$
+1.0.2011.701|$
+1311580150000|0|0|0|$
+iTrusPTA&XEnroll hwPTA,IEnroll,UKeyInstalls for FireFox,version=1.0.0.2|$
+iTrusChina iTrusPTA,XEnroll,iEnroll,hwPTA,UKeyInstalls Firefox Plugin|$
+6
+0|application/pta.itruspta.version.1|PTA|*|$
+1|application/cenroll.cenroll.version.1|CEnroll||$
+2|application/itrusenroll.certenroll.version.1|IEnroll||$
+3|application/hwpta.itrushwpta|hwPTA||$
+4|application/hwwdkey.installwdkey|hwWDkey||$
+5|application/hwepass2001.installepass2001|HwEpass2001||$
+
+[INVALID]
+d:\Program Files (x86)\Tencent\QQPCMgr\8.12.11692.225\npQMExtensionsIE.dll|$
+1402657169670|$
+C:\Program Files (x86)\Microsoft Silverlight\5.1.30214.0\npctrlui.dll|$
+1392303462000|$
+C:\WINDOWS\system32\npmproxy.dll|$
+1377144148530|$
+C:\Program Files (x86)\Baidu\BaiduPlayerBaiduYun\1.19.1.23\npxbdyyreg.dll|$
+1363251898000|$
+C:\Program Files (x86)\baidu\BaiduPlayer\3.8.0.16\npxbdyyreg.dll|$
+1395303136000|$
+C:\WINDOWS\system32\aliedit\3.8.0.0\npAliSecCtrl64.dll|$
+1401875874000|$
+C:\Users\nant\AppData\LocalLow\B5TUpdate\npB5TPlugin64.dll|$
+1397200701220|$

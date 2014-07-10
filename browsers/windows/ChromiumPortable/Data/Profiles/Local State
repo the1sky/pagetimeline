@@ -1,0 +1,70 @@
+{
+   "app_list": {
+      "app_launch_count": 0,
+      "last_app_launch_ping": "13049424000000000",
+      "last_launch_ping": "13049424000000000",
+      "launch_count": 0
+   },
+   "browser": {
+      "enabled_labs_experiments": [  ],
+      "hung_plugin_detect_freq": 2000,
+      "last_redirect_origin": "",
+      "plugin_message_response_timeout": 25000
+   },
+   "hardware_acceleration_mode_previous": true,
+   "local_state": {
+      "multiple_profile_prefs_version": 7
+   },
+   "ntp": {
+      "promo_resource_cache_update": "1405018245.677775"
+   },
+   "policy": {
+      "last_statistics_update": "13049491840634775"
+   },
+   "profile": {
+      "info_cache": {
+         "Default": {
+            "active_time": 1405021291.599891,
+            "avatar_icon": "chrome://theme/IDR_PROFILE_AVATAR_0",
+            "background_apps": false,
+            "is_ephemeral": false,
+            "is_omitted_from_profile_list": false,
+            "is_using_default_name": true,
+            "managed_user_id": "",
+            "name": "First user",
+            "user_name": ""
+         }
+      },
+      "last_active_profiles": [  ],
+      "last_used": "Default"
+   },
+   "shutdown": {
+      "num_processes": 2,
+      "num_processes_slow": 1,
+      "type": 1
+   },
+   "uninstall_metrics": {
+      "installation_date2": "1405018240",
+      "launch_count": "2"
+   },
+   "user_experience_metrics": {
+      "low_entropy_source2": 7222,
+      "machine_id": 5255219,
+      "session_id": 1,
+      "stability": {
+         "debugger_not_present": 2,
+         "execution_phase": 700,
+         "exited_cleanly": true,
+         "last_timestamp_sec": "1405021300",
+         "launch_count": 2,
+         "launch_time_sec": "1405021290",
+         "plugin_stats2": [  ],
+         "session_end_completed": true,
+         "stats_buildtime": "1404152353",
+         "stats_version": "37.0.2062.3-devel"
+      }
+   },
+   "was": {
+      "restarted": false
+   }
+}
