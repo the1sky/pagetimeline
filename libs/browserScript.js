@@ -46,16 +46,13 @@ browserScript.prototype = {
 	openBrowser:function(callback){
 		var execFile = require('child_process').execFile;
 		var cp=execFile( this.runScript, this.execArgv,{cwd:this.dirname},function(err, stdout, stderr) {
-			/*
-			 if( !err && !stderr ) {
-			 callback(false, {message: 'open browser done'});
-			 }else{
-			 callback(true, {message:err || stderr });
-			 }
-			 */
+			if( err || stderr ) {
+				callback(true, {message:err || stderr });
+				return;
+			}
 		});
 		setTimeout(function(cp,callback){
-			callback(false,'');
+			callback(false,{message:'open browser done!'});
 		},1000,cp,callback)
 	},
 	closeBrowser:function(callback){

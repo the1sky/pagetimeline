@@ -53,6 +53,7 @@ var pagetimeline = function(params,callback){
 
 	// --timeout (in seconds)
 	this.timeout = (params.timeout > 0 && parseInt(params.timeout, 10)) || 5000;
+	this.params.timeout = this.timeout;
 
 	// --modules=localStorage,cookies
 	this.modules = (typeof params.modules === 'string') ? params.modules.split(',') : [];

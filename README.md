@@ -28,6 +28,8 @@ firefox,chrome,safari
 
     暂时需要手动安装xvfb,chrome,见:./libs/installChrome.sh
 
+    需要对当前目录所有文件添加运行权限，chmod -R u+x *
+
     nodejs ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=5000 --verbose
 
 
