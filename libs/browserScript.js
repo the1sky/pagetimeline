@@ -30,7 +30,10 @@ var browserScript = function(params){
 		this.execArgv = [this.browserLoc, this.port];
 
 	}else{
+		//priviledge,x
 		var cp = require('child_process');
+		cp.exec('chmod -R u+x ' + path.resolve(this.dirname + './../'));
+
 		if( this.browser == 'chrome' ){
 			this.runScript = path.resolve(this.dirname + '/runChrome.sh');
 			this.closeScript = path.resolve(this.dirname + '/closeChrome.sh');
