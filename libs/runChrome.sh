@@ -1,4 +1,4 @@
 #!/bin/sh
-cd C:\Program Files (x86)\Google\Chrome\Application
-c:
-chrome --incognito  --remote-debugging-port=9222
+chromeExec=`which google-chrome`
+xvfb-run --server-args='-screen 0, 1024x768x16' $chromeExec --incognito --enable-benchmarking --enable-net-benchmarking --disable-cache --disable-extensions --remote-debugging-port=$2 -start-maximized > /dev/null &
+exit

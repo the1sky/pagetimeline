@@ -56,6 +56,7 @@ function run(params){
 	bs = new browserScript(params);
 	browserScript( params );
 	async.series([openBrowser, async.apply(analyzePerformance,params ), closeBrowser],function(err,result){
+		closeBrowser(function(err,result){});
 		process.exit();
 	})
 }

@@ -218,7 +218,8 @@ pagetimeline.prototype = {
 		this.log('Getting the list of all modules...');
 
 		var fs = require('fs');
-		var modulesDir = module.dirname + '/../modules';
+		var path = require('path');
+		var modulesDir = path.resolve( module.dirname + '/../modules');
 		var ls = fs.readdirSync(modulesDir) || [];
 		var modules = [];
 

@@ -1,5 +1,37 @@
 基于远程过程调试协议的性能分析
 
+###操作系统支持
+window,linux,mac
+
+###浏览器支持
+firefox,chrome,safari
+
+###安装
+
+暂时不支持安装
+
+####windows
+
+    npm install pagetimeline
+
+####linux
+
+    sudo npm install pagetimeline
+
+###使用实例
+
+####windows
+
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=5000 --verbose
+
+####linux
+
+    暂时需要手动安装xvfb,chrome,见:./libs/installChrome.sh
+
+    nodejs ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=5000 --verbose
+
+
+
 安装独立可运行的浏览器
 
 打开浏览器

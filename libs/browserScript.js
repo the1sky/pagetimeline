@@ -26,11 +26,15 @@ var browserScript = function(params){
 			this.closeScript = 'closeChrome.bat';
 			this.browserLoc = path.resolve( __dirname + './../browsers/windows/FirefoxPortable/FirefoxPortable.exe' );
 		}
+
+		this.execArgv = [this.browserLoc, this.port];
+
 	}else{
+		var cp = require('child_process');
 		if( this.browser == 'chrome' ){
-			this.runScript = 'runChrome.sh';
-			this.closeScript = 'closeChrome.sh';
-			//this.browserLoc = __dirname + './../browser/windows/ChromiumPortable';
+			this.runScript = path.resolve(this.dirname + '/runChrome.sh');
+			this.closeScript = path.resolve(this.dirname + '/closeChrome.sh');
+			this.browserLoc = '';
 		}
 	}
 
@@ -41,14 +45,22 @@ var browserScript = function(params){
 browserScript.prototype = {
 	openBrowser:function(callback){
 		var execFile = require('child_process').execFile;
-		execFile( this.runScript, this.execArgv,{cwd:'./libs'},function(err, stdout, stderr) {
-			callback(err, stdout);
+		var cp=execFile( this.runScript, this.execArgv,{cwd:this.dirname},function(err, stdout, stderr) {
+			/*
+			 if( !err && !stderr ) {
+			 callback(false, {message: 'open browser done'});
+			 }else{
+			 callback(true, {message:err || stderr });
+			 }
+			 */
 		});
-		callback(false,{message:'open browser done'});
+		setTimeout(function(cp,callback){
+			callback(false,'');
+		},1000,cp,callback)
 	},
 	closeBrowser:function(callback){
 		var execFile = require('child_process').execFile;
-		execFile( this.closeScript,{cwd:'./libs'},function(err, stdout, stderr) {
+		execFile( this.closeScript,{cwd:this.dirname},function(err, stdout, stderr) {
 			callback(err, stdout);
 		});
 		callback(false,{message:'close browser done'});
