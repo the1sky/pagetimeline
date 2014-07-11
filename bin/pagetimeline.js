@@ -20,11 +20,12 @@ var params = require('commander');
 params
 	.version('0.0.1')
 	.option('-u,--url [value]','target url' )
-	.option('-p,--port [value]','remote debugging port')
+	.option('-server [value]', 'remote debugger server, "localhost" or "xxx" ' )
+	.option('--port [value]','remote debugger port, default 9222')
 	.option('--config [value]','JSON-formatted config file')
 	.option('--viewport [value]','window viewport width and height, like "1920x768"' )
 	.option('--proxy [value]','specifies the proxy server to use (e.g. --proxy=192.168.1.42:8080)')
-	.option('--modules [value]','specify module')
+	.option('--modules [value]','specify module(e.g. --modules=firstscreen,whitescreen)')
 	.option('--skip-modules [value]','skip selected modules [moduleOne],[moduleTwo],...')
 	.option('--timeout [value]','time after open the url')
 	.option('--user-agent [value]','provide a custom user agent')
@@ -53,12 +54,19 @@ if( params.port ){
  * @param execArgv
  */
 function run(params){
-	bs = new browserScript(params);
-	browserScript( params );
-	async.series([openBrowser, async.apply(analyzePerformance,params ), closeBrowser],function(err,result){
-		closeBrowser(function(err,result){});
-		process.exit();
-	})
+	params.server = params.server ? params.server : 'localhost';
+	if( params.server == 'localhost' ){
+		bs = new browserScript( params );
+		browserScript( params );
+		async.series( [openBrowser, async.apply( analyzePerformance, params ), closeBrowser], function(err, result){
+			closeBrowser( function(err, result){} );
+			process.exit();
+		} );
+	}else{
+		analyzePerformance( params, function(err,result){
+			process.exit();
+		});
+	}
 }
 
 /**

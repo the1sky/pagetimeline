@@ -12,12 +12,13 @@ exports.module = function(pagetimeline, callback){
 	var async = require( 'async' );
 	var Chrome = require( 'chrome-remote-interface' );
 	var requestId_info = {};
-	var request_info = {};
-	var records = [];
+	var request_info = {}
+	var records = [];;
 
 	var judgeConnected = function(pagetimeline, Chrome, callback){
+		var server = pagetimeline.getParam('server');
 		var port = pagetimeline.getParam('port');
-		Chrome( {host:'localhost', port:port}, function(chrome){
+		Chrome( {host:server, port:port}, function(chrome){
 			if( !chrome ){
 				callback( true, {'message':'not connected to browser!'} );
 			}else{
