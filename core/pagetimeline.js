@@ -12,27 +12,7 @@ var VERSION = require('../package').version;
 
 var pagetimeline = function(params,callback){
 	// handle JSON config file provided via --config
-	var fs = require('fs');
 	var path = require('path');
-	var jsonConfig;
-
-	if (params.config) {
-		try {
-			jsonConfig = JSON.parse( fs.readFileSync(params.config) ) || {};
-		}
-		catch(ex) {
-			jsonConfig = {};
-			params.config = false;
-		}
-
-		// allow parameters from JSON config to be overwritten
-		// by those coming from command line
-		Object.keys(jsonConfig).forEach(function(key) {
-			if (typeof params[key] === 'undefined') {
-				params[key] = jsonConfig[key];
-			}
-		});
-	}
 
 	// parse script CLI parameters
 	this.params = params;
@@ -43,20 +23,19 @@ var pagetimeline = function(params,callback){
 
 	this.url = this.params.url;
 
-	this.format = params.format || 'plain';
+	this.format = params.format;
 
-	this.viewport = params.viewport || '1280x1024';
+	this.viewport = params.viewport;
 
 	this.verboseMode = params.verbose === true;
 
 	this.silentMode = params.silent === true;
 
-	this.timeout = (params.timeout > 0 && parseInt(params.timeout, 10)) || 5000;
-	this.params.timeout = this.timeout;
+	this.timeout = params.timeout;;
 
-	this.modules = (typeof params.modules === 'string') ? params.modules.split(',') : [];
+	this.modules = params.modules;
 
-	this.skipModules = (typeof params['skip-modules'] === 'string') ? params['skip-modules'].split(',') : [];
+	this.skipModules = params['skip-modules'];
 
 	this.userAgent = params['user-agent'] || this.getDefaultUserAgent();
 

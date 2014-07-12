@@ -2,6 +2,7 @@
 	"url": "http://www.baidu.com",
 	"verbose": true,
 	"timeout":5000,
+	"viewport":"800x600",
 	"log": "log/pagetimeline.log",
 	"block-domain": "google-analytics.com",
 	"cookies": [

@@ -15,6 +15,8 @@ var stdout = process.stdout;
 var stderr = process.stderr;
 var browserScript = require('./../libs/browserScript.js');
 var bs = null;
+var fs = require('fs');
+var jsonConfig;
 var params = require('commander');
 
 params
@@ -34,6 +36,27 @@ params
 	.option('--format [value]', 'output format')
 	.option('--browser [value]','chrome,firefox')
 	.parse(process.argv);
+
+//default setting
+if (params.config) {
+	try {
+		jsonConfig = JSON.parse( fs.readFileSync(params.config) ) || {};
+	}
+	catch(ex) {
+		jsonConfig = {};
+		params.config = false;
+	}
+	Object.keys(jsonConfig).forEach(function(key) {
+		if (typeof params[key] === 'undefined') {
+			params[key] = jsonConfig[key];
+		}
+	});
+}
+params.viewport = params.viewport || '1280x1024';
+params.format = params.format || 'plain';
+params.timeout = (params['timeout'] > 0 && parseInt(params['timeout'], 10)) || 5000;
+params.modules = (typeof params['modules'] === 'string') ? params['modules'].split(',') : [];
+params['skip-modules'] = (typeof params['skip-modules'] === 'string') ? params['skip-modules'].split(',') : [];
 
 //指定端口或自动获取可用端口
 if( params.port ){
@@ -57,7 +80,6 @@ function run(params){
 	params.server = params.server ? params.server : 'localhost';
 	if( params.server == 'localhost' ){
 		bs = new browserScript( params );
-		browserScript( params );
 		async.series( [openBrowser, async.apply( analyzePerformance, params ), closeBrowser], function(err, result){
 			closeBrowser( function(err, result){} );
 			process.exit();
