@@ -20,7 +20,7 @@ var params = require('commander');
 params
 	.version('0.0.1')
 	.option('-u,--url [value]','target url' )
-	.option('-server [value]', 'remote debugger server, "localhost" or "xxx" ' )
+	.option('--server [value]', 'remote debugger server, "localhost" or "xxx" ' )
 	.option('--port [value]','remote debugger port, default 9222')
 	.option('--config [value]','JSON-formatted config file')
 	.option('--viewport [value]','window viewport width and height, like "1920x768"' )
