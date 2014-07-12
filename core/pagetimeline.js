@@ -37,7 +37,6 @@ var pagetimeline = function(params,callback){
 
 	this.skipModules = params['skip-modules'];
 
-	this.userAgent = params['user-agent'] || this.getDefaultUserAgent();
 
 	// setup cookies handling
 	this.initCookies();
@@ -253,10 +252,6 @@ pagetimeline.prototype = {
 		async.parallel( pkgs,function(err,result){
 			callback(err,result);
 		})
-	},
-	getDefaultUserAgent:function(){
-		var os = require('os');
-		return "pagetimeline/" + VERSION + " (pagetimeline/" + os.name + " " + os.architecture + ")";
 	},
 	initCookies:function(){
 		"use strict";

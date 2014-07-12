@@ -57,6 +57,7 @@ params.format = params.format || 'plain';
 params.timeout = (params['timeout'] > 0 && parseInt(params['timeout'], 10)) || 5000;
 params.modules = (typeof params['modules'] === 'string') ? params['modules'].split(',') : [];
 params['skip-modules'] = (typeof params['skip-modules'] === 'string') ? params['skip-modules'].split(',') : [];
+params['user-agent'] = params['user-agent'] || getDefaultUserAgent();
 
 //指定端口或自动获取可用端口
 if( params.port ){
@@ -138,4 +139,10 @@ function getAvailablePort(callback){
 		err ? port=9222 : port;
 		callback(err,port);
 	});
+}
+
+function getDefaultUserAgent(){
+	var VERSION = require('./../package').version;
+	var os = require('os');
+	return "pagetimeline/" + VERSION + " (pagetimeline/" + os.name + " " + os.architecture + ")";
 }

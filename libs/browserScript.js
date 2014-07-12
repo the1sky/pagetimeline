@@ -8,14 +8,20 @@ var path = require( 'path' );
 var browserScript = function(params){
 	this.dirname = __dirname;
 	this.runScript = '';
-	;
 	this.closeScript = '';
 	this.browserLoc = '';
-	this.viewport_width = 0;
-	this.viewport_height = 0;
+	this.user_agent = params['user-agent'];
 	this.browser = params.browser;
 	this.port = params.port;
 	this.execArgv = [];
+
+	this.viewport_width = 0;
+	this.viewport_height = 0;
+	if( params.viewport ){
+		var wh = params.viewport.split( 'x' );
+		this.viewport_width = wh[0];
+		this.viewport_height = wh[1];
+	}
 
 	if( !this.browser )  this.browser = 'chrome';
 
@@ -24,11 +30,6 @@ var browserScript = function(params){
 			this.runScript = 'runChrome.bat';
 			this.closeScript = 'closeChrome.bat';
 			this.browserLoc = path.resolve( __dirname + './../browsers/windows/ChromiumPortable/ChromiumPortable.exe' );
-			if( params.viewport ){
-				var wh = params.viewport.split( 'x' );
-				this.viewport_width = wh[0];
-				this.viewport_height = wh[1];
-			}
 		}else if( this.browser == 'firefox' ){
 			this.runScript = 'runChrome.bat';
 			this.closeScript = 'closeChrome.bat';
@@ -46,7 +47,7 @@ var browserScript = function(params){
 		}
 	}
 
-	this.execArgv = [this.browserLoc, this.port, this.viewport_width, this.viewport_height];
+	this.execArgv = [this.browserLoc, this.port, this.viewport_width, this.viewport_height, this.user_agent];
 }
 
 
