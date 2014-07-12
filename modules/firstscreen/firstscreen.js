@@ -13,7 +13,7 @@ exports.module = function(pagetimeline,callback) {
 	 * @param chrome
 	 */
 	function getFirstScreenTime(pagetimeline){
-		var requests = pagetimeline.core.requests;
+		var requests = getRequestTimeByUrl( pagetimeline.core.requests );
 		var browser = pagetimeline.core.browser;
 		var startTime = pagetimeline.core.startTime;
 
@@ -37,6 +37,24 @@ exports.module = function(pagetimeline,callback) {
 				callback(false,{message:'get first screen time done!'});
 			} );
 		}
+	}
+
+	/**
+	 * 形如{url:timestamp,...}
+	 * @param requests
+	 * @returns {{}}
+	 */
+	function getRequestTimeByUrl(requests){
+		var requestsByUrl = {};
+		for( var requestId in requests ){
+			var requestInfo = requests[requestId];
+			var url = requestInfo['url'];
+			var timestamp = requestInfo['timestamp'];
+			if( timestamp && !requestsByUrl[url] ){
+				requestsByUrl[url] = timestamp;
+			}
+		}
+		return requestsByUrl;
 	}
 
 	/**

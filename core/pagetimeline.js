@@ -183,15 +183,13 @@ pagetimeline.prototype = {
 		var moduleRuntime = require( getModulePath('runtime'));
 		var moduleTimeline = require( getModulePath('timeline'));
 		var modulePage = require( getModulePath('page'));
-		var moduleNetworkSort = require( getModulePath('networksort'));
 		var async = require('async');
 		async.auto({
 			connectserver:async.apply( moduleConnectServer.run, this.getPublicWrapper() ),
 			network:['connectserver',async.apply( moduleNetwork.run, this.getPublicWrapper() )],
 			runtime:['connectserver',async.apply( moduleRuntime.run, this.getPublicWrapper() )],
 			timeline:['connectserver',async.apply( moduleTimeline.run, this.getPublicWrapper())],
-			page:['network','runtime','timeline',async.apply( modulePage.run, this.getPublicWrapper())],
-			networksort:['page',async.apply( moduleNetworkSort.run, this.getPublicWrapper())]
+			page:['network','runtime','timeline',async.apply( modulePage.run, this.getPublicWrapper())]
 		},function(err,result){
 			callback(err,result);
 		})

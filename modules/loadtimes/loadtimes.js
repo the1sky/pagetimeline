@@ -6,7 +6,7 @@
 exports.version = '0.1';
 
 exports.module = function(pagetimeline,callback){
-	var requests = pagetimeline.core.requests;
+	var requests = getRequestTimeByUrl( pagetimeline.core.requests );
 	var startTime = pagetimeline.core.startTime;
 
 	function getSlowestTime(){
@@ -18,6 +18,19 @@ exports.module = function(pagetimeline,callback){
 			}
 		}
 		return slowestTime * 1000;
+	}
+
+	function getRequestTimeByUrl(requests){
+		var requestsByUrl = {};
+		for( var requestId in requests ){
+			var requestInfo = requests[requestId];
+			var url = requestInfo['url'];
+			var timestamp = requestInfo['timestamp'];
+			if( timestamp && !requestsByUrl[url] ){
+				requestsByUrl[url] = timestamp;
+			}
+		}
+		return requestsByUrl;
 	}
 
 	var loadTime = getSlowestTime() - startTime;

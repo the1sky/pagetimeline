@@ -35,6 +35,23 @@ exports.run = function(pagetimeline,callback){
 			pagetimeline.core['requests'] = requestId_info;
 		} );
 
+		browser.on('Network.responseReceived',function(data){
+			var requestId = data['requestId'];
+			var timestamp = data['timestamp'];
+			var response = data.response;
+			var url = response.url;
+			if( !requestId_info[requestId] ){
+				requestId_info[requestId] = {}
+			}
+			requestId_info[requestId] = {
+				'url':url,
+				'timestamp':timestamp,
+				'responseBody':response
+				};
+			exports.out = requestId_info;
+			pagetimeline.core['requests'] = requestId_info;
+		});
+
 		callback(false,{message:'add network event listener'});
 	};
 
