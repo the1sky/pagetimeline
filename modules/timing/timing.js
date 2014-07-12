@@ -5,8 +5,8 @@
 exports.version = '1.0'
 
 exports.module = function(pagetimeline,callback){
-	pagetimeline.log('timing:' + pagetimeline.startTime)
-	var browser = pagetimeline.browser;
+	pagetimeline.log('timing...');
+	var browser = pagetimeline.core.browser;
 	with( browser ){
 		var str = getTiming.toString() + ';getTiming()';
 		send( 'Runtime.evaluate', {'expression':str, returnByValue:true}, function(err, data){

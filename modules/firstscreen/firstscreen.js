@@ -13,9 +13,9 @@ exports.module = function(pagetimeline,callback) {
 	 * @param chrome
 	 */
 	function getFirstScreenTime(pagetimeline){
-		var requests = pagetimeline.requests;
-		var browser = pagetimeline.browser;
-		var startTime = pagetimeline.startTime;
+		var requests = pagetimeline.core.requests;
+		var browser = pagetimeline.core.browser;
+		var startTime = pagetimeline.core.startTime;
 
 		//计算首屏内的图形
 		with( browser ){

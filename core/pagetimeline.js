@@ -13,6 +13,7 @@ var VERSION = require('../package').version;
 var pagetimeline = function(params,callback){
 	// handle JSON config file provided via --config
 	var fs = require('fs');
+	var path = require('path');
 	var jsonConfig;
 
 	if (params.config) {
@@ -36,32 +37,27 @@ var pagetimeline = function(params,callback){
 	// parse script CLI parameters
 	this.params = params;
 
-	// --url=http://example.com
+	this.homedir =  path.resolve(__dirname + './../' );
+
+	this.core = {};
+
 	this.url = this.params.url;
 
-	// --format=[csv|json]
 	this.format = params.format || 'plain';
 
-	// --viewport=1280x1024
 	this.viewport = params.viewport || '1280x1024';
 
-	// --verbose
 	this.verboseMode = params.verbose === true;
 
-	// --silent
 	this.silentMode = params.silent === true;
 
-	// --timeout (in seconds)
 	this.timeout = (params.timeout > 0 && parseInt(params.timeout, 10)) || 5000;
 	this.params.timeout = this.timeout;
 
-	// --modules=localStorage,cookies
 	this.modules = (typeof params.modules === 'string') ? params.modules.split(',') : [];
 
-	// --skip-modules=jQuery,domQueries
 	this.skipModules = (typeof params['skip-modules'] === 'string') ? params['skip-modules'].split(',') : [];
 
-	// --user-agent=custom-agent
 	this.userAgent = params['user-agent'] || this.getDefaultUserAgent();
 
 	// setup cookies handling
@@ -126,13 +122,9 @@ var pagetimeline = function(params,callback){
 	var self = this;
 	this.runCoreModuleAsync(function(err,result){
 		if( !err ){
-			self.browser = result[0].browser;
-			self.timelineRecords = result[0].records;
-			self.requests = result[0].requests;
-			self.startTime = result[0].startTime;
 			self.runModuleAsync(function(err, result){
 				self.report();
-				callback(err, result );
+				callback( err, result );
 			})
 		}else{
 			callback( err, result );
@@ -166,6 +158,8 @@ pagetimeline.prototype = {
 	getPublicWrapper: function() {
 		return {
 			url: this.params.url,
+			homedir:this.homedir,
+			core:this.core,
 			browser:this.browser,
 			startTime:this.startTime,
 			requests:this.requests,
@@ -204,6 +198,27 @@ pagetimeline.prototype = {
 		};
 	},
 	runCoreModuleAsync:function(callback){
+		this.log('run core module...');
+		var getModulePath = this.getModulePath;
+		var moduleConnectServer = require( getModulePath('connectserver'));
+		var moduleNetwork = require( getModulePath('network'));
+		var moduleRuntime = require( getModulePath('runtime'));
+		var moduleTimeline = require( getModulePath('timeline'));
+		var modulePage = require( getModulePath('page'));
+		var moduleNetworkSort = require( getModulePath('networksort'));
+		var async = require('async');
+		async.auto({
+			connectserver:async.apply( moduleConnectServer.run, this.getPublicWrapper() ),
+			network:['connectserver',async.apply( moduleNetwork.run, this.getPublicWrapper() )],
+			runtime:['connectserver',async.apply( moduleRuntime.run, this.getPublicWrapper() )],
+			timeline:['connectserver',async.apply( moduleTimeline.run, this.getPublicWrapper())],
+			page:['network','runtime','timeline',async.apply( modulePage.run, this.getPublicWrapper())],
+			networksort:['page',async.apply( moduleNetworkSort.run, this.getPublicWrapper())]
+		},function(err,result){
+			callback(err,result);
+		})
+	},
+	runCoreModuleAsyncBak:function(callback){
 		this.log('run core module...');
 		var getModulePath = this.getModulePath;
 		var moduleReady = require( getModulePath('readyrun'));

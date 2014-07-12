@@ -5,13 +5,12 @@ exports.version = '0.1';
 
 exports.module = function(pagetimeline,callback) {
 	pagetimeline.log('webspeed...');
-	var browser = pagetimeline.browser;
+	var browser = pagetimeline.core.browser;
 	with(browser){
 		var str = getWebspeed.toString() + ';getWebspeed()';
 		send( 'Runtime.evaluate', {'expression':str, returnByValue:true}, function(err, result){
-			if( !err ){
+			if( !err && result.result.value ){
 				var speedData = result.result.value;
-				var name = speedData.name;
 				var fields = speedData.fields;
 				for( var key in fields ){
 					pagetimeline.setMetric(  'webspeed_' + key, fields[key] );
@@ -38,7 +37,6 @@ exports.module = function(pagetimeline,callback) {
 			result['fields'] = {};
 			for( var key in fields ){
 				if( key !='options' &&  key != 'protocolParameter'){
-					console.log( key, fields[key], fields );
 					var fromStartTime = alog.timestamp( +new Date(fields[key]) );
 					result['fields'][key] = fromStartTime;
 				}

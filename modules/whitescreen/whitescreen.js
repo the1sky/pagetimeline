@@ -4,8 +4,8 @@
 exports.version = '0.1';
 
 exports.module = function(pagetimeline, callback){
-	var startTime = pagetimeline.startTime;
-	var browser = pagetimeline.browser;
+	var startTime = pagetimeline.core.startTime;
+	var browser = pagetimeline.core.browser;
 	function getFirstPaintTime(){
 		var loadtimes = chrome.loadTimes();
 		return loadtimes.firstPaintTime;

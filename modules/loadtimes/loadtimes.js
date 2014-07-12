@@ -6,8 +6,8 @@
 exports.version = '0.1';
 
 exports.module = function(pagetimeline,callback){
-	var requests = pagetimeline.requests;
-	var startTime = pagetimeline.startTime;
+	var requests = pagetimeline.core.requests;
+	var startTime = pagetimeline.core.startTime;
 
 	function getSlowestTime(){
 		var slowestTime = 0;
