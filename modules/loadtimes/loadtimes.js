@@ -21,6 +21,6 @@ exports.module = function(pagetimeline,callback){
 	}
 
 	var loadTime = getSlowestTime() - startTime;
-	pagetimeline.setMetric('loadTime', loadTime );
+	pagetimeline.setMetric('loadTime', parseInt( loadTime ) );
 	callback(false,{message:'get load time done!'});
 }

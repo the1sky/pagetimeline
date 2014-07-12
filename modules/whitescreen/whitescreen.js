@@ -17,7 +17,7 @@ exports.module = function(pagetimeline, callback){
 			if( !err ){
 				var firstPaintTime = data.result['value'] * 1000;
 				var whiteScreenTime = firstPaintTime - startTime;
-				pagetimeline.setMetric('whiteScreenTime', whiteScreenTime );
+				pagetimeline.setMetric('whiteScreenTime', parseInt( whiteScreenTime ) );
 				callback( false, {message:'get white screen time done!'} );
 			}else{
 				callback( err, data );

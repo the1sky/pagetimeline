@@ -33,7 +33,7 @@ exports.module = function(pagetimeline,callback) {
 				// to ms
 				slowestTime = parseInt( slowestTime * 1000 );
 				var firstScreenTime = slowestTime - startTime;
-				pagetimeline.setMetric('firstScreenTime', firstScreenTime );
+				pagetimeline.setMetric('firstScreenTime', parseInt( firstScreenTime ) );
 				callback(false,{message:'get first screen time done!'});
 			} );
 		}
