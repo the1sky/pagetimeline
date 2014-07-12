@@ -12,8 +12,9 @@ exports.module = function(pagetimeline,callback) {
 			if( !err && result.result.value ){
 				var speedData = result.result.value;
 				var fields = speedData.fields;
+				pagetimeline.setMetric(  'webspeed', fields );
 				for( var key in fields ){
-					pagetimeline.setMetric(  'webspeed_' + key, fields[key] );
+					pagetimeline.addOffender(  'webspeed', key + ":" + fields[key] );
 				}
 				callback(false, 'get webspeed data done!');
 			}else{
