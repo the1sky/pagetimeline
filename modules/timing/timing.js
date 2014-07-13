@@ -5,6 +5,7 @@
 exports.version = '1.0'
 
 exports.module = function(pagetimeline,callback){
+	var start = +new Date();
 	pagetimeline.log('timing...');
 	var browser = pagetimeline.core.browser;
 	with( browser ){
@@ -12,6 +13,7 @@ exports.module = function(pagetimeline,callback){
 		send( 'Runtime.evaluate', {'expression':str, returnByValue:true}, function(err, data){
 			if( !err ){
 				var timing = data.result.value;
+				pagetimeline.log( 'timing done in ' + (+new Date() - start ) + 'ms' );
 				pagetimeline.setMetric('timing', timing );
 				for( var timingKey in timing ){
 					pagetimeline.addOffender('timing', timingKey + ':' + timing[timingKey] );

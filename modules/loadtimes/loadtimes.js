@@ -6,6 +6,8 @@
 exports.version = '0.1';
 
 exports.module = function(pagetimeline,callback){
+	var start = +new Date();
+	pagetimeline.log('load time...');
 	var requests = getRequestTimeByUrl( pagetimeline.core.requests );
 	var startTime = pagetimeline.core.startTime;
 
@@ -34,6 +36,7 @@ exports.module = function(pagetimeline,callback){
 	}
 
 	var loadTime = getSlowestTime() - startTime;
+	pagetimeline.log( 'load time done in ' + (+new Date() - start ) + 'ms' );
 	pagetimeline.setMetric('loadTime', parseInt( loadTime ) );
 	callback(false,{message:'get load time done!'});
 }

@@ -5,6 +5,7 @@
 exports.version = '0.1';
 
 exports.module = function(pagetimeline,callback) {
+	var start = +new Date();
 	pagetimeline.log('first screen...');
 	getFirstScreenTime( pagetimeline );
 
@@ -32,7 +33,8 @@ exports.module = function(pagetimeline,callback) {
 				}
 				// to ms
 				slowestTime = parseInt( slowestTime * 1000 );
-				var firstScreenTime = slowestTime - startTime;
+				var firstScreenTime = slowestTime - startTime
+				pagetimeline.log( 'first screen done in ' + (+new Date() - start ) + 'ms' );
 				pagetimeline.setMetric('firstScreenTime', parseInt( firstScreenTime ) );
 				callback(false,{message:'get first screen time done!'});
 			} );

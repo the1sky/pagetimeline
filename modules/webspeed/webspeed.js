@@ -4,6 +4,7 @@
 exports.version = '0.1';
 
 exports.module = function(pagetimeline,callback) {
+	var start = +new Date();
 	pagetimeline.log('webspeed...');
 	var browser = pagetimeline.core.browser;
 	with(browser){
@@ -11,7 +12,8 @@ exports.module = function(pagetimeline,callback) {
 		send( 'Runtime.evaluate', {'expression':str, returnByValue:true}, function(err, result){
 			if( !err && result.result.value ){
 				var speedData = result.result.value;
-				var fields = speedData.fields;
+				var fields = speedData.fields
+				pagetimeline.log( 'webspeed done in ' + (+new Date() - start ) + 'ms' );
 				pagetimeline.setMetric(  'webspeed', fields );
 				for( var key in fields ){
 					pagetimeline.addOffender(  'webspeed', key + ":" + fields[key] );
