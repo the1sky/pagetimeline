@@ -18,7 +18,7 @@ exports.module = function(pagetimeline,callback){
 	_.each(requests,function(value,key){
 		var url = value.url;
 		var responseBody = value.responseBody;
-		var requestHeaders = responseBody.requestHeaders;
+		var requestHeaders = responseBody['requestHeaders'];
 
 		if( requestHeaders && ( requestHeaders[ 'X-Requested-With'] == 'XMLHttpRequest' ) ){
 			var contentLen = 0;
