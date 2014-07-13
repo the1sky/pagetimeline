@@ -20,7 +20,7 @@ exports.module = function(pagetimeline,callback){
 		var responseBody = value.responseBody;
 		var requestHeaders = responseBody.requestHeaders;
 
-		if( requestHeaders && ( requestHeaders[ 'x-requested-with'] == 'XMLHttpRequest' ) ){
+		if( requestHeaders && ( requestHeaders[ 'X-Requested-With'] == 'XMLHttpRequest' ) ){
 			var contentLen = 0;
 			if( responseBody.headers['Content-Length'] ){
 				contentLen = parseFloat( responseBody.headers['Content-Length'] );
