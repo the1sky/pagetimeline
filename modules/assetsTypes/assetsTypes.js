@@ -5,6 +5,8 @@
 exports.version = '0.1';
 
 exports.module = function(pagetimeline,callback){
+	pagetimeline.log( 'asserts types ...');
+	var start = +new Date();
 	var requests = pagetimeline.core.requests;
 	var _ = require('underscore');
 	var mime  = require('mime');
@@ -12,7 +14,8 @@ exports.module = function(pagetimeline,callback){
 
 	mime.define({
 		'text/javascript': ['js'],
-		'application/x-javascript':['js']
+		'application/x-javascript':['js'],
+		'text/json':['json']
 	});
 
 	_.each(requests,function(value,key){
@@ -25,7 +28,8 @@ exports.module = function(pagetimeline,callback){
 		}
 		if( mimeExt == 'js' ){
 			console.log(mimeExt );
-		}*/
+		}
+		*/
 		var contentLen = 0;
 		if( responseBody.headers['Content-Length'] ){
 			contentLen = parseFloat( responseBody.headers['Content-Length'] );
@@ -59,5 +63,6 @@ exports.module = function(pagetimeline,callback){
 		})
 	})
 
+	pagetimeline.log( 'asserts types done in ' + (+new Date() - start ) + 'ms' );
 	callback(false,' get assets type succ!');
 }
