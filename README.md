@@ -38,9 +38,7 @@ mac:chrome,safari
 
 ####linux
 
-    暂时需要手动安装xvfb,chrome,运行./libs/installChrome.sh
-
-    需要对pagetimeline目录所有文件添加运行权限，chmod -R u+x *
+    暂时需要手动安装xvfb,chrome,运行sudo ./libs/installChrome.sh
 
     nodejs ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=2000 --format=json
 
