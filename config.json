@@ -1,7 +1,7 @@
 {
 	"url": "http://www.baidu.com",
-	"verbose": true,
-	"timeout":50000,
+	"verbose": false,
+	"timeout":2000,
 	"viewport":"800x600",
 	"log": "log/pagetimeline.log",
 	"block-domain": "google-analytics.com",

@@ -10,7 +10,7 @@ var EXIT_SUCCESS = 0,
 
 var VERSION = require('../package').version;
 
-var pagetimeline = function(params,callback){
+var pagetimeline = function(params){
 	var path = require('path');
 
 	this.params = params;
@@ -60,8 +60,6 @@ var pagetimeline = function(params,callback){
 		this.log('Using JSON config file: ' + params.config);
 	}else if (params.config === false) {
 		this.log('Failed parsing JSON config file');
-		this.tearDown(EXIT_CONFIG_FAILED);
-		return;
 	}
 
 	// queue of jobs that needs to be done before report can be generated
@@ -88,19 +86,6 @@ var pagetimeline = function(params,callback){
 			}
 		}
 	}, this);
-
-	this.start = +new Date();
-	var self = this;
-	this.runCoreModuleAsync(function(err,result){
-		if( !err ){
-			self.runModuleAsync(function(err, result){
-				self.report();
-				callback( err, result );
-			})
-		}else{
-			callback( err, result );
-		}
-	})
 }
 
 pagetimeline.prototype = {
@@ -131,10 +116,6 @@ pagetimeline.prototype = {
 			url: this.params.url,
 			homedir:this.homedir,
 			core:this.core,
-			browser:this.browser,
-			startTime:this.startTime,
-			requests:this.requests,
-			timelineRecords:this.timelineRecords,
 			getParam: (function(key) {
 				return this.params[key];
 			}).bind(this),
@@ -168,6 +149,21 @@ pagetimeline.prototype = {
 			//runScript: this.runScript.bind(this)
 		};
 	},
+	run:function(callback){
+		this.callback = callback;
+		this.start = +new Date();
+		var self = this;
+		this.runCoreModuleAsync(function(err,result){
+			if( !err ){
+				self.runModuleAsync(function(err, result){
+					self.report();
+					callback(err,result);
+				})
+			}else{
+				callback( err, result );
+			}
+		})
+	},
 	runCoreModuleAsync:function(callback){
 		this.log('run core module...');
 		var getModulePath = this.getModulePath;
@@ -184,15 +180,6 @@ pagetimeline.prototype = {
 			timeline:['connectserver',async.apply( moduleTimeline.run, this.getPublicWrapper())],
 			page:['network','runtime','timeline',async.apply( modulePage.run, this.getPublicWrapper())]
 		},function(err,result){
-			callback(err,result);
-		})
-	},
-	runCoreModuleAsyncBak:function(callback){
-		this.log('run core module...');
-		var getModulePath = this.getModulePath;
-		var moduleReady = require( getModulePath('readyrun'));
-		var async = require('async');
-		async.series([async.apply( moduleReady.module,this.getPublicWrapper() )],function(err,result){
 			callback(err,result);
 		})
 	},
@@ -253,13 +240,10 @@ pagetimeline.prototype = {
 	},
 	// called when all HTTP requests are completed
 	report: function() {
-		this.emit('report');
-
 		var time = Date.now() - this.start;
 		this.log('pagetimeline run for <%s> completed in %d ms', this.url, time);
 
 		this.results.setUrl(this.url);
-		this.emit('results', this.results);
 
 		// count all metrics
 		var metricsCount = this.results.getMetricsNames().length;
@@ -270,14 +254,8 @@ pagetimeline.prototype = {
 		var Formatter = require('./formatter'),
 			renderer = new Formatter(this.results, this.format);
 
-		this.echo(renderer.render());
-
-		// handle timeouts (issue #129)
-		if (this.timeout) {
-			this.log('Timed out!');
-			this.tearDown(EXIT_TIMED_OUT);
-			return;
-		}
+		var renderResult = renderer.render();
+		this.echo(renderResult);
 
 		// asserts handling
 		var failedAsserts = this.results.getFailedAsserts(),
@@ -285,21 +263,18 @@ pagetimeline.prototype = {
 
 		if (failedAssertsCnt > 0) {
 			this.log('Failed on %d assert(s) on the following metric(s): %s!', failedAssertsCnt, failedAsserts.join(', '));
-
-			// exit code should equal number of failed assertions
 			this.tearDown(failedAssertsCnt);
 			return;
 		}
 
 		this.log('Done!');
-		this.tearDown();
 	},
 	tearDown: function(exitCode) {
 		exitCode = exitCode || EXIT_SUCCESS;
 		if (exitCode > 0) {
 			this.log('Exiting with code #' + exitCode + '!');
 		}
-		process.exit()
+		this.callback( true, {message:exitCode});
 	},
 	// metrics reporting
 	setMetric: function(name, value) {

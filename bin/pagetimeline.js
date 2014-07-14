@@ -52,6 +52,7 @@ if (params.config) {
 		}
 	});
 }
+
 params.viewport = params.viewport || '1280x1024';
 params.format = params.format || 'plain';
 params.timeout = (params['timeout'] > 0 && parseInt(params['timeout'], 10)) || 5000;
@@ -59,7 +60,7 @@ params.modules = (typeof params['modules'] === 'string') ? params['modules'].spl
 params['skip-modules'] = (typeof params['skip-modules'] === 'string') ? params['skip-modules'].split(',') : [];
 params['user-agent'] = params['user-agent'] || getDefaultUserAgent();
 
-//指定端口或自动获取可用端口
+//appointed port or auto port
 if( params.port ){
 	run(params);
 }else{
@@ -73,7 +74,7 @@ if( params.port ){
 }
 
 /**
- * 运行
+ * run
  *
  * @param execArgv
  */
@@ -83,7 +84,7 @@ function run(params){
 		bs = new browserScript( params );
 		async.series( [openBrowser, async.apply( analyzePerformance, params ), closeBrowser], function(err, result){
 			closeBrowser( function(err, result){} );
-			process.exit();
+			process.exit(0);
 		} );
 	}else{
 		analyzePerformance( params, function(err,result){
@@ -93,7 +94,7 @@ function run(params){
 }
 
 /**
- * 打开浏览器
+ * open browser
  *
  * @param execArgv
  * @param callback
@@ -105,20 +106,21 @@ function openBrowser(callback){
 }
 
 /**
- * 分析性能
+ * analyze performance
  *
  * @param params
  * @param callback
  */
 function analyzePerformance(params,callback){
-	var pagetimelineAnalysis = require('./../core/pagetimeline.js')
-	new pagetimelineAnalysis( params,function(err,result){
+	var pagetimeline = require('./../core/pagetimeline.js');
+	var pagetimelineIns = new pagetimeline( params );
+	pagetimelineIns.run(function(err,result){
 		callback(err,result);
-	} );
+	});
 }
 
 /**
- * 关闭浏览器
+ * close browser
  *
  * @param callback
  */
@@ -129,7 +131,7 @@ function closeBrowser(callback){
 }
 
 /**
- * 获取可用端口
+ * get available port
  *
  * @param callback
  */
@@ -141,6 +143,11 @@ function getAvailablePort(callback){
 	});
 }
 
+/**
+ *  get default UA
+ *
+ * @returns {string}
+ */
 function getDefaultUserAgent(){
 	var VERSION = require('./../package').version;
 	var os = require('os');
