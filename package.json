@@ -1,19 +1,18 @@
 {
-  "name": "phantomas",
-  "version": "0.11.1",
-  "author": "macbre <maciej.brencz@gmail.com> (http://macbre.net)",
-  "description": "PhantomJS-based web performance metrics collector",
-  "main": "./lib/index.js",
+  "name": "pagetimeline",
+  "version": "0.0.1",
+  "author": "nant <dumingtan@gmail.com> (http://www.rialive.com)",
+  "description": "web performance base on remote debugging protocol",
+  "main": "./index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/macbre/phantomas.git"
+    "url": "git://github.com/the1sky/pagetimeline.git"
   },
   "keywords": [
     "high performance web sites",
     "metrics",
     "monitoring",
-    "phantomas",
-    "phantomjs",
+    "pagetimeline",
     "web development",
     "webperf"
   ],
@@ -39,7 +38,7 @@
     "vows": ">=0.7"
   },
   "optionalDependencies": {},
-  "bin": "./bin/phantomas.js",
+  "bin": "./bin/pagetimeline.js",
   "preferGlobal": true,
   "scripts": {
     "test": "vows --spec",
