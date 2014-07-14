@@ -2,7 +2,7 @@
  * Created by nant on 2014/7/7.
  */
 
-var os_utils = require( 'os-utils' );
+var os = require('os');
 var path = require( 'path' );
 
 var browserScript = function(params){
@@ -25,7 +25,7 @@ var browserScript = function(params){
 
 	if( !this.browser )  this.browser = 'chrome';
 
-	if( os_utils.platform() == 'win32' ){
+	if( os.platform() == 'win32' ){
 		if( this.browser == 'chrome' ){
 			this.runScript = 'runChrome.bat';
 			this.closeScript = 'closeChrome.bat';

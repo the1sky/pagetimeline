@@ -11,10 +11,8 @@ var EXIT_SUCCESS = 0,
 var VERSION = require('../package').version;
 
 var pagetimeline = function(params,callback){
-	// handle JSON config file provided via --config
 	var path = require('path');
 
-	// parse script CLI parameters
 	this.params = params;
 
 	this.homedir =  path.resolve(__dirname + './../' );
@@ -37,7 +35,6 @@ var pagetimeline = function(params,callback){
 
 	this.skipModules = params['skip-modules'];
 
-
 	// setup cookies handling
 	this.initCookies();
 
@@ -55,17 +52,13 @@ var pagetimeline = function(params,callback){
 		beSilent: this.silentMode
 	});
 
-	// report version and installation directory
-	if (typeof module.dirname !== 'undefined') {
-		this.dir = module.dirname.replace(/core$/, '');
-		this.log('pagetimeline v' + VERSION + ' installed in ' + this.dir);
-	}
+	//log pagetimeline homedir
+	this.log('pagetimeline v' + VERSION + ' installed in ' + this.homedir);
 
 	// report config file being used
 	if (params.config) {
 		this.log('Using JSON config file: ' + params.config);
-	}
-	else if (params.config === false) {
+	}else if (params.config === false) {
 		this.log('Failed parsing JSON config file');
 		this.tearDown(EXIT_CONFIG_FAILED);
 		return;
@@ -303,11 +296,10 @@ pagetimeline.prototype = {
 	},
 	tearDown: function(exitCode) {
 		exitCode = exitCode || EXIT_SUCCESS;
-
 		if (exitCode > 0) {
 			this.log('Exiting with code #' + exitCode + '!');
 		}
-		//process.exit()
+		process.exit()
 	},
 	// metrics reporting
 	setMetric: function(name, value) {

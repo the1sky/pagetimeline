@@ -144,5 +144,5 @@ function getAvailablePort(callback){
 function getDefaultUserAgent(){
 	var VERSION = require('./../package').version;
 	var os = require('os');
-	return "pagetimeline/" + VERSION + " (pagetimeline/" + os.name + " " + os.architecture + ")";
+	return "pagetimeline/" + VERSION + "(" + os.platform() + " " + os.arch() + ")";
 }
