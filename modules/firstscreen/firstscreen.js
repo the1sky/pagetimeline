@@ -27,6 +27,7 @@ exports.module = function(pagetimeline,callback) {
 				var slowestTime = 0;
 				for( var url in inClientImages ){
 					var urlTime = requests[url];
+					pagetimeline.addOffender('firstScreenTime',url);
 					if( urlTime > slowestTime ){
 						slowestTime = urlTime;
 					}
