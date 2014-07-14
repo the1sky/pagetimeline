@@ -26,8 +26,9 @@ exports.module = function(pagetimeline,callback) {
 				var inClientImages = result['result']['value'];
 				var slowestTime = 0;
 				for( var url in inClientImages ){
+					var offset = inClientImages[url];
 					var urlTime = requests[url];
-					pagetimeline.addOffender('firstScreenTime',url);
+					pagetimeline.addOffender('firstScreenTime',url + '  offsetLeft:' + offset.offsetLeft + '    offsetTop:' + offset.offsetTop );
 					if( urlTime > slowestTime ){
 						slowestTime = urlTime;
 					}
@@ -177,9 +178,12 @@ exports.module = function(pagetimeline,callback) {
 				var offsetLeft = imageInfo['ol'];
 				var offsetTop = imageInfo['ot'];
 
-				if( offsetLeft < clientWidth || offsetTop < clientHeight ){
+				if( offsetLeft < clientWidth && offsetTop < clientHeight ){
 					if( !inClientImages[src] ){
-						inClientImages[src] = src;
+						inClientImages[src] = {
+							'offsetLeft': offsetLeft,
+							'offsetTop':offsetTop
+						};
 					}
 				}
 			}
