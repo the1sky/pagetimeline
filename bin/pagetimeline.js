@@ -21,20 +21,20 @@ var params = require('commander');
 
 params
 	.version('0.0.1')
-	.option('-u,--url [value]','target url' )
-	.option('--server [value]', 'remote debugger server, "localhost" or "xxx" ' )
-	.option('--port [value]','remote debugger port, default 9222')
-	.option('--config [value]','JSON-formatted config file')
-	.option('--viewport [value]','window viewport width and height, like "1920x768"' )
-	.option('--proxy [value]','specifies the proxy server to use (e.g. --proxy=192.168.1.42:8080)')
-	.option('--modules [value]','specify module(e.g. --modules=firstscreen,whitescreen)')
-	.option('--skip-modules [value]','skip selected modules [moduleOne],[moduleTwo],...')
-	.option('--timeout [value]','time after open the url')
-	.option('--user-agent [value]','provide a custom user agent')
-	.option('--verbose [value]','write debug messages to console')
-	.option('--silent [value]','dont\'t write anything to the console')
-	.option('--format [value]', 'output format')
-	.option('--browser [value]','chrome,firefox')
+	.option('--url [value]','target url, e.g. --url=http://www.baidu.com' )
+	.option('--server [value]', 'remote debugger server, e.g. --server=localhost | xxx ' )
+	.option('--port [value]','remote debugger port, default 9222, if not setting,auto find available port, e.g. --port=9222')
+	.option('--config [value]','JSON-formatted config file, e.g. --config=./config.log')
+	.option('--viewport [value]','window viewport width and height, e.g. --viewport=1920x768' )
+	.option('--proxy [value]','specifies the proxy server to use, e.g. --proxy=192.168.1.42:8080')
+	.option('--modules [value]','specify module, e.g. --modules=firstscreen,whitescreen')
+	.option('--skip-modules [value]','skip selected modules [moduleOne],[moduleTwo],.., e.g. --skip-modules=firstscreen,whitescreen.')
+	.option('--timeout [value]','time after onload, default 2000, e.g. --timeout=2000')
+	.option('--user-agent [value]','provide a custom user agent, e.g. --user-agent=Mozilla/5.0 (Windows NT 6.3; WOW64; rv:30.0) Gecko/20100101 Firefox/30.0')
+	.option('--verbose [value]','write debug messages to console, e.g. --verbose')
+	.option('--silent [value]','dont\'t write anything to the console, e.g. --slient')
+	.option('--format [value]', 'output format, plain | json | csv, default plain, e.g. --format=json')
+	.option('--browser [value]','chrome,firefox, default chrome, e.g. --browser=chrome')
 	.parse(process.argv);
 
 //default setting
@@ -55,6 +55,7 @@ if (params.config) {
 
 params.viewport = params.viewport || '1280x1024';
 params.format = params.format || 'plain';
+params.browser = params.browser || 'chrome';
 params.timeout = (params['timeout'] > 0 && parseInt(params['timeout'], 10)) || 5000;
 params.modules = (typeof params['modules'] === 'string') ? params['modules'].split(',') : [];
 params['skip-modules'] = (typeof params['skip-modules'] === 'string') ? params['skip-modules'].split(',') : [];
