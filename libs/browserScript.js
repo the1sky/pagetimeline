@@ -10,14 +10,15 @@ var browserScript = function(params){
 	this.runScript = '';
 	this.closeScript = '';
 	this.browserLoc = '';
-	this.user_agent = params['user-agent'];
-	this.browser = params.browser;
-	this.port = params.port;
+	this.installScript = '';
+	this.user_agent = params ? params['user-agent'] : "";
+	this.browser = params ? params.browser : "chrome";
+	this.port = params ? params.port : 9222;
 	this.execArgv = [];
 
 	this.viewport_width = 0;
 	this.viewport_height = 0;
-	if( params.viewport ){
+	if( params && params.viewport ){
 		var wh = params.viewport.split( 'x' );
 		this.viewport_width = wh[0];
 		this.viewport_height = wh[1];
@@ -44,6 +45,7 @@ var browserScript = function(params){
 			this.runScript = path.resolve( this.dirname + '/runChrome.sh' );
 			this.closeScript = path.resolve( this.dirname + '/closeChrome.sh' );
 			this.browserLoc = '';
+			this.installScript = path.resolve( this.dirname + 'installChrome.sh' );
 		}
 	}
 
@@ -70,6 +72,12 @@ browserScript.prototype = {
 			callback( err, stdout );
 		} );
 		callback( false, {message:'close browser done'} );
+	},
+	installBrowser:function(callback){
+		var execFile = require('child_process' ).execFile;
+		execFile( this.runScript, {cwd:this.dirname},function(err,stdout,stderr ){
+			callback( err || stderr,stdout );
+		});
 	}
 }
 
