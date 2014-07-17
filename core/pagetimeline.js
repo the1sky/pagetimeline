@@ -18,6 +18,7 @@ var pagetimeline = function(params){
 	this.homedir =  path.resolve(__dirname + './../' );
 
 	this.core = {};
+	this.browserProxy = null;
 
 	this.url = this.params.url;
 
@@ -30,6 +31,9 @@ var pagetimeline = function(params){
 	this.silentMode = params.silent === true;
 
 	this.timeout = params.timeout;;
+
+	this.coreModules = [];
+	this.openPageModule = null;
 
 	this.modules = params.modules;
 
@@ -116,6 +120,7 @@ pagetimeline.prototype = {
 			url: this.params.url,
 			homedir:this.homedir,
 			core:this.core,
+			browserProxy:this.browserProxy,
 			getParam: (function(key) {
 				return this.params[key];
 			}).bind(this),
@@ -164,6 +169,56 @@ pagetimeline.prototype = {
 			}
 		})
 	},
+	runTest:function(callback){
+		this.addCoreModules();
+		this.addModules();
+
+		var runCoreModules = [];
+		var runModules = [];
+
+		var self = this;
+		var async = require('async');
+		var browserProxyModule = require('./browserProxy.js');
+		var browserProxy = new browserProxyModule(this.params['server'], this.params['port'],'chrome' );
+		browserProxy.init(function(browser){
+			self.browserProxy = browserProxy;
+			self.coreModules.forEach(function(module){
+				runCoreModules.push( async.apply( module.run, self.getPublicWrapper() ) );
+			},self );
+			self.modules.forEach(function(module){
+				runModules.push( async.apply( module.run, self.getPublicWrapper() ) );
+			},self );
+
+			async.series(runCoreModules,function(err,res){
+				if( !err ){
+					async.parallel( runModules,function(err,res){
+						if( !err ){
+							self.openPageModule.run(self.getPublicWrapper(),function(err,res){
+								if( !err ){
+									callback(false,{message:'all done!'});
+								}else{
+									callback(true,{message:'run openPage fail!'});
+								}
+							})
+						}else{
+							callback(true,{message:'run module fail!'});
+						}
+					});
+				}else{
+					callback(true,{message:'run core module fail!'});
+				}
+			})
+		})
+	},
+
+	addCoreModules:function(){
+		this.log('add core module...');
+		var getModulePath = this.getModulePath;
+		var enableFunction = require( getModulePath('enableFunction'));
+		var openPage = require( getModulePath('openPage'));
+		this.coreModules.push( enableFunction );
+		this.openPageModule = openPage;
+	},
 	runCoreModuleAsync:function(callback){
 		this.log('run core module...');
 		var getModulePath = this.getModulePath;
@@ -201,6 +256,32 @@ pagetimeline.prototype = {
 			}
 		});
 		return modules;
+	},
+	addModules:function(){
+		this.log('add all modules...');
+		var modules = (this.modules.length > 0) ? this.modules : this.listModules();
+		var async = require('async');
+		var pkgs = [];
+		modules.forEach(function(name) {
+			if (this.skipModules.indexOf(name) > -1) {
+				this.log('Module ' + moduleName + ' skipped!');
+				return;
+			}
+			var pkg;
+			try {
+				pkg = require('./../modules/' + name + '/' + name);
+			}
+			catch (e) {
+				this.log('Unable to load module "' + name + '"!');
+				return;
+			}
+			if (pkg.skip) {
+				this.log('Module ' + name + ' skipped!');
+				return;
+			}
+			pkgs.push(pkg);
+		}, this);
+		this.modules = pkgs;
 	},
 	runModuleAsync:function(callback){
 		this.log('run all modules...');
