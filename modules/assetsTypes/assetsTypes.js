@@ -15,7 +15,8 @@ exports.module = function(pagetimeline,callback){
 	mime.define({
 		'text/javascript': ['js'],
 		'application/x-javascript':['js'],
-		'text/json':['json']
+		'text/json':['json'],
+		'text/xml':['xml']
 	});
 
 	_.each(requests,function(value,key){
@@ -30,7 +31,7 @@ exports.module = function(pagetimeline,callback){
 		if( mimeExt == 'js' ){
 			console.log(mimeExt );
 		}
-		*/
+		 */
 		var contentLen = 0;
 		if( responseBody.headers['Content-Length'] ){
 			contentLen = parseFloat( responseBody.headers['Content-Length'] );
