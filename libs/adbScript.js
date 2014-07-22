@@ -15,11 +15,21 @@ adb.prototype = {
 		self.killServer( function(err, res){
 			self.startServer( function(err, res){
 				if( !err ){
-					self.enablePortForwarding( function(err, res){
-						callback( err, res );
+					self.getDevices( function(err, res){
+						if( !err ){
+							self.enablePortForwarding( function(err, res){
+								if( !err ){
+									callback(false,{message:'enable port forwarding suc!'});
+								}else{
+									callback(true,{message:err.message});
+								}
+							} )
+						}else{
+							callback( true, {message:err.message});
+						}
 					} )
 				}else{
-					callback( err, res );
+					callback(fase,{message:err.message});
 				}
 			} )
 		} )
@@ -31,6 +41,13 @@ adb.prototype = {
 		} )
 	},
 	startServer:function(callback){
+		"use strict";
+		var exec = require( 'child_process' ).exec;
+		exec( 'adb start-server', function(err, stdout, stderr){
+			callback( err, stdout );
+		} )
+	},
+	getDevices:function(callback){
 		var exec = require( 'child_process' ).exec;
 		exec( 'adb devices', function(err, stdout, stderr){
 			callback( err, stdout );

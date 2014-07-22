@@ -69,9 +69,9 @@ params['user-agent'] = params['user-agent'] || getDefaultUserAgent();
 if( params.port ){
 	run(isMobile,params);
 }else{
-	async.series([getAvailablePort],function(err,result){
+	async.series([getAvailablePort],function(err,res){
 		if( !err ){
-			var port = result[0];
+			var port = res[0];
 			params.port = port;
 			run( isMobile,params );
 		}
@@ -86,7 +86,8 @@ if( params.port ){
 function run(isMobile,params){
 	if( !isMobile && params.server == 'localhost' ){
 		bs = new browserScript( params );
-		async.series( [openBrowser, async.apply( analyzePerformance, params ), closeBrowser], function(err, result){
+		async.series( [openBrowser, async.apply( analyzePerformance, params ), closeBrowser], function(err, res){
+			if( err ) console.log(res);
 			closeBrowser( function(err, result){} );
 			setTimeout(function(){
 				process.exit();
@@ -96,12 +97,14 @@ function run(isMobile,params){
 	}else{
 		if( isMobile ){
 			async.series([async.apply( enableMobileDebugging, params ), async.apply( analyzePerformance, params )],function(err,res){
+				if( err ) console.log(res);
 				setTimeout(function(){
 					process.exit();
 				},100);
 			})
 		}else{
-			analyzePerformance( params, function(err,result){
+			analyzePerformance( params, function(err,res){
+				if( err ) console.log(res);
 				setTimeout(function(){
 					process.exit();
 				},100);
