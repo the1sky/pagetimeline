@@ -24,6 +24,7 @@ params
 	.option('--url [value]','target url, e.g. --url=http://www.baidu.com' )
 	.option('--server [value]', 'remote debugger server, e.g. --server=localhost | xxx ' )
 	.option('--port [value]','remote debugger port, default 9222, if not setting,auto find available port, e.g. --port=9222')
+	.option('--mobile [value]','mobile type, android or iphone, server is fixed as "localhost", e.g. --mobile=android')
 	.option('--config [value]','JSON-formatted config file, e.g. --config=./config.log')
 	.option('--viewport [value]','window viewport width and height, e.g. --viewport=1920x768' )
 	.option('--proxy [value]','specifies the proxy server to use, e.g. --proxy=192.168.1.42:8080')
@@ -34,7 +35,7 @@ params
 	.option('--verbose [value]','write debug messages to console, e.g. --verbose')
 	.option('--silent [value]','dont\'t write anything to the console, e.g. --slient')
 	.option('--format [value]', 'output format, plain | json | csv, default plain, e.g. --format=json')
-	.option('--browser [value]','chrome,firefox, default chrome, e.g. --browser=chrome')
+	.option('--browser [value]','chrome,firefox, default chrome, invalid when debugging on mobile, e.g. --browser=chrome')
 	.parse(process.argv);
 
 //default setting
@@ -53,6 +54,9 @@ if (params.config) {
 	});
 }
 
+var isMobile = ( params.mobile == 'android' || params.mobile == 'iphone' );
+params.server = isMobile ? 'localhost' : params.server;
+params.server = params.server ? params.server : 'localhost';
 params.viewport = params.viewport || '1280x1024';
 params.format = params.format || 'plain';
 params.browser = params.browser || 'chrome';
@@ -63,13 +67,13 @@ params['user-agent'] = params['user-agent'] || getDefaultUserAgent();
 
 //appointed port or auto port
 if( params.port ){
-	run(params);
+	run(isMobile,params);
 }else{
 	async.series([getAvailablePort],function(err,result){
 		if( !err ){
 			var port = result[0];
 			params.port = port;
-			run( params );
+			run( isMobile,params );
 		}
 	})
 }
@@ -79,18 +83,30 @@ if( params.port ){
  *
  * @param execArgv
  */
-function run(params){
-	params.server = params.server ? params.server : 'localhost';
-	if( params.server == 'localhost' ){
+function run(isMobile,params){
+	if( !isMobile && params.server == 'localhost' ){
 		bs = new browserScript( params );
 		async.series( [openBrowser, async.apply( analyzePerformance, params ), closeBrowser], function(err, result){
 			closeBrowser( function(err, result){} );
-			process.exit(0);
+			setTimeout(function(){
+				process.exit();
+			},100);
+;
 		} );
 	}else{
-		analyzePerformance( params, function(err,result){
-			process.exit();
-		});
+		if( isMobile ){
+			async.series([async.apply( enableMobileDebugging, params ), async.apply( analyzePerformance, params )],function(err,res){
+				setTimeout(function(){
+					process.exit();
+				},100);
+			})
+		}else{
+			analyzePerformance( params, function(err,result){
+				setTimeout(function(){
+					process.exit();
+				},100);
+			});
+		}
 	}
 }
 
@@ -129,6 +145,18 @@ function closeBrowser(callback){
 	bs.closeBrowser(function(err,result){
 		callback(err, result);
 	});
+}
+
+/**
+ *  enalbe adb port forwarding
+ *
+ * @param params
+ * @param callback
+ */
+function enableMobileDebugging(params,callback){
+	var adbScript = require('./../libs/adbScript.js');
+	var as = new adbScript(params);
+	as.enableDebugging( callback );
 }
 
 /**
