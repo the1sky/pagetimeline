@@ -18,9 +18,10 @@ var pagetimeline = function(params){
 	this.homedir =  path.resolve(__dirname + './../' );
 
 	this.core = {};
-	this.browserProxy = null;
+	this.model = {};
 
 	this.url = this.params.url;
+	this.model.url = this.url;
 
 	this.format = params.format;
 
@@ -119,8 +120,7 @@ pagetimeline.prototype = {
 		return {
 			url: this.params.url,
 			homedir:this.homedir,
-			core:this.core,
-			browserProxy:this.browserProxy,
+			model:this.model,
 			getParam: (function(key) {
 				return this.params[key];
 			}).bind(this),
@@ -155,88 +155,51 @@ pagetimeline.prototype = {
 		};
 	},
 	run:function(callback){
-		this.callback = callback;
-		this.start = +new Date();
-		var self = this;
-		this.runCoreModuleAsync(function(err,result){
-			if( !err ){
-				self.runModuleAsync(function(err, result){
-					self.report();
-					callback(err,result);
-				})
-			}else{
-				callback( err, result );
-			}
-		})
-	},
-	runTest:function(callback){
 		this.addCoreModules();
 		this.addModules();
-
-		var runCoreModules = [];
-		var runModules = [];
-
 		var self = this;
 		var async = require('async');
-		var browserProxyModule = require('./browserProxy.js');
-		var browserProxy = new browserProxyModule(this.params['server'], this.params['port'],'chrome' );
-		browserProxy.init(function(browser){
-			self.browserProxy = browserProxy;
-			self.coreModules.forEach(function(module){
-				runCoreModules.push( async.apply( module.run, self.getPublicWrapper() ) );
-			},self );
-			self.modules.forEach(function(module){
-				runModules.push( async.apply( module.run, self.getPublicWrapper() ) );
-			},self );
 
-			async.series(runCoreModules,function(err,res){
-				if( !err ){
-					async.parallel( runModules,function(err,res){
-						if( !err ){
-							self.openPageModule.run(self.getPublicWrapper(),function(err,res){
-								if( !err ){
-									callback(false,{message:'all done!'});
-								}else{
-									callback(true,{message:'run openPage fail!'});
-								}
-							})
-						}else{
-							callback(true,{message:'run module fail!'});
-						}
-					});
-				}else{
-					callback(true,{message:'run core module fail!'});
-				}
-			})
+		var runCoreModules = [];
+		self.coreModules.forEach(function(module){
+			runCoreModules.push( async.apply( module.run, self.getPublicWrapper() ) );
+		},self );
+
+		var runModules = [];
+		self.modules.forEach(function(module){
+			runModules.push( async.apply( module.run, self.getPublicWrapper() ) );
+		},self );
+
+		async.series(runCoreModules,function(err,res){
+			if( !err ){
+				async.parallel( runModules,function(err,res){
+					if( !err ){
+						self.openPageModule.run(self.getPublicWrapper(),function(err,res){
+							if( !err ){
+								self.report();
+								callback(false,{message:'all done!'});
+							}else{
+								callback(true,{message:'run openPage fail!',detail:res});
+							}
+						})
+					}else{
+						callback(true,{message:'run module fail!',detail:res});
+					}
+				});
+			}else{
+				callback(true,{message:'run core module fail!',detail:res});
+			}
 		})
 	},
 
 	addCoreModules:function(){
 		this.log('add core module...');
 		var getModulePath = this.getModulePath;
-		var enableFunction = require( getModulePath('enableFunction'));
-		var openPage = require( getModulePath('openPage'));
-		this.coreModules.push( enableFunction );
-		this.openPageModule = openPage;
-	},
-	runCoreModuleAsync:function(callback){
-		this.log('run core module...');
-		var getModulePath = this.getModulePath;
-		var moduleConnectServer = require( getModulePath('connectserver'));
-		var moduleNetwork = require( getModulePath('network'));
-		var moduleRuntime = require( getModulePath('runtime'));
-		var moduleTimeline = require( getModulePath('timeline'));
-		var modulePage = require( getModulePath('page'));
-		var async = require('async');
-		async.auto({
-			connectserver:async.apply( moduleConnectServer.run, this.getPublicWrapper() ),
-			network:['connectserver',async.apply( moduleNetwork.run, this.getPublicWrapper() )],
-			runtime:['connectserver',async.apply( moduleRuntime.run, this.getPublicWrapper() )],
-			timeline:['connectserver',async.apply( moduleTimeline.run, this.getPublicWrapper())],
-			page:['network','runtime','timeline',async.apply( modulePage.run, this.getPublicWrapper())]
-		},function(err,result){
-			callback(err,result);
-		})
+		this.coreModules.push( require( getModulePath('connectserver')));
+		this.coreModules.push( require( getModulePath('enable')));
+		this.coreModules.push( require( getModulePath('page')));
+		this.coreModules.push( require( getModulePath('timeline')));
+		this.openPageModule = require( getModulePath('openPage'));;
 	},
 	getModulePath:function(name){
 		return './modules/' + name + '/' + name;
@@ -282,35 +245,6 @@ pagetimeline.prototype = {
 			pkgs.push(pkg);
 		}, this);
 		this.modules = pkgs;
-	},
-	runModuleAsync:function(callback){
-		this.log('run all modules...');
-		var modules = (this.modules.length > 0) ? this.modules : this.listModules();
-		var async = require('async');
-		var pkgs = [];
-		modules.forEach(function(name) {
-			if (this.skipModules.indexOf(name) > -1) {
-				this.log('Module ' + moduleName + ' skipped!');
-				return;
-			}
-			var pkg;
-			try {
-				pkg = require('./../modules/' + name + '/' + name);
-			}
-			catch (e) {
-				this.log('Unable to load module "' + name + '"!');
-				return;
-			}
-			if (pkg.skip) {
-				this.log('Module ' + name + ' skipped!');
-				return;
-			}
-			pkgs.push(async.apply( pkg.module, this.getPublicWrapper() ) );
-		}, this);
-
-		async.parallel( pkgs,function(err,result){
-			callback(err,result);
-		})
 	},
 	initCookies:function(){
 		"use strict";

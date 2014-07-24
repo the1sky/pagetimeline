@@ -4,13 +4,14 @@
  */
 
 exports.run = function(pagetimeline, callback){
-	var browserProxy = pagetimeline.browserProxy;
-	browserProxy.enablePage(function(err,res){});
+	pagetimeline.log( 'enable browser function ...' );
+	var browser = pagetimeline.model.browser;
 	var async = require('async');
 	async.parallel([
-		browserProxy.enablePage.bind(browserProxy),
-		browserProxy.enableRuntime.bind(browserProxy),
-		browserProxy.enableNetwork.bind(browserProxy)
+		browser.Page.enable,
+		browser.Runtime.enable,
+		browser.Timeline.enable,
+		browser.Network.enable
 	],function(err,res){
 		if( !err ){
 			callback( false, {'message':'enable page succ!'} );
@@ -20,4 +21,4 @@ exports.run = function(pagetimeline, callback){
 	})
 }
 
-exports.name = 'enableFuntion';
+exports.name = 'enable';

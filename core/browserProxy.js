@@ -13,7 +13,176 @@ var browserProxy = function(host, port, browserType){
 	this.port = port;
 	this.browserType = browserType;
 	this.injects = [];
+
+	browserType = "chrome";
+	if( browserType == 'chrome' ){
+		this.Network = {
+			CachedResources:{},
+			Headers:{},
+			Initiator:{},
+			LoaderId:{},
+			Request:{},
+			RequestId:{},
+			RresourceTiming:{},
+			Response:{},
+			Timestamp:{},
+			WebSocketFrame:{},
+			WebSocketRequest:{},
+			WebSocketResponse:{},
+			canClearBrowserCache:function(params, callback){
+			},
+			canClearBrowserCookies:function(params, callback){
+			},
+			clearBrowserCache:function(params, callback){
+			},
+			clearBrowserCookies:function(params, callback){
+			},
+			dataReceived:function(handler){
+			},
+			disable:function(params, callback){
+			},
+			enable:function(params, callback){
+			},
+			getResponseBody:function(params, callback){
+			},
+			loadResourceForFrontend:function(params, callback){
+			},
+			loadingFailed:function(hnadler){
+			},
+			replayXHR:function(params, callback){
+			},
+			requestServedFromCache:function(params, callback){
+			},
+			requestWillBeSent:function(handler){
+			},
+			responseReceived:function(handler){
+			},
+			setCacheDisabled:function(params, callback){
+			},
+			setExtraHTTPHeaders:function(params, callback){
+			},
+			setUserAgentOverride:function(params, callback){
+			},
+			webSocketClosed:function(handler){
+			},
+			webSocketCreated:function(handler){
+			},
+			webSocketFrameError:function(handler){
+			},
+			webSocketFrameReceived:function(handler){
+			},
+			webSocketFrameSent:function(handler){
+			},
+			webSocketHandshakeResponseReceived:function(handler){
+			},
+			webSocketWillSendHandshakeRequest:function(handler){
+			}
+		};
+
+		this.Page = {
+			Cookie:{},
+			Frame:{},
+			FrameId:{},
+			FrameResourceTree:{},
+			NavigationEntry:{},
+			Quota:{},
+			ResourceType:{},
+			ScreencastFrameMetadata:{},
+			ScriptIdentifier:{},
+			SearchMatch:{},
+			Usage:{},
+			UsageItem:{},
+			addScriptToEvaluateOnLoad:function(params, callback){},
+			canScrencast:function(params, callback){},
+			captureScreenshot:function(params, callback){},
+			clearDeviceOrientationOverride:function(params, callback){},
+			clearGeolocationOverride:function(params, callback){},
+			deleteCookie:function(params, callback){},
+			disable:function(params, callback){},
+			domContentEventFired:function(handler){},
+			enable:function(params,callback){},
+			frameAttached:function(handler){},
+			frameClearedScheduledNavigation:function(handler){},
+			frameDetached:function(handler){},
+			frameNavigated:function(handler){},
+			frameResized:function(handler){},
+			frameScheduledNavigation:function(handler){},
+			frameStartedLoading:function(handler){},
+			frameStoppedLoading:function(handler){},
+			getCookies:function(params,callback){},
+			getNavigationHistory:function(params,callback){},
+			getResourceContent:function(params,callback){},
+			getResourceTree:function(params,callback){},
+			getScriptExecutionStatus:function(params,callback){},
+			handleJavaScriptDialog:function(params,callback){},
+			javascriptDialogClosed:function(handler){},
+			javascriptDialogOpening:function(handler){},
+			loadEventFired:function(handler){},
+			navigate:function(params,callback){},
+			navigateToHistoryEntry:function(params,callback){},
+			queryUsageAndQuota:function(params,callback){},
+			reload:function(params,callback){},
+			removeScriptToEvaluateOnLoad:function(params,callback){},
+			screencastFrame:function(handler){},
+			screencastVisibilityChanged:function(params,callback){},
+			scriptsEnabled:function(handler){},
+			searchInResource:function(params,callback){},
+			setContinuousPaintingEnabled:function(params,callback){},
+			setDeviceMetricsOverride:function(params,callback){},
+			setDeviceOrientationOverride:function(params,callback){},
+			setDocumentContent:function(params,callback){},
+			setEmulatedMedia:function(params,callback){},
+			setGeolocationOverride:function(params,callback){},
+			setScriptExecutionDisabled:function(params,callback){},
+			setShowDebugBorders:function(params,callback){},
+			setShowFPSCounter:function(params,callback){},
+			setShowPaintRects:function(params,callback){},
+			setShowScrollBottleneckRects:function(params,callback){},
+			setShowViewportSizeOnResize:function(params,callback){},
+			setTouchEmulationEnabled:function(params,callback){},
+			startScreencast:function(params,callback){},
+			stopScreencast:function(params,callback){}
+		};
+
+		this.Runtime = {
+			CallArgument:{},
+			ExecutionContextDescription:{},
+			ExecutionContextId:{},
+			InternalPropertyDescriptor:{},
+			ObjectPreview:{},
+			PropertyDescriptor:{},
+			PropertyPreview:{},
+			RemoteObject:{},
+			RemoteObjectId:{},
+			callFunctionOn:function(params,callback){},
+			disable:function(params,callback){},
+			enable:function(params,callback){},
+			evaluate:function(params,callback){},
+			executionContextCreated:function(handler){},
+			getProperties:function(params,callback){},
+			releaseObject:function(params,callback){},
+			releaseObjectGroup:function(params,callback){},
+			run:function(params,callback){}
+		};
+
+		this.Timeline = {
+			DOMCounters:{},
+			TimelineEvent:{},
+			disable:function(params,callback){},
+			enable:function(params,callback){},
+			eventRecorded:function(handler){},
+			start:function(params,callback){},
+			started:function(handler){},
+			stop:function(params,callback){},
+			stopped:function(handler){}
+		}
+
+		this.callbacks = [];
+		this.chooseTab = function(){};
+	}
 }
+
+
 
 /**
  *
@@ -21,32 +190,21 @@ var browserProxy = function(host, port, browserType){
  */
 browserProxy.prototype = {
 	init:function(callback){
-		this.browserType;
 		var Chrome = require( 'chrome-remote-interface' );
 		var self = this;
 		Chrome( {host:this.host, port:this.port}, function(browser){
 			self.browser = browser;
 			self.connected = browser ? true : false;
+			if( browser ){
+				//general
+				self.Network = browser.Network;
+				self.Page = browser.Page;
+				self.Timeline = browser.Timeline;
+				self.Runtime = browser.Runtime;
+				self.callbacks = browser.callbacks;
+				self.chooseTab = browser.chooseTab;
+			}
 			callback( browser );
-		} );
-	},
-	/**
-	 *
-	 * @param callback
-	 */
-	enablePage:function(callback){
-		this.browser && this.browser.send( 'Page.enable', {}, function(err, response){
-			callback( err, response );
-		} );
-	},
-
-	/**
-	 *
-	 * @param callback
-	 */
-	disablePage:function(callback){
-		this.browser && this.browser.send( 'Page.disable', {}, function(err, response){
-			callback( err, response );
 		} );
 	},
 
@@ -57,9 +215,9 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	reloadPage:function(ignoreCache, scriptToEvaluateOnload, callback){
-		this.browser && this.browser.send( 'Page.reload', {ignoreCache:ignoreCache, scriptToEvaluateOnLoad:scriptToEvaluateOnload}, function(err, res){
+		this.browser && this.browser.Page.reload({ignoreCache:ignoreCache, scriptToEvaluateOnLoad:scriptToEvaluateOnload},function(err,res){
 			callback( err, res );
-		} );
+		})
 	},
 
 	/**
@@ -68,77 +226,9 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	navigate:function(url, callback){
-		var self = this;
-
-		var openPage = function(url,callback){
-			//open page
-			self.browser && self.browser.send( 'Page.navigate', {url:url}, function(err, data){
-				callback( err, data );
-			} )
-		}
-
-		//inject first
-		var count = 0;
-		var len = this.injects.length;
-		if( len > 0 ){
-			this.injects.forEach( function(data){
-				var script = data['script'];
-				this.evaluate( script, "", 0, true, function(err, res){
-					if( ++count == len ){
-						openPage.call(self,url,callback);
-					}
-				} );
-			},this );
-		}else{
-			openPage.call(this,url,callback);
-		}
-	},
-
-	/**
-	 *
-	 * @param latiude
-	 * @param longitude
-	 * @param accuracy
-	 * @param callback
-	 */
-	setGeolocationOverride:function(latiude, longitude, accuracy, callback){
-		this.browser && this.browser.sned( 'Page.setGeolocationOverride', {latiude:latiude, longitude:longitude, accuracy:accuracy}, function(err, res){
+		this.browser && this.browser.Page.navigate({url:url},function(err,res){
 			callback( err, res );
-		} );
-	},
-
-	/**
-	 *
-	 * @param frameId
-	 * @param callback
-	 */
-	onFrameAttached:function(callback){
-		var self = this;
-		if( !this.frameAttachedCallbacks ){
-			this.frameAttachedCallbacks = [];
-			this.browser && this.browser.on( 'Page.frameAttached', function(res){
-				self.frameAttachedCallbacks.forEach( function(callback){
-					callback( res );
-				} );
-			} );
-		}
-		this.frameAttachedCallbacks.push( callback );
-	},
-
-	/**
-	 *
-	 * @param frameId
-	 * @param callback
-	 */
-	onFrameDetached:function(callback){
-		var self = this;
-		if( !this.frameDetachedCallbacks ) this.frameDetachedCallbacks = [];
-		this.frameDetachedCallbacks.push( callback );
-		this.browser && this.browser.on( 'Page.frameDetached', function(res){
-			self.frameDetachedCallbacks.forEach( function(callback){
-				callback( res );
-			} );
-		} );
+		})
 	},
 
 	/**
@@ -146,16 +236,9 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	onDomContentEventFired:function(callback){
-		var self = this;
-		if( !this.domreadyCallbacks ) {
-			this.domreadyCallbacks = [];
-			this.browser && this.browser.on( 'Page.domContentEventFired', function(res){
-				self.domreadyCallbacks.forEach( function(callback){
-					callback( res );
-				} );
-			} );
-		}
-		this.domreadyCallbacks.push( callback );
+		this.browser && this.browser.Page.domContentEventFired(function(res){
+			callback( res );
+		})
 	},
 
 	/**
@@ -163,26 +246,9 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	onLoadEventFired:function(callback){
-		var self = this;
-		if( !this.onloadCallbacks ) {
-			this.onloadCallbacks = [];
-			this.browser && this.browser.on( 'Page.loadEventFired', function(res){
-				self.onloadCallbacks.forEach( function(callback){
-					callback( res );
-				} );
-			} )
-		}
-		this.onloadCallbacks.push( callback );
-	},
-
-	/**
-	 *
-	 * @param callback
-	 */
-	enableRuntime:function(callback){
-		this.browser && this.browser.send( 'Runtime.enable', {}, function(err, data){
-			callback( err, data );
-		} );
+		this.browser && this.browser.Page.loadEventFired(function(res){
+			callback( res );
+		})
 	},
 
 	/**
@@ -194,42 +260,7 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	evaluate:function(expression, objectGroup, contextId, returnByValue, callback){
-		this.browser && this.browser.send( 'Runtime.evaluate', {expression:expression, objectGroup:objectGroup, contextId:contextId, returnByValue:returnByValue}, function(err, data){
-			callback( err, data );
-		} );
-	},
-
-	/**
-	 *
-	 * @param objectId
-	 * @param ownProperties
-	 * @param callback
-	 */
-	getProperties:function(objectId, ownProperties, callback){
-		"use strict";
-		this.browser && this.browser.send( 'Runtime.getProperties', {objectId:objectId, ownProperties:ownProperties}, function(err, res){
-			callback( err, res );
-		} );
-	},
-
-	/**
-	 *
-	 * @param objectId
-	 * @param callback
-	 */
-	releaseObject:function(objectId, callback){
-		this.browser && this.browser.send( 'Runtime.releaseObject', {objectId:objectId}, function(err, res){
-			callback( err, res );
-		} );
-	},
-
-	/**
-	 *
-	 * @param objectGroup
-	 * @param callback
-	 */
-	releaseObjectGroup:function(objectGroup, callback){
-		this.browser && this.browser.send( 'Runtime.releaseObjectGroup', {objectGroup:objectId}, function(err, res){
+		this.browser && this.browser.Runtime.evaluate( {expression:expression, objectGroup:objectGroup, contextId:contextId, returnByValue:returnByValue}, function(err, res){
 			callback( err, res );
 		} );
 	},
@@ -239,15 +270,9 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	onExecutionContextCreated:function(callback){
-		if( !this.onExecutionContextCreatedCallbacks ) this.onExecutionContextCreatedCallbacks = [];
-		this.onExecutionContextCreatedCallbacks.push( callback );
-		var self = this;
-		this.browser && this.browser.on( 'Runtime.executionContextCreated', {}, function(res){
+		this.browser && this.browser.Runtime.executionContextCreated({}, function(res){
 			callback( res );
-			self.onExecutionContextCreatedCallbacks.forEach( function(callback){
-				callback( res );
-			} )
-		} );
+		});
 	},
 
 	/**
@@ -256,7 +281,7 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	startTimeline:function(maxCallStackDepth, callback){
-		this.browser && this.browser.send( 'Timeline.start', {maxCallStackDepth:maxCallStackDepth}, function(err, res){
+		this.browser && this.browser.Timeline.start({maxCallStackDepth:maxCallStackDepth}, function(err, res){
 			callback( err, res );
 		} );
 	},
@@ -266,7 +291,7 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	stopTimeline:function(callback){
-		this.browser && this.browser.send( 'Timeline.stop', {}, function(err, res){
+		this.browser && this.browser.Timeline.stop({}, function(err, res){
 			callback( err, res );
 		} );
 	},
@@ -276,44 +301,8 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	onTimelineRecorded:function(callback){
-		if( !this.onTimelineRecordedCallbacks ) this.onTimelineRecordedCallbacks = [];
-		this.onTimelineRecordedCallbacks.push( callback );
-		var self = this;
-		this.browser && this.browser.on( 'Timeline.eventRecored', {}, function(res){
-			self.onTimelineRecordedCallbacks.forEach( function(callback){
+		this.browser && this.browser.Timeline.eventRecorded({}, function(res){
 				callback( res );
-			} )
-		} );
-	},
-
-	/**
-	 *
-	 * @param callback
-	 */
-	enableNetwork:function(callback){
-		this.browser && this.browser.send( 'Network.enable', {}, function(err, data){
-			callback(err,data);
-		} )
-	},
-
-	/**
-	 *
-	 * @param callback
-	 */
-	disableNetwork:function(callback){
-		this.browser && this.browser.send( 'Network.disable', {}, function(err, data){
-			callback();
-		} )
-	},
-
-	/**
-	 *
-	 * @param requestId
-	 * @param callback
-	 */
-	getResponseBody:function(requestId, callback){
-		this.browser && this.browser.send( 'Network.getResponseBody', {requestId:requestId}, function(err, res){
-			callback( err, res );
 		} );
 	},
 
@@ -323,7 +312,7 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	setCacheDisabled:function(cacheDisabled, callback){
-		this.browser && this.browser.send( 'Network.setCacheDisabled', {cacheDisabled:cacheDisabled}, function(err, res){
+		this.browser && this.browser.Network.setCacheDisabled({cacheDisabled:cacheDisabled}, function(err, res){
 			callback( err, res );
 		} );
 	},
@@ -334,7 +323,7 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	setExtraHTTPHeaders:function(headers, callback){
-		this.browser && this.browser.send( 'Network.setExtraHTTPHeaders', {headers:headers}, function(err, res){
+		this.browser && this.browser.Network.setExtraHTTPHeaders({headers:headers}, function(err, res){
 			callback( err, res );
 		} );
 	},
@@ -345,17 +334,7 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	setUserAgentOverride:function(userAgent, callback){
-		this.browser && this.browser.send( 'Network.setUserAgentOverride', {userAgent:userAgent}, function(err, res){
-			callback( err, res );
-		} );
-	},
-
-	/**
-	 *
-	 * @param callback
-	 */
-	canClearBrowserCache:function(id, callback){
-		this.browser && this.browser.send( 'Network.canClearBrowserCache', {id:id}, function(err, res){
+		this.browser && this.browser.Network.setUserAgentOverride({userAgent:userAgent}, function(err, res){
 			callback( err, res );
 		} );
 	},
@@ -365,8 +344,8 @@ browserProxy.prototype = {
 	 * @param id
 	 * @param callback
 	 */
-	clearBrowserCache:function(id, callback){
-		this.browser && this.browser.send( 'Network.clearBrowserCache', {id:id}, function(err, res){
+	clearBrowserCache:function(callback){
+		this.browser && this.browser.Network.clearBrowserCache({}, function(err, res){
 			callback( err, res );
 		} );
 	},
@@ -376,8 +355,8 @@ browserProxy.prototype = {
 	 * @param id
 	 * @param callback
 	 */
-	canClearBrowserCookies:function(id, callback){
-		this.browser && this.browser.send( 'Network.canClearBrowserCookies', {id:id}, function(err, res){
+	canClearBrowserCookies:function(callback){
+		this.browser && this.browser.Network.canClearBrowserCookies({}, function(err, res){
 			callback( err, res );
 		} );
 	},
@@ -387,8 +366,8 @@ browserProxy.prototype = {
 	 * @param id
 	 * @param callback
 	 */
-	clearBrowserCookies:function(id, callback){
-		this.browser && this.browser.send( 'Network.clearBrowserCookies', {id:id}, function(err, res){
+	clearBrowserCookies:function(callback){
+		this.browser && this.browser.Network.clearBrowserCookies({}, function(err, res){
 			callback( err, res );
 		} );
 	},
@@ -398,13 +377,8 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	onDataReceived:function(callback){
-		if( !this.onDataReceivedCallbacks ) this.onDataReceivedCallbacks = [];
-		this.onDataReceivedCallbacks.push( callback );
-		var self = this;
-		this.browser && this.browser.on( 'Network.dataReceived', {}, function(res){
-			self.onDataReceivedCallbacks.forEach( function(callback){
+		this.browser && this.browser.Network.dataReceived({}, function(res){
 				callback( res );
-			} )
 		} );
 	},
 
@@ -413,13 +387,8 @@ browserProxy.prototype = {
 	 * @param callbck
 	 */
 	onLoadingFailed:function(callbck){
-		if( !this.onLoadingFailedCallbacks ) this.onLoadingFailedCallbacks = [];
-		this.onLoadingFailedCallbacks.push( callback );
-		var self = this;
-		this.browser && this.browser.on( 'Network.loadingFailed', {}, function(res){
-			self.onLoadingFailedCallbacks.forEach( function(callback){
+		this.browser && this.browser.Network.loadingFailed({}, function(res){
 				callback( res );
-			} )
 		} );
 	},
 
@@ -428,13 +397,8 @@ browserProxy.prototype = {
 	 * @param callbck
 	 */
 	onLoadingFinished:function(callbck){
-		if( !this.onLoadingFinishedCallbacks ) this.onLoadingFinishedCallbacks = [];
-		this.onLoadingFinishedCallbacks.push( callback );
-		var self = this;
-		this.browser && this.browser.on( 'Network.loadingFinished', {}, function(res){
-			self.onLoadingFinishedCallbacks.forEach( function(callback){
+		this.browser && this.browser.Network.loadingFinished({}, function(res){
 				callback( res );
-			} )
 		} );
 	},
 
@@ -443,13 +407,8 @@ browserProxy.prototype = {
 	 * @param callbck
 	 */
 	onRequestServedFromCache:function(callbck){
-		if( !this.onRequestServedFromCacheCallbacks ) this.onRequestServedFromCacheCallbacks = [];
-		this.onRequestServedFromCacheCallbacks.push( callback );
-		var self = this;
-		this.browser && this.browser.on( 'Network.requestServerFromCache', {}, function(res){
-			self.onRequestServedFromCacheCallbacks.forEach( function(callback){
+		this.browser && this.browser.Network.requestServedFromCache({}, function(res){
 				callback( res );
-			} )
 		} );
 	},
 
@@ -458,13 +417,8 @@ browserProxy.prototype = {
 	 * @param callbck
 	 */
 	onRequestWillBeSent:function(callback){
-		if( !this.onRequestWillBeSentCallbacks ) this.onRequestWillBeSentCallbacks = [];
-		this.onRequestWillBeSentCallbacks.push( callback );
-		var self = this;
-		this.browser && this.browser.on( 'Network.requestWillBeSent', function(res){
-			self.onRequestWillBeSentCallbacks.forEach( function(callback){
+		this.browser && this.browser.Network.requestWillBeSent(function(res){
 				callback( res );
-			} )
 		} );
 	},
 
@@ -473,26 +427,12 @@ browserProxy.prototype = {
 	 * @param callbck
 	 */
 	onResponseReceived:function(callback){
-		if( !this.onResponseReceivedCallbacks ) this.onResponseReceivedCallbacks = [];
-		this.onResponseReceivedCallbacks.push( callback );
-		var self = this;
-		this.browser && this.browser.on( 'Network.responseReceived', function(res){
-			self.onResponseReceivedCallbacks.forEach( function(callback){
+		this.browser && this.browser.Network.responseReceived(function(res){
 				callback( res );
-			} )
 		} );
 	},
 
-	/**
-	 * 注入脚本
-	 *
-	 * @param script
-	 * @param callback
-	 */
 	inject:function(script){
-		this.injects.push( {
-			'script':script
-		} )
 	}
 }
 

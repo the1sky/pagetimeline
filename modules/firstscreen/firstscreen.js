@@ -3,44 +3,69 @@
  */
 
 exports.version = '0.1';
+exports.name = 'firstscreen';
 
-exports.module = function(pagetimeline,callback) {
+exports.run = function(pagetimeline, callback){
+	pagetimeline.log( 'first screen...' );
 	var start = +new Date();
-	pagetimeline.log('first screen...');
-	getFirstScreenTime( pagetimeline );
+	var browser = pagetimeline.model.browser;
+	var timeout = pagetimeline.getParam( 'timeout' );
+
+	var requestId_info = {};
+
+	browser.Network.responseReceived( function(res){
+		var requestId = res['requestId'];
+		var timestamp = res['timestamp'];
+		var response = res.response;
+		var url = response.url;
+		if( !requestId_info[requestId] ){
+			requestId_info[requestId] = {}
+		}
+		requestId_info[requestId] = {
+			'url':url,
+			'timestamp':timestamp,
+			'responseBody':response
+		};
+	} );
+
+	browser.Page.loadEventFired( function(res){
+		setTimeout( function(){
+			start = +new Date();
+			getFirstScreenTime( pagetimeline );
+		}, timeout );
+	} );
+
+	callback(false,{message:'add forst screen module done!'});
 
 	/**
 	 * 获取首屏时间
 	 * @param chrome
 	 */
 	function getFirstScreenTime(pagetimeline){
-		var requests = getRequestTimeByUrl( pagetimeline.core.requests );
-		var browser = pagetimeline.core.browser;
-		var startTime = pagetimeline.core.startTime;
+		var requests = getRequestTimeByUrl( requestId_info );
+		var browser = pagetimeline.model.browser;
+		var startTime = pagetimeline.model.startTime;
 
 		//计算首屏内的图形
-		with( browser ){
-			var str = getClientScreenImages.toString() + ';getClientScreenImages()';
-			send( 'Runtime.evaluate', {'expression':str, returnByValue:true}, function(err, result){
-				//计算最慢时间,timestamp为1970以来的秒
-				var inClientImages = result['result']['value'];
-				var slowestTime = 0;
-				for( var url in inClientImages ){
-					var offset = inClientImages[url];
-					var urlTime = requests[url];
-					pagetimeline.addOffender('firstScreenTime',url + '  offsetLeft:' + offset.offsetLeft + '    offsetTop:' + offset.offsetTop );
-					if( urlTime > slowestTime ){
-						slowestTime = urlTime;
-					}
+		var str = getClientScreenImages.toString() + ';getClientScreenImages()';
+		browser.Runtime.evaluate( {'expression':str, returnByValue:true}, function(err, res){
+			//计算最慢时间,timestamp为1970以来的秒
+			var inClientImages = res['result']['value'];
+			var slowestTime = 0;
+			for( var url in inClientImages ){
+				var offset = inClientImages[url];
+				var urlTime = requests[url];
+				pagetimeline.addOffender( 'firstScreenTime', url + '  offsetLeft:' + offset.offsetLeft + '    offsetTop:' + offset.offsetTop );
+				if( urlTime > slowestTime ){
+					slowestTime = urlTime;
 				}
-				// to ms
-				slowestTime = parseInt( slowestTime * 1000 );
-				var firstScreenTime = slowestTime - startTime
-				pagetimeline.log( 'first screen done in ' + (+new Date() - start ) + 'ms' );
-				pagetimeline.setMetric('firstScreenTime', parseInt( firstScreenTime ) );
-				callback(false,{message:'get first screen time done!'});
-			} );
-		}
+			}
+			// to ms
+			slowestTime = parseInt( slowestTime * 1000 );
+			var firstScreenTime = slowestTime - startTime
+			pagetimeline.log( 'first screen done in ' + (+new Date() - start ) + 'ms' );
+			pagetimeline.setMetric( 'firstScreenTime', parseInt( firstScreenTime ) );
+		} );
 	}
 
 	/**
@@ -181,7 +206,7 @@ exports.module = function(pagetimeline,callback) {
 				if( offsetLeft < clientWidth && offsetTop < clientHeight ){
 					if( !inClientImages[src] ){
 						inClientImages[src] = {
-							'offsetLeft': offsetLeft,
+							'offsetLeft':offsetLeft,
 							'offsetTop':offsetTop
 						};
 					}
@@ -189,6 +214,7 @@ exports.module = function(pagetimeline,callback) {
 			}
 			return inClientImages;
 		}
+
 		return getInClientImages();
 	}
 }

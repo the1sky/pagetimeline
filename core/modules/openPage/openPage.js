@@ -2,24 +2,24 @@
  * Created by nant on 2014/7/18.
  */
 
-exports.run = function(pagetimeline,callback){
-	var browserProxy = pagetimeline.browserProxy;
-	var url = pagetimeline.url;
-	var start = +new Date();
+exports.run = function(pagetimeline, callback){
+	pagetimeline.log( 'open page ...' );
+	var browser = pagetimeline.model.browser;
+	var timeout = pagetimeline.getParam( 'timeout' ) + 1000;
+	var url = pagetimeline.model.url;
 
-	browserProxy.onLoadEventFired(function(err,res){
+	browser.Page.loadEventFired( function(res){
 		setTimeout( function(callback){
-			callback(false,{message:'load page done!'});
-		},pagetimeline.getParam('timeout'),callback );
-	})
+			callback( false, {message:'load page done!'} );
+		}, timeout, callback );
+	} );
 
-	browserProxy.navigate(url,function(err,res){
+	browser.Page.navigate( {url:url}, function(err, res){
 		if( !err ){
-			pagetimeline.core.startTime = start;
 		}else{
-			callback(true,{message:'page open fail!'});
+			callback( true, {message:'page open fail!'} );
 		}
-	})
+	} );
 }
 
 exports.name = 'openPage';
