@@ -13,7 +13,7 @@ exports.run = function(pagetimeline, callback){
 
 	var requestId_info = {};
 
-	browser.Network.responseReceived( function(res){
+	browser.onResponseReceived( function(res){
 		var requestId = res['requestId'];
 		var timestamp = res['timestamp'];
 		var response = res.response;
@@ -28,14 +28,14 @@ exports.run = function(pagetimeline, callback){
 		};
 	} );
 
-	browser.Page.loadEventFired( function(res){
+	browser.onLoadEventFired( function(res){
 		setTimeout( function(){
 			start = +new Date();
 			getFirstScreenTime( pagetimeline );
 		}, timeout );
 	} );
 
-	callback(false,{message:'add forst screen module done!'});
+	callback( false, {message:'add forst screen module done!'} );
 
 	/**
 	 * 获取首屏时间

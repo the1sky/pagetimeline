@@ -9,12 +9,12 @@ exports.name = 'loadtimes';
 exports.run = function(pagetimeline, callback){
 	pagetimeline.log( 'load time...' );
 	var startTime = pagetimeline.model.startTime;
-	var timeout = pagetimeline.getParam('timeout');
+	var timeout = pagetimeline.getParam( 'timeout' );
 	var browser = pagetimeline.model.browser;
 
 	var requestId_info = {};
 
-	browser.Network.responseReceived( function(res){
+	browser.onResponseReceived( function(res){
 		var requestId = res['requestId'];
 		var timestamp = res['timestamp'];
 		var response = res.response;
@@ -29,7 +29,7 @@ exports.run = function(pagetimeline, callback){
 		};
 	} );
 
-	browser.Page.loadEventFired( function(res){
+	browser.onLoadEventFired( function(res){
 		setTimeout( function(){
 			var start = +new Date();
 			var loadTime = getSlowestTime() - startTime;
@@ -64,5 +64,4 @@ exports.run = function(pagetimeline, callback){
 		}
 		return requestsByUrl;
 	}
-
 }

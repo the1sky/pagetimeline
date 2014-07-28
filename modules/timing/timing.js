@@ -5,14 +5,16 @@
 exports.version = '1.0'
 
 exports.run = function(pagetimeline, callback){
+	pagetimeline.log( 'timing...' );
 	var start = +new Date();
 	var browser = pagetimeline.model.browser;
-	var str = getTiming.toString() + ';getTiming()';
-	pagetimeline.log( 'timing...' );
-	browser.Page.loadEventFired( function(res){
-		browser.Runtime.evaluate( {expression:str, returnByValue:true}, function(err, data){
+
+	browser.onLoadEventFired( function(res){
+		var str = getTiming.toString() + ';getTiming()';
+
+		browser.evaluate( str, true, function(err, res){
 			if( !err ){
-				var timing = data.result.value;
+				var timing = res.result.value;
 				pagetimeline.log( 'timing done in ' + (+new Date() - start ) + 'ms' );
 				pagetimeline.setMetric( 'timing', timing );
 				for( var timingKey in timing ){
@@ -59,7 +61,6 @@ exports.run = function(pagetimeline, callback){
 				if( responseStart > navigationStart ){
 					pagetimeline.setMetric( 'timing_ttfb', responseStart - navigationStart );
 				}
-
 			}
 		} );
 

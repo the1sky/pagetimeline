@@ -6,12 +6,14 @@ exports.version = '0.1';
 exports.name = 'webspeed';
 
 exports.run = function(pagetimeline, callback){
-	var start = +new Date();
 	pagetimeline.log( 'webspeed...' );
+	var start = +new Date();
 	var browser = pagetimeline.model.browser;
-	browser.Page.loadEventFired( function(res){
+
+	browser.onLoadEventFired( function(res){
 		var str = getWebspeed.toString() + ';getWebspeed()';
-		browser.Runtime.evaluate( {expression:str, returnByValue:true}, function(err, res){
+
+		browser.evaluate( str, true, function(err, res){
 			if( !err && res.result.value ){
 				var speedData = res.result.value;
 				var fields = speedData.fields

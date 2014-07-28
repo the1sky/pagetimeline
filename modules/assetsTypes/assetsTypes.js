@@ -33,6 +33,7 @@ exports.run = function(pagetimeline, callback){
 			var assertsInfo = {}
 			var _ = require( 'underscore' );
 			var totalRequests = 0;
+			var totalSize = 0;
 			mime.define( {
 				'text/javascript':['js'],
 				'application/x-javascript':['js'],
@@ -79,15 +80,20 @@ exports.run = function(pagetimeline, callback){
 				assertsInfo[mimeExt].size += contentLen;
 				assertsInfo[mimeExt].urls.push( url );
 				totalRequests++;
+				totalSize += contentLen;
 			} );
 
 			if( totalRequests > 0 ){
-				pagetimeline.setMetric( 'totalRequests', totalRequests );
+				pagetimeline.setMetric( 'total_requests', totalRequests );
+			}
+
+			if( totalSize > 0 ){
+				pagetimeline.setMetric( 'total_size', ( totalSize / 1024 ).toFixed(2) + 'KB' );
 			}
 
 			_.each( assertsInfo, function(value, key){
-				pagetimeline.setMetric( key + 'Requests', value.count );
-				pagetimeline.setMetric( key + 'Size', ( value.size / 1024 ).toFixed( 2 ) + 'KB' );
+				pagetimeline.setMetric( key + '_requests', value.count );
+				pagetimeline.setMetric( key + '_size', ( value.size / 1024 ).toFixed( 2 ) + 'KB' );
 				_.each( value.urls, function(url){
 					pagetimeline.addOffender( key + 'Requests', url );
 				} )

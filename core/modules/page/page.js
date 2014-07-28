@@ -10,12 +10,12 @@ exports.run = function(pagetimeline, callback){
 	var browser = pagetimeline.model.browser;
 	var startTime = pagetimeline.model.startTime;
 
-	browser.Page.domContentEventFired( function(res){
+	browser.onDomContentEventFired(function(res){
 		var domreadyTime = res.timestamp * 1000 - startTime;
 		pagetimeline.setMetric( 'domreadyEvent', parseInt( domreadyTime ) );
 	} );
 
-	browser.Page.loadEventFired( function(res){
+	browser.onLoadEventFired(function(res){
 		var onloadTime = res.timestamp * 1000 - startTime;
 		pagetimeline.setMetric( 'onloadEvent', parseInt( onloadTime ) );
 	} );
