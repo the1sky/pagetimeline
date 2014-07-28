@@ -5,13 +5,13 @@
 exports.version = '0.1';
 exports.name = 'assetsTypes';
 
-exports.run = function(pagetimeline,callback){
-	pagetimeline.log( 'asserts types ...');
+exports.run = function(pagetimeline, callback){
+	pagetimeline.log( 'asserts types ...' );
 	var browser = pagetimeline.model.browser;
-	var timeout = pagetimeline.getParam('timeout');
+	var timeout = pagetimeline.getParam( 'timeout' );
 	var requestId_info = {};
 
-	browser.Network.responseReceived(function(res){
+	browser.Network.responseReceived( function(res){
 		var requestId = res['requestId'];
 		var timestamp = res['timestamp'];
 		var response = res.response;
@@ -24,30 +24,32 @@ exports.run = function(pagetimeline,callback){
 			'timestamp':timestamp,
 			'responseBody':response
 		};
-	});
+	} );
 
-	browser.Page.loadEventFired(function(res){
-		setTimeout(function(){
+	browser.Page.loadEventFired( function(res){
+		setTimeout( function(){
 			var start = +new Date();
-			var mime  = require('mime');
+			var mime = require( 'mime' );
 			var assertsInfo = {}
-			var _ = require('underscore');
-			mime.define({
-				'text/javascript': ['js'],
+			var _ = require( 'underscore' );
+			var totalRequests = 0;
+			mime.define( {
+				'text/javascript':['js'],
 				'application/x-javascript':['js'],
 				'text/json':['json'],
-				'text/xml':['xml']
-			});
+				'text/xml':['xml'],
+				'image/jpg':['jpeg']
+			} );
 
-			_.each(requestId_info,function(value,key){
+			_.each( requestId_info, function(value, key){
 				var url = value.url;
 				var responseBody = value.responseBody;
 				if( !responseBody ) return;
 				var mimeExt = mime.extension( responseBody.mimeType );
+				if( !mimeExt ){
+					console.log( mimeExt );
+				}
 				/*
-				 if( !mimeExt ){
-				 console.log( mimeExt );
-				 }
 				 if( mimeExt == 'js' ){
 				 console.log(mimeExt );
 				 }
@@ -73,21 +75,27 @@ exports.run = function(pagetimeline,callback){
 					}
 				}
 
-				assertsInfo[mimeExt].count ++;
+				assertsInfo[mimeExt].count++;
 				assertsInfo[mimeExt].size += contentLen;
 				assertsInfo[mimeExt].urls.push( url );
-			});
+				totalRequests++;
+			} );
 
-			_.each(assertsInfo,function(value,key){
-				pagetimeline.setMetric(key, '   count:' + value.count + '  size:' + ( value.size / 1024 ).toFixed(2) + 'KB'  );
-				_.each( value.urls,function(url){
-					pagetimeline.addOffender(key, url );
-				})
-			})
+			if( totalRequests > 0 ){
+				pagetimeline.setMetric( 'totalRequests', totalRequests );
+			}
+
+			_.each( assertsInfo, function(value, key){
+				pagetimeline.setMetric( key + 'Requests', value.count );
+				pagetimeline.setMetric( key + 'Size', ( value.size / 1024 ).toFixed( 2 ) + 'KB' );
+				_.each( value.urls, function(url){
+					pagetimeline.addOffender( key + 'Requests', url );
+				} )
+			} )
 
 			pagetimeline.log( 'asserts types done in ' + (+new Date() - start ) + 'ms' );
-		},timeout);
-	});
+		}, timeout );
+	} );
 
-	callback(false,{message:'add assets types done!'});
+	callback( false, {message:'add assets types done!'} );
 }
