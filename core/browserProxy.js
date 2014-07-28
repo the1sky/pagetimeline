@@ -259,8 +259,8 @@ browserProxy.prototype = {
 	 * @param returnByValue
 	 * @param callback
 	 */
-	evaluate:function(expression, objectGroup, contextId, returnByValue, callback){
-		this.browser && this.browser.Runtime.evaluate( {expression:expression, objectGroup:objectGroup, contextId:contextId, returnByValue:returnByValue}, function(err, res){
+	evaluate:function(expression,returnByValue, callback){
+		this.browser && this.browser.Runtime.evaluate( {expression:expression, returnByValue:returnByValue}, function(err, res){
 			callback( err, res );
 		} );
 	},
@@ -301,7 +301,7 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	onTimelineRecorded:function(callback){
-		this.browser && this.browser.Timeline.eventRecorded({}, function(res){
+		this.browser && this.browser.Timeline.eventRecorded(function(res){
 				callback( res );
 		} );
 	},
