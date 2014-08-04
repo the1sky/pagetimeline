@@ -11,7 +11,7 @@ exports.run = function(pagetimeline, callback){
 	var timeout = pagetimeline.getParam( 'timeout' );
 	var requestId_info = {};
 
-	browser.Network.responseReceived( function(res){
+	browser.onResponseReceived( function(res){
 		var requestId = res['requestId'];
 		var timestamp = res['timestamp'];
 		var response = res.response;
@@ -26,7 +26,7 @@ exports.run = function(pagetimeline, callback){
 		};
 	} );
 
-	browser.Page.loadEventFired( function(res){
+	browser.onLoadEventFired( function(res){
 		setTimeout( function(){
 			var start = +new Date();
 			var mime = require( 'mime' );
@@ -39,7 +39,8 @@ exports.run = function(pagetimeline, callback){
 				'application/x-javascript':['js'],
 				'text/json':['json'],
 				'text/xml':['xml'],
-				'image/jpg':['jpeg']
+				'image/jpg':['jpeg'],
+				'application/x-shockwave-flash':['flash']
 			} );
 
 			_.each( requestId_info, function(value, key){
@@ -48,6 +49,9 @@ exports.run = function(pagetimeline, callback){
 				if( !responseBody ) return;
 				var mimeExt = mime.extension( responseBody.mimeType );
 				if( !mimeExt ){
+					console.log( mimeExt );
+				}
+				if( mimeExt == 'flash' ){
 					console.log( mimeExt );
 				}
 				/*
@@ -88,14 +92,14 @@ exports.run = function(pagetimeline, callback){
 			}
 
 			if( totalSize > 0 ){
-				pagetimeline.setMetric( 'total_size', ( totalSize / 1024 ).toFixed(2) + 'KB' );
+				pagetimeline.setMetric( 'total_size', ( totalSize / 1024 ).toFixed( 2 ) + 'KB' );
 			}
 
 			_.each( assertsInfo, function(value, key){
 				pagetimeline.setMetric( key + '_requests', value.count );
 				pagetimeline.setMetric( key + '_size', ( value.size / 1024 ).toFixed( 2 ) + 'KB' );
 				_.each( value.urls, function(url){
-					pagetimeline.addOffender( key + 'Requests', url );
+					pagetimeline.addOffender( key + '_requests', url );
 				} )
 			} )
 

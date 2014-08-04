@@ -48,7 +48,7 @@ exports.run = function(pagetimeline, callback){
 
 		//计算首屏内的图形
 		var str = getClientScreenImages.toString() + ';getClientScreenImages()';
-		browser.Runtime.evaluate( {'expression':str, returnByValue:true}, function(err, res){
+		browser.evaluate(str,function(err,res){
 			//计算最慢时间,timestamp为1970以来的秒
 			var inClientImages = res['result']['value'];
 			var slowestTime = 0;

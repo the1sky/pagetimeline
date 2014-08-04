@@ -12,7 +12,7 @@ exports.run = function(pagetimeline, callback){
 	browser.onLoadEventFired( function(res){
 		var str = getTiming.toString() + ';getTiming()';
 
-		browser.evaluate( str, true, function(err, res){
+		browser.evaluate( str, function(err, res){
 			if( !err ){
 				var timing = res.result.value;
 				pagetimeline.log( 'timing done in ' + (+new Date() - start ) + 'ms' );

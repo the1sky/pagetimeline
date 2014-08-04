@@ -13,7 +13,7 @@ exports.run = function(pagetimeline, callback){
 	browser.onLoadEventFired( function(res){
 		var str = getWebspeed.toString() + ';getWebspeed()';
 
-		browser.evaluate( str, true, function(err, res){
+		browser.evaluate( str, function(err, res){
 			if( !err && res.result.value ){
 				var speedData = res.result.value;
 				var fields = speedData.fields

@@ -9,7 +9,7 @@ exports.run = function(pagetimeline, callback){
 
 	browser.onLoadEventFired(function(res){
 		var funcStr = storageSize.toString() + ';storageSize()';
-		browser.evaluate( funcStr, true, function(err,res){
+		browser.evaluate( funcStr, function(err,res){
 			if( !err && res.result && res.result.value ){
 				pagetimeline.setMetric('localstorage_size', ( res.result.value / 1024 ).toFixed(2) + 'KB' );
 			}

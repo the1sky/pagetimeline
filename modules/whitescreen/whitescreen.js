@@ -15,7 +15,7 @@ exports.run = function(pagetimeline, callback){
 
 	browser.Page.loadEventFired( function(res){
 		var str = getFirstPaintTime.toString() + ';getFirstPaintTime()';
-		browser.Runtime.evaluate( {expression:str, returnByValue:true}, function(err, res){
+		browser.evaluate( str,function(err,res){
 			if( !err ){
 				var firstPaintTime = res.result['value'] * 1000;
 				var whiteScreenTime = firstPaintTime - startTime;
