@@ -168,14 +168,33 @@ var browserProxy = function(host, port, browserType){
 		this.Timeline = {
 			DOMCounters:{},
 			TimelineEvent:{},
-			disable:function(params,callback){},
+			disable:function(params, callback){
+			},
+			enable:function(params, callback){
+			},
+			eventRecorded:function(handler){
+			},
+			start:function(params, callback){
+			},
+			started:function(handler){
+			},
+			stop:function(params, callback){
+			},
+			stopped:function(handler){
+			}
+		};
+
+		this.Console = {
 			enable:function(params,callback){},
-			eventRecorded:function(handler){},
-			start:function(params,callback){},
-			started:function(handler){},
-			stop:function(params,callback){},
-			stopped:function(handler){}
-		}
+			disable:function(params,callback){},
+			clearMessage:function(params,callback){},
+			setMonitoringXHREnabled:function(params,callback){},
+			addInspectedNode:function(params,callback){},
+			addInspectedHeapObject:function(params,callback){},
+			messageAdded:function(callback){},
+			messageRepeatCountUpdated:function(callback){},
+			messagesCleared:function(callback){}
+		};
 
 		this.callbacks = [];
 		this.chooseTab = function(){};
@@ -201,6 +220,7 @@ browserProxy.prototype = {
 				self.Page = browser.Page;
 				self.Timeline = browser.Timeline;
 				self.Runtime = browser.Runtime;
+				self.Console= browser.Console;
 				self.callbacks = browser.callbacks;
 				self.chooseTab = browser.chooseTab;
 			}
@@ -259,8 +279,8 @@ browserProxy.prototype = {
 	 * @param returnByValue
 	 * @param callback
 	 */
-	evaluate:function(expression,returnByValue, callback){
-		this.browser && this.browser.Runtime.evaluate( {expression:expression, returnByValue:returnByValue}, function(err, res){
+	evaluate:function(expression, callback){
+		this.browser && this.browser.Runtime.evaluate( {expression:expression, returnByValue:true}, function(err, res){
 			callback( err, res );
 		} );
 	},
@@ -406,8 +426,8 @@ browserProxy.prototype = {
 	 *
 	 * @param callbck
 	 */
-	onRequestServedFromCache:function(callbck){
-		this.browser && this.browser.Network.requestServedFromCache({}, function(res){
+	onRequestServedFromCache:function(callback){
+		this.browser && this.browser.Network.requestServedFromCache(function(res){
 				callback( res );
 		} );
 	},
