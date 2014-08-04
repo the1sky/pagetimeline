@@ -397,7 +397,7 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	onDataReceived:function(callback){
-		this.browser && this.browser.Network.dataReceived({}, function(res){
+		this.browser && this.browser.Network.dataReceived(function(res){
 				callback( res );
 		} );
 	},
@@ -407,7 +407,7 @@ browserProxy.prototype = {
 	 * @param callbck
 	 */
 	onLoadingFailed:function(callbck){
-		this.browser && this.browser.Network.loadingFailed({}, function(res){
+		this.browser && this.browser.Network.loadingFailed(function(res){
 				callback( res );
 		} );
 	},
@@ -417,7 +417,7 @@ browserProxy.prototype = {
 	 * @param callbck
 	 */
 	onLoadingFinished:function(callbck){
-		this.browser && this.browser.Network.loadingFinished({}, function(res){
+		this.browser && this.browser.Network.loadingFinished(function(res){
 				callback( res );
 		} );
 	},
@@ -452,7 +452,8 @@ browserProxy.prototype = {
 		} );
 	},
 
-	inject:function(script){
+	onEvent:function(callback){
+		this.browser.on( 'event', callback );
 	}
 }
 

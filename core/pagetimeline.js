@@ -17,7 +17,6 @@ var pagetimeline = function(params){
 
 	this.homedir =  path.resolve(__dirname + './../' );
 
-	this.core = {};
 	this.model = {};
 
 	this.url = this.params.url;
@@ -38,7 +37,7 @@ var pagetimeline = function(params){
 
 	this.modules = params.modules;
 
-	this.skipModules = params['skip-modules'];
+	this.skipModules = params.skipModules;
 
 	// setup cookies handling
 	this.initCookies();
@@ -223,11 +222,10 @@ pagetimeline.prototype = {
 	addModules:function(){
 		this.log('add all modules...');
 		var modules = (this.modules.length > 0) ? this.modules : this.listModules();
-		var async = require('async');
 		var pkgs = [];
 		modules.forEach(function(name) {
 			if (this.skipModules.indexOf(name) > -1) {
-				this.log('Module ' + moduleName + ' skipped!');
+				this.log('Module ' + name + ' skipped!');
 				return;
 			}
 			var pkg;

@@ -16,6 +16,7 @@ var stderr = process.stderr;
 var browserScript = require('./../libs/browserScript.js');
 var bs = null;
 var fs = require('fs');
+var path = require('path');
 var jsonConfig;
 var params = require('commander');
 
@@ -24,6 +25,7 @@ params
 	.option('--url [value]','target url, e.g. --url=http://www.baidu.com' )
 	.option('--server [value]', 'remote debugger server, e.g. --server=localhost | xxx ' )
 	.option('--port [value]','remote debugger port, default 9222, if not setting,auto find available port, e.g. --port=9222')
+	.option('--disk-cache [value]', 'disk cache, default false, e.g. --disk-cache=true')
 	.option('--mobile [value]','mobile type, android or iphone, server is fixed as "localhost", e.g. --mobile=android')
 	.option('--config [value]','JSON-formatted config file, e.g. --config=./config.log')
 	.option('--viewport [value]','window viewport width and height, e.g. --viewport=1920x768' )
@@ -36,6 +38,7 @@ params
 	.option('--silent [value]','dont\'t write anything to the console, e.g. --slient')
 	.option('--format [value]', 'output format, plain | json | csv, default plain, e.g. --format=json')
 	.option('--browser [value]','chrome,firefox, default chrome, invalid when debugging on mobile, e.g. --browser=chrome')
+	.option('--har-dir [value]', 'har file directory, e.g. --har-dir=./')
 	.parse(process.argv);
 
 //default setting
@@ -62,8 +65,15 @@ params.format = params.format || 'plain';
 params.browser = params.browser || 'chrome';
 params.timeout = (params['timeout'] > 0 && parseInt(params['timeout'], 10)) || 5000;
 params.modules = (typeof params['modules'] === 'string') ? params['modules'].split(',') : [];
-params['skip-modules'] = (typeof params['skip-modules'] === 'string') ? params['skip-modules'].split(',') : [];
-params['user-agent'] = params['user-agent'] || getDefaultUserAgent();
+params.skipModules = (typeof params.skipModules === 'string') ? params.skipModules.split(',') : [];
+params.userAgent = params.userAgent || getDefaultUserAgent();
+params.diskCache = params.diskCache == 'true' ? 'true' : 'false';
+
+if( params.harDir ){
+	params.harDir = path.resolve( params.harDir );
+}else{
+	params.skipModules.push('har');
+}
 
 //appointed port or auto port
 if( params.port ){
