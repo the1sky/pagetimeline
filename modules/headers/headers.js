@@ -4,7 +4,7 @@
 
 exports.version = '0.1';
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	callback( false, {message:'add headers module done!'} );
 
 	var browser = pagetimeline.model.browser;

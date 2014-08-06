@@ -4,7 +4,7 @@
 
 exports.version = '1.0'
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	pagetimeline.log( 'timing...' );
 	var start = +new Date();
 	var browser = pagetimeline.model.browser;

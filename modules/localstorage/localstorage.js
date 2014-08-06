@@ -4,7 +4,7 @@
 exports.version = '0.1';
 exports.name = 'localstorage';
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	var browser = pagetimeline.model.browser;
 
 	browser.onLoadEventFired(function(res){

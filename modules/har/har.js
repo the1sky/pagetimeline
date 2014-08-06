@@ -9,9 +9,10 @@
 
 exports.version = '0.1';
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	callback( false, {message:'add har module done!'} );
 
+	var fs = require( 'fs' );
 	var browser = pagetimeline.model.browser;
 	var startTime = pagetimeline.model.startTime;
 	var url = pagetimeline.getParam( 'url' );
@@ -61,7 +62,6 @@ exports.run = function(pagetimeline, callback){
 
 	function createHAR(){
 		var har = getHAR();
-		var fs = require( 'fs' );
 		var json = JSON.stringify( har, null, 4 );
 		var path = require('path');
 		var timestamp = +new Date();

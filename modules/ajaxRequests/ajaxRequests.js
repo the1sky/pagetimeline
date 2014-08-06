@@ -2,9 +2,8 @@
  * Created by nant on 2014/7/13.
  */
 exports.version = '0.1';
-exports.name = 'ajaxRequests';
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	pagetimeline.log( 'ajax requests...' );
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam( 'timeout' );

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * process:
- * 1、receive parms
+ * 1、receive params
  * 2、start browser with remote-debugging-protocol
  * 3、analyze performance
  * 4、close browser and exit

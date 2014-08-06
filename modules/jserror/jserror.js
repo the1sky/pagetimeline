@@ -7,15 +7,15 @@
 exports.version = '0.1';
 exports.name = 'jserror';
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	var browser = pagetimeline.model.browser;
 
 	browser.Console.messageAdded( function(res){
 		var msg = res.message;
 		if( msg && msg.level == 'error' && msg.stackTrace ){
 			var trace = formatTrace( msg.stackTrace );
-			pagetimeline.incrMetric( 'jsErrors' );
-			pagetimeline.addOffender( 'jsErrors', msg.text + ' - ' + trace.join( ' / ' ) );
+			pagetimeline.incrMetric( 'js_errors' );
+			pagetimeline.addOffender( 'js_errors', msg.text + ' - ' + trace.join( ' / ' ) );
 		}
 	} );
 

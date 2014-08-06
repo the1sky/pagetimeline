@@ -4,7 +4,7 @@
 
 exports.version = '0.1';
 
-exports.run = function(pagetimeline,callback){
+exports.module = function(pagetimeline,callback){
 	callback( false, {message:'add global variables module done!'});
 
 	var browser = pagetimeline.model.browser;
@@ -14,22 +14,22 @@ exports.run = function(pagetimeline,callback){
 		browser.evaluate(script,function(err,res){
 			if( !err ){
 				if( res.result.value && res.result.value.globalVariables ){
-					pagetimeline.setMetric('globalVariables'); // @desc number of JS globals variables @offenders
+					pagetimeline.setMetric('global_variables'); // @desc number of JS globals variables @offenders
 					var globalVariables = res.result.value.globalVariables;
 					var len = globalVariables.length;
 					for( var i = 0; i < len; i++ ){
-						pagetimeline.incrMetric('globalVariables');
-						pagetimeline.addOffender( 'globalVariables', globalVariables[i] );
+						pagetimeline.incrMetric('global_variables');
+						pagetimeline.addOffender( 'global_variables', globalVariables[i] );
 					}
 				}
 
 				if( res.result.value && res.result.value.globalVariablesFalsy ){
-					pagetimeline.setMetric('globalVariablesFalsy'); // @desc number of JS globals variables with falsy value @offenders
+					pagetimeline.setMetric('global_variables_falsy'); // @desc number of JS globals variables with falsy value @offenders
 					var globalVariablesFalsy = res.result.value.globalVariablesFalsy;
 					var len = globalVariablesFalsy.length;
 					for( var i = 0; i < len; i++ ){
-						pagetimeline.incrMetric('globalVariablesFalsy');
-						pagetimeline.addOffender( 'globalVariablesFalsy', globalVariables[i] );
+						pagetimeline.incrMetric('global_variables_falsy');
+						pagetimeline.addOffender( 'global_variables_falsy', globalVariables[i] );
 					}
 				}
 			}

@@ -3,9 +3,8 @@
  */
 
 exports.version = '0.1';
-exports.name = 'assetsTypes';
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	pagetimeline.log( 'asserts types ...' );
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam( 'timeout' );

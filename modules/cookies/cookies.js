@@ -4,7 +4,7 @@
 
 exports.version = '0.1';
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	callback( false, {message:'add cookies module done!'} );
 
 	var browser = pagetimeline.model.browser;
@@ -31,8 +31,8 @@ exports.run = function(pagetimeline, callback){
 		var domain = urlModule.parse( url ).host;
 
 		_.forEach( requestHeaders, function(headerValue, headerName){
-			switch( headerName ){
-				case 'Cookie':
+			switch( headerName.toLowerCase() ){
+				case 'cookie':
 					pagetimeline.incrMetric( 'cookies_sent_size', headerValue.length );
 					cookiesDomains.push( domain );
 					cookies.push( {domain:domain, value:headerValue} );
@@ -55,7 +55,6 @@ exports.run = function(pagetimeline, callback){
 	} );
 
 	browser.onLoadEventFired( function(res){
-		"use strict";
 		setTimeout( function(){
 			//cookies
 			pagetimeline.setMetric( 'cookies_count', cookies.length );

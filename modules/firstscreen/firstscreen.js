@@ -5,7 +5,7 @@
 exports.version = '0.1';
 exports.name = 'firstscreen';
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	pagetimeline.log( 'first screen...' );
 	var start = +new Date();
 	var browser = pagetimeline.model.browser;
@@ -35,7 +35,7 @@ exports.run = function(pagetimeline, callback){
 		}, timeout );
 	} );
 
-	callback( false, {message:'add forst screen module done!'} );
+	callback( false, {message:'add first screen module done!'} );
 
 	/**
 	 * 获取首屏时间
@@ -55,7 +55,7 @@ exports.run = function(pagetimeline, callback){
 			for( var url in inClientImages ){
 				var offset = inClientImages[url];
 				var urlTime = requests[url];
-				pagetimeline.addOffender( 'firstScreenTime', url + '  offsetLeft:' + offset.offsetLeft + '    offsetTop:' + offset.offsetTop );
+				pagetimeline.addOffender( 'first_screen_time', url + '  offsetLeft:' + offset.offsetLeft + '    offsetTop:' + offset.offsetTop );
 				if( urlTime > slowestTime ){
 					slowestTime = urlTime;
 				}
@@ -64,7 +64,7 @@ exports.run = function(pagetimeline, callback){
 			slowestTime = parseInt( slowestTime * 1000 );
 			var firstScreenTime = slowestTime - startTime
 			pagetimeline.log( 'first screen done in ' + (+new Date() - start ) + 'ms' );
-			pagetimeline.setMetric( 'firstScreenTime', parseInt( firstScreenTime ) );
+			pagetimeline.setMetric( 'first_screen_time', parseInt( firstScreenTime ) );
 		} );
 	}
 

@@ -2,9 +2,8 @@
  * Created by nant on 2014/7/9.
  */
 exports.version = '0.1';
-exports.name = 'whitescreen';
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	var startTime = pagetimeline.model.startTime;
 	var browser = pagetimeline.model.browser;
 
@@ -19,7 +18,7 @@ exports.run = function(pagetimeline, callback){
 			if( !err ){
 				var firstPaintTime = res.result['value'] * 1000;
 				var whiteScreenTime = firstPaintTime - startTime;
-				pagetimeline.setMetric( 'whiteScreenTime', parseInt( whiteScreenTime ) );
+				pagetimeline.setMetric( 'white_screen_time', parseInt( whiteScreenTime ) );
 			}
 		} )
 	} );

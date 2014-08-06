@@ -3,9 +3,7 @@
  */
 exports.version = '0.1';
 
-exports.name = 'webspeed';
-
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	pagetimeline.log( 'webspeed...' );
 	var start = +new Date();
 	var browser = pagetimeline.model.browser;

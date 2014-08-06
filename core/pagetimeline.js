@@ -33,14 +33,9 @@ var pagetimeline = function(params){
 	this.timeout = params.timeout;;
 
 	this.coreModules = [];
-	this.openPageModule = null;
-
+	this.pageModule = null;
 	this.modules = params.modules;
-
 	this.skipModules = params.skipModules;
-
-	// setup cookies handling
-	this.initCookies();
 
 	// setup the stuff
 	this.emitter = new (this.require('events').EventEmitter)();
@@ -158,22 +153,11 @@ pagetimeline.prototype = {
 		this.addModules();
 		var self = this;
 		var async = require('async');
-
-		var runCoreModules = [];
-		self.coreModules.forEach(function(module){
-			runCoreModules.push( async.apply( module.run, self.getPublicWrapper() ) );
-		},self );
-
-		var runModules = [];
-		self.modules.forEach(function(module){
-			runModules.push( async.apply( module.run, self.getPublicWrapper() ) );
-		},self );
-
-		async.series(runCoreModules,function(err,res){
+		async.series(self.coreModules,function(err,res){
 			if( !err ){
-				async.parallel( runModules,function(err,res){
+				async.parallel( self.modules,function(err,res){
 					if( !err ){
-						self.openPageModule.run(self.getPublicWrapper(),function(err,res){
+						self.pageModule(self.getPublicWrapper(),function(err,res){
 							if( !err ){
 								self.report();
 								callback(false,{message:'all done!'});
@@ -188,17 +172,26 @@ pagetimeline.prototype = {
 			}else{
 				callback(true,{message:'run core module fail!',detail:res});
 			}
-		})
+		});
+
+
+		//timeout and exit
+		var timeout = 10000 + this.timeout * 2;
+		setTimeout( function(){
+			var msg = 'onload event not fired in ' +  timeout + 'ms.';
+			self.log( msg );
+			callback( true, {message:msg} );
+		}, timeout );
 	},
 
 	addCoreModules:function(){
 		this.log('add core module...');
 		var getModulePath = this.getModulePath;
-		this.coreModules.push( require( getModulePath('connectserver')));
-		this.coreModules.push( require( getModulePath('enable')));
-		this.coreModules.push( require( getModulePath('page')));
-		this.coreModules.push( require( getModulePath('timeline')));
-		this.openPageModule = require( getModulePath('openPage'));;
+		var async = require('async');
+		this.coreModules.push( async.apply( require( getModulePath('connectserver') ).module, this.getPublicWrapper() ) );
+		this.coreModules.push( async.apply( require( getModulePath('enable') ).module, this.getPublicWrapper() ) );
+		this.coreModules.push( async.apply( require( getModulePath('timeline') ).module, this.getPublicWrapper() ) );
+		this.pageModule = require( getModulePath('page') ).module;
 	},
 	getModulePath:function(name){
 		return './modules/' + name + '/' + name;
@@ -223,6 +216,8 @@ pagetimeline.prototype = {
 		this.log('add all modules...');
 		var modules = (this.modules.length > 0) ? this.modules : this.listModules();
 		var pkgs = [];
+		var async = require('async');
+
 		modules.forEach(function(name) {
 			if (this.skipModules.indexOf(name) > -1) {
 				this.log('Module ' + name + ' skipped!');
@@ -240,7 +235,7 @@ pagetimeline.prototype = {
 				this.log('Module ' + name + ' skipped!');
 				return;
 			}
-			pkgs.push(pkg);
+			pkgs.push( async.apply( pkg.module, this.getPublicWrapper() ) );
 		}, this);
 		this.modules = pkgs;
 	},

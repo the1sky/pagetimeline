@@ -6,7 +6,7 @@
 exports.version = '0.1';
 exports.name = 'loadtimes';
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	pagetimeline.log( 'load time...' );
 	var startTime = pagetimeline.model.startTime;
 	var timeout = pagetimeline.getParam( 'timeout' );
@@ -34,7 +34,7 @@ exports.run = function(pagetimeline, callback){
 			var start = +new Date();
 			var loadTime = getSlowestTime() - startTime;
 			pagetimeline.log( 'load time done in ' + (+new Date() - start ) + 'ms' );
-			pagetimeline.setMetric( 'loadTime', parseInt( loadTime ) );
+			pagetimeline.setMetric( 'load_time', parseInt( loadTime ) );
 		}, timeout );
 	} );
 

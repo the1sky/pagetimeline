@@ -3,9 +3,8 @@
  */
 
 exports.version = '0.1';
-exports.name = 'domains';
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	pagetimeline.log( 'domains ...' );
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam( 'timeout' );

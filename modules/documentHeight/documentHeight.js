@@ -2,10 +2,9 @@
  * Created by nant on 2014/8/4.
  */
 
-exports.name = 'documentHeight';
 exports.version = '0.1';
 
-exports.run = function(pagetimeline,callback){
+exports.module = function(pagetimeline,callback){
 	callback( false, {message:'add document height module done!'});
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam('timeout');
@@ -15,7 +14,7 @@ exports.run = function(pagetimeline,callback){
 			var script = getDocumentHeight.toString() + ';getDocumentHeight()';
 			browser.evaluate( script, function(err,res){
 				if( !err ){
-					pagetimeline.setMetric('documentHeight', res.result.value );
+					pagetimeline.setMetric('document_height', res.result.value );
 				}
 			})
 		}, timeout);

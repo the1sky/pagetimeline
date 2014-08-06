@@ -11,8 +11,6 @@ var browserProxy = function(host, port, browserType){
 	this.browser = null;
 	this.host = host;
 	this.port = port;
-	this.browserType = browserType;
-	this.injects = [];
 
 	browserType = "chrome";
 	if( browserType == 'chrome' ){
@@ -450,6 +448,10 @@ browserProxy.prototype = {
 		this.browser && this.browser.Network.responseReceived(function(res){
 				callback( res );
 		} );
+	},
+
+	sendCommand:function(command,params,callback){
+		this.browser.send(command, params, callback);
 	},
 
 	onEvent:function(callback){
