@@ -5,7 +5,7 @@
 
 exports.version = '0.1';
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	pagetimeline.log( 'connect to server ...' );
 	var server = pagetimeline.getParam( 'server' );
 	var port = pagetimeline.getParam( 'port' );

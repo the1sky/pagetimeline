@@ -3,12 +3,14 @@
  */
 
 exports.version = '0.1';
-exports.name = 'page';
 
-exports.run = function(pagetimeline, callback){
-	pagetimeline.log( 'dom ready and onLoad ...' );
+exports.module = function(pagetimeline, callback){
+	pagetimeline.log( 'dom ready and onLoad, and open page ...' );
+
 	var browser = pagetimeline.model.browser;
 	var startTime = pagetimeline.model.startTime;
+	var timeout = pagetimeline.getParam( 'timeout' ) + 1000;
+	var url = pagetimeline.model.url;
 
 	browser.onDomContentEventFired(function(res){
 		var domreadyTime = res.timestamp * 1000 - startTime;
@@ -18,8 +20,17 @@ exports.run = function(pagetimeline, callback){
 	browser.onLoadEventFired(function(res){
 		var onloadTime = res.timestamp * 1000 - startTime;
 		pagetimeline.setMetric( 'onloadEvent', parseInt( onloadTime ) );
+
+		setTimeout( function(callback){
+			callback( false, {message:'analyze page done!'} );
+		}, timeout, callback );
 	} );
-	callback( false, 'add dom ready onLoad event module done!' );
+
+	browser.navigate( url, function(err, res){
+		if( err ){
+			callback( true, {message:'page open fail!'} );
+		}
+	} );
 }
 
 exports.name = 'page';

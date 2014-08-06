@@ -3,7 +3,7 @@
  * Created by nant on 2014/7/18.
  */
 
-exports.run = function(pagetimeline, callback){
+exports.module = function(pagetimeline, callback){
 	pagetimeline.log( 'enable browser function ...' );
 	var browser = pagetimeline.model.browser;
 	var async = require('async');
@@ -11,7 +11,8 @@ exports.run = function(pagetimeline, callback){
 		browser.Page.enable,
 		browser.Runtime.enable,
 		browser.Timeline.enable,
-		browser.Network.enable
+		browser.Network.enable,
+		browser.Console.enable
 	],function(err,res){
 		if( !err ){
 			callback( false, {'message':'enable page succ!'} );
