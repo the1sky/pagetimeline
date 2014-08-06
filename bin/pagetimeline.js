@@ -39,6 +39,7 @@ params
 	.option('--format [value]', 'output format, plain | json | csv, default plain, e.g. --format=json')
 	.option('--browser [value]','chrome,firefox, default chrome, invalid when debugging on mobile, e.g. --browser=chrome')
 	.option('--har-dir [value]', 'har file directory, e.g. --har-dir=./')
+	.option('--result-dir [value]', 'performance analyze result file directory, e.g. --har-dir=./')
 	.parse(process.argv);
 
 //default setting
@@ -73,6 +74,10 @@ if( params.harDir ){
 	params.harDir = path.resolve( params.harDir );
 }else{
 	params.skipModules.push('har');
+}
+
+if( params.resultDir ){
+	params.resultDir = path.resolve( params.resultDir );
 }
 
 //appointed port or auto port

@@ -16,6 +16,7 @@ var pagetimeline = function(params){
 	this.params = params;
 
 	this.homedir =  path.resolve(__dirname + './../' );
+	this.resultDir = params.resultDir;
 
 	this.model = {};
 
@@ -143,9 +144,6 @@ pagetimeline.prototype = {
 			addNotice: this.addNotice.bind(this),
 			log: this.log.bind(this),
 			echo: this.echo.bind(this)
-
-			// utils
-			//runScript: this.runScript.bind(this)
 		};
 	},
 	run:function(callback){
@@ -173,7 +171,6 @@ pagetimeline.prototype = {
 				callback(true,{message:'run core module fail!',detail:res});
 			}
 		});
-
 
 		//timeout and exit
 		var timeout = 10000 + this.timeout * 2;
@@ -239,9 +236,6 @@ pagetimeline.prototype = {
 		}, this);
 		this.modules = pkgs;
 	},
-	initCookies:function(){
-		"use strict";
-	},
 	// require CommonJS module from lib/modules
 	require: function(module) {
 		return require('../libs/modules/' + module);
@@ -275,7 +269,21 @@ pagetimeline.prototype = {
 			return;
 		}
 
+		this.saveResult();
+
 		this.log('Done!');
+	},
+	saveResult:function(){
+		if( this.results && this.resultDir ){
+			var fs = require( 'fs' );
+			var path = require('path');
+			var Formatter = require( './formatter' );
+			var renderer = new Formatter( this.results, 'json' );
+			var renderResult = renderer.render();
+			var timestamp = +new Date();
+			var fileName = path.resolve( this.resultDir, encodeURIComponent( this.url ) + '-' + timestamp + '.json');
+			fs.writeFileSync( fileName, renderResult );
+		}
 	},
 	tearDown: function(exitCode) {
 		exitCode = exitCode || EXIT_SUCCESS;
