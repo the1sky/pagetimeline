@@ -149,6 +149,7 @@ pagetimeline.prototype = {
 	run:function(callback){
 		this.addCoreModules();
 		this.addModules();
+		this.callback = callback;
 		var self = this;
 		var async = require('async');
 		async.series(self.coreModules,function(err,res){
@@ -282,6 +283,9 @@ pagetimeline.prototype = {
 			var renderResult = renderer.render();
 			var timestamp = +new Date();
 			var fileName = path.resolve( this.resultDir, encodeURIComponent( this.url ) + '-' + timestamp + '.json');
+			if( !fs.existsSync( this.resultDir ) ){
+				fs.mkdirSync( this.resultDir );
+			}
 			fs.writeFileSync( fileName, renderResult );
 		}
 	},

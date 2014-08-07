@@ -11,8 +11,8 @@
 
 var async = require('async');
 var stdin = process.stdin;
-var stdout = process.stdout;
-var stderr = process.stderr;
+var stdout = process.stdout
+var stderr = process.stderr;;
 var browserScript = require('./../libs/browserScript.js');
 var bs = null;
 var fs = require('fs');

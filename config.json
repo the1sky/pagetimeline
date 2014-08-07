@@ -1,22 +1,9 @@
 {
-	"url": "http://www.baidu.com",
+	"url":"http://m.baidu.com/img",
 	"verbose": false,
 	"timeout":2000,
 	"viewport":"800x600",
 	"log": "log/pagetimeline.log",
 	"block-domain": "google-analytics.com",
-	"cookies": [
-		{
-			"name": "mobile",
-			"value": "on",
-			"domain": ".phantomjs.org"
-		}
-	],
-	"asserts": {
-		"requests": 12,
-		"redirects": 0,
-		"domains": 2,
-		"timeToFirstByte": 600,
-		"httpTrafficCompleted": 1000
-	}
+	"mobile":"android"
 }

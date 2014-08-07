@@ -66,6 +66,9 @@ exports.module = function(pagetimeline, callback){
 		var path = require('path');
 		var timestamp = +new Date();
 		var harName = path.resolve( harDir, encodeURIComponent( url ) + '-' + timestamp + '.har');
+		if( !fs.existsSync( harDir ) ){
+			fs.mkdirSync( harDir );
+		}
 		fs.writeFileSync( harName, json );
 	}
 
