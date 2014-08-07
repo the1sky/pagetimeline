@@ -7,9 +7,10 @@ window:chrome
 
 linux(desktop+server):chrome
 
+android:chrome
+
 soon:
 
-android:chrome
 
 window:firefox
 
@@ -52,7 +53,7 @@ mac:chrome,safari
 * --proxy, specifies the proxy server to use, e.g. --proxy=192.168.1.42:8080
 * --modules, specify module, e.g. --modules=firstscreen,whitescreen
 * --skip-modules, skip selected modules [moduleOne],[moduleTwo],.., e.g. --skip-modules=firstscreen,whitescreen.
-* --timeout, time after onload, default 2000, e.g. --timeout=2000
+* --timeout, time after onload event, default 2000, e.g. --timeout=2000
 * --user-agent, provide a custom user agent, e.g. --user-agent=Mozilla/5.0 (Windows NT 6.3; WOW64; rv:30.0) Gecko/20100101 Firefox/30.0
 * --verbose, write debug messages to console, e.g. --verbose
 * --silent, dont\'t write anything to the console, e.g. --slient

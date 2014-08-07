@@ -30,11 +30,11 @@ var browserScript = function(params){
 		if( this.browser == 'chrome' ){
 			this.runScript = 'runChrome.bat';
 			this.closeScript = 'closeChrome.bat';
-			this.browserLoc = path.resolve( __dirname + './../browsers/windows/ChromiumPortable/ChromiumPortable.exe' );
+			this.browserLoc = path.resolve( __dirname + './../browsers/windows/chrome/ChromiumPortable.exe' );
 		}else if( this.browser == 'firefox' ){
 			this.runScript = 'runChrome.bat';
 			this.closeScript = 'closeChrome.bat';
-			this.browserLoc = path.resolve( __dirname + './../browsers/windows/FirefoxPortable/FirefoxPortable.exe' );
+			this.browserLoc = path.resolve( __dirname + './../browsers/windows/firefox/FirefoxPortable.exe' );
 		}
 	}else{
 		//priviledge,x
@@ -75,7 +75,7 @@ browserScript.prototype = {
 	},
 	installBrowser:function(callback){
 		var execFile = require('child_process' ).execFile;
-		execFile( this.runScript, {cwd:this.dirname},function(err,stdout,stderr ){
+		execFile( this.installScript, {cwd:this.dirname},function(err,stdout,stderr ){
 			callback( err || stderr,stdout );
 		});
 	}
