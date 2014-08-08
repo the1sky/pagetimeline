@@ -3,7 +3,5 @@
 	"verbose": false,
 	"timeout":2000,
 	"viewport":"800x600",
-	"log": "log/pagetimeline.log",
-	"block-domain": "google-analytics.com",
-	"mobile":"android"
+	"log": "log/pagetimeline.log"
 }

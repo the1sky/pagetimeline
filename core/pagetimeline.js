@@ -369,5 +369,5 @@ pagetimeline.prototype = {
 	}
 }
 
-module.dirname = __dirname;
+pagetimeline.version = VERSION;
 module.exports = pagetimeline;
