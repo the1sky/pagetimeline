@@ -6,7 +6,8 @@ var path = require( 'path' );
 
 var adb = function(params){
 	this.params = params;
-	this.dirname = __dirname;
+	this.dirname = path.resolve( __dirname, './../adb' );
+	this.path = path.resolve( this.dirname, 'adb.exe' );
 }
 
 adb.prototype = {
@@ -36,26 +37,25 @@ adb.prototype = {
 	},
 	killServer:function(callback){
 		var exec = require( 'child_process' ).exec;
-		exec( 'adb kill-server', function(err, stdout, stderr){
+		exec( this.path + ' kill-server', function(err, stdout, stderr){
 			callback( err, stdout );
 		} )
 	},
 	startServer:function(callback){
-		"use strict";
 		var exec = require( 'child_process' ).exec;
-		exec( 'adb start-server', function(err, stdout, stderr){
+		exec( this.path + ' start-server', function(err, stdout, stderr){
 			callback( err, stdout );
 		} )
 	},
 	getDevices:function(callback){
 		var exec = require( 'child_process' ).exec;
-		exec( 'adb devices', function(err, stdout, stderr){
+		exec( this.path + ' devices', function(err, stdout, stderr){
 			callback( err, stdout );
 		} )
 	},
 	enablePortForwarding:function(callback){
 		var exec = require( 'child_process' ).exec;
-		exec( 'adb forward tcp:' + this.params['port'] + ' localabstract:chrome_devtools_remote', function(err, stdout, stderr){
+		exec( this.path + ' forward tcp:' + this.params['port'] + ' localabstract:chrome_devtools_remote', function(err, stdout, stderr){
 			callback( err, stdout );
 		} )
 	}
