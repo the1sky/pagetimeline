@@ -11,7 +11,6 @@ android:chrome
 
 soon:
 
-
 window:firefox
 
 linux(desktop+server):firefox
@@ -21,17 +20,15 @@ mac:chrome,safari
 
 ###安装
 
-暂时不支持安装
-
 ####windows
 
     npm install pagetimeline
-
+    node install.js，因为这个脚本在npm install时有问题，暂时需要手工安装下
 ####linux
 
-    sudo npm install pagetimeline
+    sudo npm install pagetimeline，暂时有问题
 
-###使用实例
+###使用示例
 
 ####windows
 
@@ -78,13 +75,13 @@ mac:chrome,safari
 
 * webspeed, 植入webspeed监控脚本的性能数据,http://webspeed.baidu.com
 
+* 更多见modules目录
+
 ### 参考：
     http://remotedebug.org/integrations/
 
 ### think
 
     网速模拟
-    更多参数
-    har文件
 
 

@@ -31,10 +31,23 @@ if( !fs.existsSync( browserPath ) ){
 if( process.platform == 'linux' ){
 	var BrowserScript = require('./libs/browserScript');
 	var bs = new BrowserScript({browser:'chrome'});
-	bs.installBrowser(function(err,res){
-		console.log(err,res);
-		exit( 0 );
-	});
+    	bs.installXvfb(function(err,res){
+		if( !err ){
+			console.log('install xvfb succ!');
+			bs.installBrowser(function(err,res){
+				if( !err ){
+					console.log('install browser succ!');
+					exit( 0 );
+				}else{
+        				console.log(res);
+					exit( 1 );
+				}
+			});
+		}else{
+			console.log(res);
+			exit( 1 );
+		}
+    	});
 }else{
 	//download portable browser
 	var downloadUrl = 'http://fe.baidu.com/pagetimeline/tools/ChromiumPortable.zip';

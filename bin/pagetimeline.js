@@ -10,13 +10,12 @@
  */
 
 var async = require('async');
-var stdout = process.stdout
-var browserScript = require('./../libs/browserScript.js');
-var bs = null;
 var fs = require('fs');
 var path = require('path');
-var jsonConfig;
 var params = require('commander');
+var browserScript = require('./../libs/browserScript.js');
+var adbScript = require('./../libs/adbScript.js');
+var bs,as;
 
 params
 	.version('0.0.1')
@@ -42,6 +41,7 @@ params
 
 //default setting
 if (params.config) {
+    var jsonConfig;
 	try {
 		jsonConfig = JSON.parse( fs.readFileSync(params.config) ) || {};
 	}
@@ -67,6 +67,7 @@ params.modules = (typeof params['modules'] === 'string') ? params['modules'].spl
 params.skipModules = (typeof params.skipModules === 'string') ? params.skipModules.split(',') : [];
 params.userAgent = params.userAgent || getDefaultUserAgent();
 params.diskCache = params.diskCache == 'true' ? 'true' : 'false';
+params.homedir = path.resolve(__dirname, './../');
 
 if( params.harDir ){
 	params.harDir = path.resolve( params.harDir );
@@ -97,8 +98,9 @@ if( params.port ){
  * @param execArgv
  */
 function run(isMobile,params){
+    if( !bs ) bs = new browserScript( params );
+    if( !as ) as = new adbScript( params );
 	if( !isMobile && params.server == 'localhost' ){
-		bs = new browserScript( params );
 		async.series( [openBrowser, async.apply( analyzePerformance, params ), closeBrowser], function(err, res){
 			if( err ) console.log(res);
 			closeBrowser( function(err, result){} );

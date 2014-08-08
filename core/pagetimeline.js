@@ -15,7 +15,7 @@ var pagetimeline = function(params){
 
 	this.params = params;
 
-	this.homedir =  path.resolve(__dirname + './../' );
+	this.homedir =  params.homedir;
 	this.resultDir = params.resultDir;
 
 	this.model = {};
@@ -199,7 +199,7 @@ pagetimeline.prototype = {
 
 		var fs = require('fs');
 		var path = require('path');
-		var modulesDir = path.resolve( module.dirname + '/../modules');
+		var modulesDir = path.resolve( this.homedir,'./modules');
 		var ls = fs.readdirSync(modulesDir) || [];
 		var modules = [];
 
