@@ -1,6 +1,6 @@
 {
 	"name":"pagetimeline",
-	"version":"0.0.1",
+	"version":"0.0.2",
 	"author":"nant <dumingtan@gmail.com> (http://www.rialive.com)",
 	"description":"web performance analyze tool base on remote debugging protocol",
 	"main":"./core/pagetimeline.js",
@@ -39,5 +39,8 @@
 	},
 	"optionalDependencies":{},
 	"bin":"./bin/pagetimeline.js",
-	"preferGlobal":true
+	"preferGlobal":true,
+	"scripts": {
+		"install": "node install.js"
+	}
 }

@@ -24,6 +24,10 @@ var browserPath = path.join( __dirname, 'browsers' )
 var originalPath = process.env.PATH
 var tmpPath = null;
 
+if( !fs.existsSync( browserPath ) ){
+	fs.mkdirSync( browserPath );
+}
+
 if( process.platform == 'linux' ){
 	var BrowserScript = require('./libs/browserScript');
 	var bs = new BrowserScript({browser:'chrome'});
@@ -35,6 +39,9 @@ if( process.platform == 'linux' ){
 	//download portable browser
 	var downloadUrl = 'http://fe.baidu.com/pagetimeline/tools/ChromiumPortable.zip';
 	var windowsPath = path.join( browserPath, 'windows' );
+	if( !fs.existsSync( windowsPath ) ){
+		fs.mkdirSync( windowsPath );
+	}
 	var chromePath = path.join( windowsPath, 'chrome' );
 	var whichDeferred = kew.defer()
 	which( 'pagetimeline', whichDeferred.makeNodeResolver() )
