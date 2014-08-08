@@ -29,7 +29,7 @@ adb.prototype = {
 						}
 					} )
 				}else{
-					callback(fase,{message:err.message});
+					callback(false,{message:err.message});
 				}
 			} )
 		} )
