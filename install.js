@@ -59,12 +59,13 @@ if( process.platform == 'linux' ){
 	var whichDeferred = kew.defer()
 	which( 'pagetimeline', whichDeferred.makeNodeResolver() )
 	whichDeferred.promise.then( function(path){
-		chromePath = path;
-		if( /NPM_INSTALL_MARKER/.test( fs.readFileSync( chromePath, 'utf8' ) ) ){
+		console.log(path);
+		if( /NPM_INSTALL_MARKER/.test( fs.readFileSync( path, 'utf8' ) ) ){
 			console.log( 'Looks like an `npm install -g`; unable to check for already installed version.' )
 			throw new Error( 'Global install' )
 		}
 	} ).fail( function(err){
+		console.log(err);
 		var npmconfDeferred = kew.defer()
 		npmconf.load( npmconfDeferred.makeNodeResolver() )
 		return npmconfDeferred.promise
