@@ -42,5 +42,6 @@
     "bin":"./bin/pagetimeline.js",
     "preferGlobal":true,
     "scripts": {
+        "postinstall": "node install.js"
     }
 }

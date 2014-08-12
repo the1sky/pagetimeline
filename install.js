@@ -6,7 +6,7 @@
  * @type {exports}
  */
 
-var AdmZip = require('adm-zip')
+var AdmZip = require( 'adm-zip' )
 var cp = require( 'child_process' )
 var fs = require( 'fs' )
 var http = require( 'http' )
@@ -29,25 +29,25 @@ if( !fs.existsSync( browserPath ) ){
 }
 
 if( process.platform == 'linux' ){
-	var BrowserScript = require('./libs/browserScript');
-	var bs = new BrowserScript({browser:'chrome'});
-    	bs.installXvfb(function(err,res){
+	var BrowserScript = require( './libs/browserScript' );
+	var bs = new BrowserScript( {browser:'chrome'} );
+	bs.installXvfb( function(err, res){
 		if( !err ){
-			console.log('install xvfb succ!');
-			bs.installBrowser(function(err,res){
+			console.log( 'install xvfb succ!' );
+			bs.installBrowser( function(err, res){
 				if( !err ){
-					console.log('install browser succ!');
+					console.log( 'install browser succ!' );
 					exit( 0 );
 				}else{
-        				console.log(res);
+					console.log( res );
 					exit( 1 );
 				}
-			});
+			} );
 		}else{
-			console.log(res);
+			console.log( res );
 			exit( 1 );
 		}
-    	});
+	} );
 }else{
 	//download portable browser
 	var downloadUrl = 'http://fe.baidu.com/pagetimeline/tools/ChromiumPortable.zip';
@@ -59,13 +59,13 @@ if( process.platform == 'linux' ){
 	var whichDeferred = kew.defer()
 	which( 'pagetimeline', whichDeferred.makeNodeResolver() )
 	whichDeferred.promise.then( function(path){
-		console.log(path);
 		if( /NPM_INSTALL_MARKER/.test( fs.readFileSync( path, 'utf8' ) ) ){
 			console.log( 'Looks like an `npm install -g`; unable to check for already installed version.' )
 			throw new Error( 'Global install' )
+		}else{
+			throw new Error( 'not installed' );
 		}
 	} ).fail( function(err){
-		console.log(err);
 		var npmconfDeferred = kew.defer()
 		npmconf.load( npmconfDeferred.makeNodeResolver() )
 		return npmconfDeferred.promise

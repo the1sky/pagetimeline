@@ -18,7 +18,7 @@ var adbScript = require('./../libs/adbScript.js');
 var bs,as;
 
 params
-	.version('0.0.1')
+	.version( require('./../package').version )
 	.option('--url [value]','target url, e.g. --url=http://www.baidu.com' )
 	.option('--server [value]', 'remote debugger server, e.g. --server=localhost | xxx ' )
 	.option('--port [value]','remote debugger port, default 9222, if not setting,auto find available port, e.g. --port=9222')
