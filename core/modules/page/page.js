@@ -12,18 +12,26 @@ exports.module = function(pagetimeline, callback){
 	var timeout = pagetimeline.getParam( 'timeout' ) + 1000;
 	var url = pagetimeline.model.url;
 
-	browser.onDomContentEventFired(function(res){
-		var domreadyTime = res.timestamp * 1000 - startTime;
-		pagetimeline.setMetric( 'domreadyEvent', parseInt( domreadyTime ) );
+	browser.onDomContentEventFired( function(res){
+		getStartTime( function(err, tmpRes){
+			if( !err ) startTime = tmpRes.result.value['navigationStart'];
+
+			var domreadyTime = res.timestamp * 1000 - startTime;
+			pagetimeline.setMetric( 'domreadyEvent', parseInt( domreadyTime ) );
+		} );
 	} );
 
-	browser.onLoadEventFired(function(res){
-		var onloadTime = res.timestamp * 1000 - startTime;
-		pagetimeline.setMetric( 'onloadEvent', parseInt( onloadTime ) );
+	browser.onLoadEventFired( function(res){
+		getStartTime( function(err, tmpRes){
+			if( !err ) startTime = tmpRes.result.value['navigationStart'];
 
-		setTimeout( function(callback){
-			callback( false, {message:'analyze page done!'} );
-		}, timeout, callback );
+			var onloadTime = res.timestamp * 1000 - startTime;
+			pagetimeline.setMetric( 'onloadEvent', parseInt( onloadTime ) );
+
+			setTimeout( function(callback){
+				callback( false, {message:'analyze page done!'} );
+			}, timeout, callback );
+		} );
 	} );
 
 	browser.navigate( url, function(err, res){
@@ -31,6 +39,17 @@ exports.module = function(pagetimeline, callback){
 			callback( true, {message:'page open fail!'} );
 		}
 	} );
+
+	function getTiming(){
+		return window.performance.timing;
+	}
+
+	function getStartTime(callback){
+		var script = getTiming.toString() + ';getTiming()';
+		browser.evaluate( script, function(err, res){
+			callback( err, res );
+		} );
+	}
 }
 
 exports.name = 'page';

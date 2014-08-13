@@ -1,15 +1,19 @@
 /**
+ *  find slowest image in first screen
+ *
  * Created by nant on 2014/7/9.
  */
 
 exports.version = '0.1';
-exports.name = 'firstscreen';
 
 exports.module = function(pagetimeline, callback){
+	callback( false, {message:'add first screen module done!'} );
+
 	pagetimeline.log( 'first screen...' );
 	var start = +new Date();
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam( 'timeout' );
+	var startTime = pagetimeline.model.startTime;
 
 	var requestId_info = {};
 
@@ -31,11 +35,25 @@ exports.module = function(pagetimeline, callback){
 	browser.onLoadEventFired( function(res){
 		setTimeout( function(){
 			start = +new Date();
-			getFirstScreenTime( pagetimeline );
+			getStartTime( function(err, res){
+				if( !err ){
+					startTime = res.result.value['navigationStart'];
+				}
+				getFirstScreenTime( pagetimeline );
+			} );
 		}, timeout );
 	} );
 
-	callback( false, {message:'add first screen module done!'} );
+	function getTiming(){
+		return window.performance.timing;
+	}
+
+	function getStartTime(callback){
+		var script = getTiming.toString() + ';getTiming()';
+		browser.evaluate( script, function(err, res){
+			callback( err, res );
+		} );
+	}
 
 	/**
 	 * 获取首屏时间
@@ -43,12 +61,10 @@ exports.module = function(pagetimeline, callback){
 	 */
 	function getFirstScreenTime(pagetimeline){
 		var requests = getRequestTimeByUrl( requestId_info );
-		var browser = pagetimeline.model.browser;
-		var startTime = pagetimeline.model.startTime;
 
 		//计算首屏内的图形
 		var str = getClientScreenImages.toString() + ';getClientScreenImages()';
-		browser.evaluate(str,function(err,res){
+		browser.evaluate( str, function(err, res){
 			//计算最慢时间,timestamp为1970以来的秒
 			var inClientImages = res['result']['value'];
 			var slowestTime = 0;

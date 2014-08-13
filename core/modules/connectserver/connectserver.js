@@ -17,9 +17,9 @@ exports.module = function(pagetimeline, callback){
 		if( !res ){
 			callback( true, {'message':'connect to browser fail!'} );
 		}else{
+			pagetimeline.model['browser'] = browser;
+			pagetimeline.model.startTime = +new Date();
 			setTimeout(function(callback){
-				pagetimeline.model['browser'] = browser;
-				pagetimeline.model.startTime = +new Date();
 				callback( false, {message:'connect to server success!'} );
 			},100, callback)
 		}

@@ -7,6 +7,8 @@ exports.version = '0.1';
 exports.name = 'loadtimes';
 
 exports.module = function(pagetimeline, callback){
+	callback( false, {message:'add load time module!'} );
+
 	pagetimeline.log( 'load time...' );
 	var startTime = pagetimeline.model.startTime;
 	var timeout = pagetimeline.getParam( 'timeout' );
@@ -31,14 +33,18 @@ exports.module = function(pagetimeline, callback){
 
 	browser.onLoadEventFired( function(res){
 		setTimeout( function(){
-			var start = +new Date();
-			var loadTime = getSlowestTime() - startTime;
-			pagetimeline.log( 'load time done in ' + (+new Date() - start ) + 'ms' );
-			pagetimeline.setMetric( 'load_time', parseInt( loadTime ) );
+			getStartTime( function(err,res){
+				if( !err ){
+					startTime = res.result.value['navigationStart'];
+				}
+				var start = +new Date();
+				var loadTime = getSlowestTime() - startTime;
+				pagetimeline.log( 'load time done in ' + (+new Date() - start ) + 'ms' );
+				pagetimeline.setMetric( 'load_time', parseInt( loadTime ) );
+			});
 		}, timeout );
 	} );
 
-	callback( false, {message:'add load time module!'} );
 
 	function getSlowestTime(){
 		var slowestTime = 0;
@@ -63,5 +69,16 @@ exports.module = function(pagetimeline, callback){
 			}
 		}
 		return requestsByUrl;
+	}
+
+	function getTiming(){
+		return window.performance.timing;
+	}
+
+	function getStartTime(callback){
+		var script = getTiming.toString() + ';getTiming()';
+		browser.evaluate( script, function(err, res){
+			callback( err, res );
+		} );
 	}
 }
