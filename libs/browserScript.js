@@ -46,9 +46,6 @@ var browserScript = function(params){
 			this.browserLoc = path.resolve( __dirname + './../browsers/windows/firefox/FirefoxPortable.exe' );
 		}
 	}else{
-		//priviledge,x
-		var cp = require( 'child_process' );
-		cp.exec( 'chmod -R u+x ' + path.resolve( this.homedir ) );
 
 		if( this.browser == 'chrome' ){
 			this.runScript = path.resolve( this.dirname, './runChrome.sh' );
@@ -56,7 +53,8 @@ var browserScript = function(params){
 			this.browserLoc = '';
 			this.installScript = path.resolve( this.dirname, './installChrome.sh' );
             this.installXvfbScript = path.resolve( this.dirname, './installXvfb.sh');
-            this.findXvfbAuthDirNameScript = path.resolve( this.dirname, './findCurXvfbAuthDir.sh' );
+            this.findXvfbAuthDirNameScript = path.resolve( this.dirname, './findCurXvfbAuthDirName.sh' );
+            /*
             var userDataDir = path.resolve( this.homedir, './user-data-dir');
             if( !fs.existsSync( userDataDir ) ){
                 fs.mkdirSync( userDataDir );
@@ -67,11 +65,11 @@ var browserScript = function(params){
             this.user_data_dir = path.resolve( userDataDir, './' + md5.digest('hex') );
             if( !fs.existsSync( this.user_data_dir ) ){
                 fs.mkdirSync( this.user_data_dir );
-            }
+            }*/
 		}
 	}
 
-	this.execArgv = [this.browserLoc, this.port, this.viewport_width, this.viewport_height, this.user_agent, this.user_data_dir];
+	this.execArgv = [this.browserLoc, this.port, this.viewport_width, this.viewport_height, this.user_agent];
     this.closeArgv = [ this.port ];
 }
 

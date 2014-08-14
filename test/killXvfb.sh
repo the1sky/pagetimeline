@@ -1,3 +1,4 @@
+#!/bin/sh
 
 NAME="Xvfb"
 for pid in $(pgrep "$NAME"); 

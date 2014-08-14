@@ -1,8 +1,5 @@
 #!/bin/sh
 
-#chromePort=$1;
-#xvfbDirName=$2;
-
 getXvfbAuthDir()
 {
 	xvfbDir=$(ls -t /tmp | grep 'xvfb-run\..*');
