@@ -1,50 +1,70 @@
 ###PageTimeline, 基于远程过程调试协议的性能分析工具
 
 ###操作系统/浏览器支持
-now:
 
-window:chrome
+windows:chrome
 
-linux(desktop+server):chrome
+ubuntu(desktop+server):chrome
 
 android:chrome
-
-soon:
-
-window:firefox
-
-linux(desktop+server):firefox
-
-mac:chrome,safari
-
 
 ###安装
 
 ####windows
 
     npm install pagetimeline
-    node install.js，因为这个脚本在npm install时有问题，暂时需要手工安装下
-####linux
+    
+####ubuntu
 
-    sudo npm install pagetimeline，暂时有问题
+ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node，假定nodejs路径为: /usr/bin/nodejs
+
+    sudo ln -s /usr/bin/nodejs /usr/bin/node
+    sudo visudo
+    在secure_path值前面添加/usr/bin
+
+安装pagetimeline
+
+    sudo npm install pagetimeline
+    
+安装xvfb：
+
+    ./libs/installXvfb.sh
+
+安装chrome:
+
+    ./libs/installChrome.sh
 
 ###使用示例
 
-####windows
+标准：
 
-    node ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=2000 --format=json
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=2000 --verbose
+    
+输出格式为json：
 
-####linux
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=2000 --verbose --format=json
+    
+输出har文件：
 
-    暂时需要手动安装xvfb,chrome,运行sudo ./libs/installChrome.sh
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=2000 --verbose --har-dir=./har/
+    
+输出性能分析结果文件:
 
-    nodejs ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=2000 --format=json
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=2000 --verbpse --result-dir=./result/
+    
+使用android chrome测试：
 
+    usb连接手机
+    
+    node ./bin/pagetimeline.js ==url=http://www.baidu.com --verbose --mobile=android
 
 ###命令行参数支持
 
+* --url, target url, e.g. --url=http://www.baidu.com
 * --server, remote debugger server, e.g. --server=localhost | xxx
 * --port, remote debugger port, default 9222, if not setting,auto find available port, e.g. --port=9222
+* --disk-cache, disk cache,default false, e.g. --disk-cache=true
+* --mobile, mobile android or iphone, e.g. --mobile=android
 * --config, JSON-formatted config file, e.g. --config=./config.log
 * --viewport, window viewport width and height, e.g. --viewport=1920x768 
 * --proxy, specifies the proxy server to use, e.g. --proxy=192.168.1.42:8080
@@ -56,32 +76,75 @@ mac:chrome,safari
 * --silent, dont\'t write anything to the console, e.g. --slient
 * --format, output format, plain | json | csv, default plain, e.g. --format=json
 * --browser, chrome,firefox, default chrome, e.g. --browser=chrome
+* --har-dir, file directory, e.g. --har-dir=./
+* --result-dir, performance analyze result file directory, e.g. --result-dir=./
 
 ###支持的功能
 
-* firstScreenTime, 首屏时间，及首屏内图片元素
+* first_screen_time, 首屏时间，及首屏内图片元素
 
-* whiteScreenTime,白屏时间
+* white_screen_time,白屏时间
 
 * assetsTypes, 按资源类型划分，各类型包括：数量，大小，url详情
+
+    html_requests
+    
+    html_size
+    
+    jpeg_requests
+    
+    jpeg_size
+    
+    png_requests
+    
+    png_size
+    
+    css_requests
+    
+    css_size
+    
+    js_requests
+    
+    js_size
+    
+    gif_requests
+    
+    gif_size
+    
+    ...
 
 * domreadyEvent
 
 * onloadEvent
 
-* loadTime, 总下载时间
+* load_time, 总下载时间
 
 * timing
 
-* webspeed, 植入webspeed监控脚本的性能数据,http://webspeed.baidu.com
+    timing_appcache
+    
+    timing_dns
+    
+    timing_tcp
+    
+    timing_ttfb
+    
+* global_variables 全局变量
 
-* 更多见modules目录
+* domains 域名总数及详情
+
+* max_requests_per_domain 包含最大请求数的域
+
+* webspeed, 植入webspeed监控脚本的性能数据，详情见http://webspeed.baidu.com
+
+* 更多见: pagetimeline/modules
 
 ### 参考：
     http://remotedebug.org/integrations/
 
 ### think
 
-    网速模拟
+* 网速模拟
+* 区分无缓冲和有缓存性能
 
 
