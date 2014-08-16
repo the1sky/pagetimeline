@@ -363,7 +363,7 @@ browserProxy.prototype = {
 	 * @param callback
 	 */
 	clearBrowserCache:function(callback){
-		this.browser && this.browser.Network.clearBrowserCache({}, function(err, res){
+		this.browser && this.browser.Network.clearBrowserCache({},function(err, res){
 			callback( err, res );
 		} );
 	},
@@ -450,12 +450,31 @@ browserProxy.prototype = {
 		} );
 	},
 
+	/**
+	 * send RDP comand
+	 *
+	 * @param command
+	 * @param params
+	 * @param callback
+	 */
 	sendCommand:function(command,params,callback){
 		this.browser.send(command, params, callback);
 	},
 
+	/**
+	 *  listen any RDP event
+	 *
+	 * @param callback
+	 */
 	onEvent:function(callback){
 		this.browser.on( 'event', callback );
+	},
+
+	/**
+	 * close web socket connection, for testing performance with cache
+	 */
+	closeConnection:function(){
+		this.browser && this.browser.close();
 	}
 }
 

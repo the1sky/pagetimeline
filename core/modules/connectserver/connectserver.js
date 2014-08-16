@@ -10,6 +10,12 @@ exports.module = function(pagetimeline, callback){
 	var server = pagetimeline.getParam( 'server' );
 	var port = pagetimeline.getParam( 'port' );
 	var browserType = pagetimeline.getParam( 'browser' );
+	var runstep = pagetimeline.model.runstep;
+
+	if( runstep == 2 ){
+		var browser = pagetimeline.model.browser;
+		browser && browser.closeConnection();
+	}
 
 	var browserProxyModule = require('./../../browserProxy.js');
 	var browser = new browserProxyModule(server, port,browserType );

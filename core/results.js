@@ -100,6 +100,11 @@ module.exports = function() {
 			return this.getMetricsNames().filter(function(metric) {
 				return this.assert(metric) === false;
 			}, this);
+		},
+		clear:function(){
+			metrics = {};
+			offenders = {};
+			notices = [];
 		}
 	};
 };

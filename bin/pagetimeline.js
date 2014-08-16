@@ -13,9 +13,10 @@ var async = require('async');
 var fs = require('fs');
 var path = require('path');
 var params = require('commander');
-var browserScript = require('./../libs/browserScript.js');
-var adbScript = require('./../libs/adbScript.js');
-var bs,as;
+var browserScriptModule = require('./../libs/browserScript.js');
+var adbScriptModule = require('./../libs/adbScript.js');
+var pagetimelineModule = require('./../core/pagetimeline.js');
+var bs,as,pagetimeline;
 
 params
 	.version( require('./../package').version )
@@ -37,11 +38,12 @@ params
 	.option('--browser [value]','chrome,firefox, default chrome, invalid when debugging on mobile, e.g. --browser=chrome')
 	.option('--har-dir [value]', 'har file directory, e.g. --har-dir=./')
 	.option('--result-dir [value]', 'performance analyze result file directory, e.g. --har-dir=./')
+	.option('--reload', 'reload the page, only once, e.g. --reload')
 	.parse(process.argv);
 
 //default setting
 if (params.config) {
-    var jsonConfig;
+	var jsonConfig;
 	try {
 		jsonConfig = JSON.parse( fs.readFileSync(params.config) ) || {};
 	}
@@ -68,6 +70,7 @@ params.skipModules = (typeof params.skipModules === 'string') ? params.skipModul
 params.userAgent = params.userAgent || getDefaultUserAgent();
 params.diskCache = params.diskCache == 'true' ? 'true' : 'false';
 params.homedir = path.resolve(__dirname, './../');
+params.reload = params.reload != undefined;
 
 if( params.harDir ){
 	params.harDir = path.resolve( params.harDir );
@@ -98,8 +101,8 @@ if( params.port ){
  * @param execArgv
  */
 function run(isMobile,params){
-    if( !bs ) bs = new browserScript( params );
-    if( !as ) as = new adbScript( params );
+	if( !bs ) bs = new browserScriptModule( params );
+	if( !as ) as = new adbScriptModule( params );
 	if( !isMobile && params.server == 'localhost' ){
 		async.series( [openBrowser, async.apply( analyzePerformance, params ), closeBrowser], function(err, res){
 			if( err ) console.log(res);
@@ -107,7 +110,7 @@ function run(isMobile,params){
 			setTimeout(function(){
 				process.exit();
 			},100);
-;
+			;
 		} );
 	}else{
 		if( isMobile ){
@@ -147,10 +150,15 @@ function openBrowser(callback){
  * @param callback
  */
 function analyzePerformance(params,callback){
-	var pagetimeline = require('./../core/pagetimeline.js');
-	var pagetimelineIns = new pagetimeline( params );
-	pagetimelineIns.run(function(err,result){
-		callback(err,result);
+	if( !pagetimeline ) pagetimeline = new pagetimelineModule( params );
+	pagetimeline.run( 1,function(err,result){
+		if( !params.reload ){
+			callback( err, result );
+		}else{
+			pagetimeline.run( 2,function(err,result){
+				callback( err,result );
+			});
+		}
 	});
 }
 
@@ -172,8 +180,7 @@ function closeBrowser(callback){
  * @param callback
  */
 function enableMobileDebugging(params,callback){
-	var adbScript = require('./../libs/adbScript.js');
-	var as = new adbScript(params);
+	if( !as ) as = new adbScriptModule( params );
 	as.enableDebugging( callback );
 }
 
@@ -200,3 +207,4 @@ function getDefaultUserAgent(){
 	var os = require('os');
 	return "pagetimeline/" + VERSION + "(" + os.platform() + " " + os.arch() + ")";
 }
+

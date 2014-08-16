@@ -56,7 +56,11 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
 
     usb连接手机
     
-    node ./bin/pagetimeline.js ==url=http://www.baidu.com --verbose --mobile=android
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --verbose --mobile=android
+    
+测试两遍，no cache vs cache
+
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --verbose --reload
 
 ###命令行参数支持
 
@@ -78,6 +82,8 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
 * --browser, chrome,firefox, default chrome, e.g. --browser=chrome
 * --har-dir, file directory, e.g. --har-dir=./
 * --result-dir, performance analyze result file directory, e.g. --result-dir=./
+* --reload, performance analyze twice, first with no-cahce and second with cache, e.g. --reload
+
 
 ###支持的功能
 
@@ -146,5 +152,10 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
 
 * 网速模拟
 * 区分无缓冲和有缓存性能
+* 并行
+
+    ubuntu下，chrome在切换user data directory时会弹出默认浏览器设置，暂时无法去除，导致时间相关性能指标为空
+    
+    windows下，暂时不处理
 
 

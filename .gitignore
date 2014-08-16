@@ -8,3 +8,7 @@ browsers/windows/chrome
 browsers/windows/FirefoxPortable
 browsers/ubuntu
 config.json
+*.har
+*.json
+test.j
+node_modules

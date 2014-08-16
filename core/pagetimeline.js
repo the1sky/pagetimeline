@@ -62,10 +62,6 @@ var pagetimeline = function(params){
 		this.log('Failed parsing JSON config file');
 	}
 
-	// queue of jobs that needs to be done before report can be generated
-	var Queue = require('../libs/simple-queue');
-	this.reportQueue = new Queue();
-
 	// set up results wrapper
 	var Results = require('./results');
 	this.results = new Results();
@@ -125,9 +121,6 @@ pagetimeline.prototype = {
 			once: this.once.bind(this),
 			emit: this.emit.bind(this),
 
-			// reports
-			reportQueuePush: this.reportQueue.push.bind(this.reportQueue),
-
 			// metrics
 			setMetric: this.setMetric.bind(this),
 			setMetricEvaluate: this.setMetricEvaluate.bind(this),
@@ -146,40 +139,58 @@ pagetimeline.prototype = {
 			echo: this.echo.bind(this)
 		};
 	},
-	run:function(callback){
-		this.addCoreModules();
-		this.addModules();
+	run:function(runstep,callback){
+		this.model.runstep = runstep;
 		this.callback = callback;
 		var self = this;
 		var async = require('async');
+		self.timeoutId = 0;
+
+		if( runstep == 1 ){
+			this.log('start first time analysis...');
+			this.addCoreModules();
+			this.addModules();
+		}else{
+			this.clearAllMetrics();
+			this.log('start second time analysis...');
+		}
+
 		async.series(self.coreModules,function(err,res){
-			if( !err ){
-				async.parallel( self.modules,function(err,res){
-					if( !err ){
-						self.pageModule(self.getPublicWrapper(),function(err,res){
-							if( !err ){
-								self.report();
-								callback(false,{message:'all done!'});
-							}else{
-								callback(true,{message:'run openPage fail!',detail:res});
-							}
-						})
-					}else{
-						callback(true,{message:'run module fail!',detail:res});
-					}
-				});
-			}else{
+			if( err ){
+				self.clearTimeout();
 				callback(true,{message:'run core module fail!',detail:res});
+				return;
 			}
+			async.parallel( self.modules,function(err,res){
+				if( err ){
+					self.clearTimeout();
+					callback(true,{message:'run module fail!',detail:res});
+					return;
+				}
+				self.pageModule(self.getPublicWrapper(),function(err,res){
+					if( err ){
+						callback(true,{message:'run openPage fail!',detail:res});
+					}
+					self.clearTimeout();
+					self.report();
+					callback(false,{message:'all done!'});
+					return;
+				})
+			});
 		});
 
 		//timeout and exit
 		var timeout = 10000 + this.timeout * 2;
-		setTimeout( function(){
+		self.timeoutId = setTimeout( function(){
 			var msg = 'onload event not fired in ' +  timeout + 'ms.';
 			self.log( msg );
+			clearTimeout( self.timeoutId );
 			callback( true, {message:msg} );
 		}, timeout );
+	},
+
+	clearTimeout:function(){
+		clearTimeout( this.timeoutId );
 	},
 
 	addCoreModules:function(){
@@ -202,7 +213,6 @@ pagetimeline.prototype = {
 		var modulesDir = path.resolve( this.homedir,'./modules');
 		var ls = fs.readdirSync(modulesDir) || [];
 		var modules = [];
-
 		ls.forEach(function(entry) {
 			if (fs.lstatSync(modulesDir + '/' + entry + '/' + entry + '.js' ).isFile) {
 				modules.push(entry);
@@ -243,7 +253,7 @@ pagetimeline.prototype = {
 	},
 	// called when all HTTP requests are completed
 	report: function() {
-		var time = Date.now() - this.start;
+		var time = Date.now() - this.model.startTime;
 		this.log('pagetimeline run for <%s> completed in %d ms', this.url, time);
 
 		this.results.setUrl(this.url);
@@ -363,6 +373,10 @@ pagetimeline.prototype = {
 		this.logger.log(this.util.format.apply(this, arguments));
 	},
 
+	clearAllMetrics:function(){
+		this.results.clear();
+	},
+
 	// console.log wrapper obeying --silent mode
 	echo: function(msg) {
 		this.logger.echo(msg);
@@ -371,3 +385,4 @@ pagetimeline.prototype = {
 
 pagetimeline.version = VERSION;
 module.exports = pagetimeline;
+

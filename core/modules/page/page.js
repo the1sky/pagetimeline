@@ -11,6 +11,7 @@ exports.module = function(pagetimeline, callback){
 	var startTime = pagetimeline.model.startTime;
 	var timeout = pagetimeline.getParam( 'timeout' ) + 1000;
 	var url = pagetimeline.model.url;
+	var runstep = pagetimeline.model.runstep;
 
 	browser.onDomContentEventFired( function(res){
 		getStartTime( function(err, tmpRes){
@@ -33,6 +34,14 @@ exports.module = function(pagetimeline, callback){
 			}, timeout, callback );
 		} );
 	} );
+
+	if( runstep == 1 ){
+		browser.setCacheDisabled( true, function(err, res){
+		} );
+	}else{
+		browser.setCacheDisabled( false, function(err, res){
+		} );
+	}
 
 	browser.navigate( url, function(err, res){
 		if( err ){
