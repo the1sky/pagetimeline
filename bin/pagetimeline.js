@@ -1,22 +1,10 @@
 #!/usr/bin/env node
 /**
- * process:
- * 1、receive params
- * 2、start browser with remote-debugging-protocol
- * 3、analyze performance
- * 4、close browser and exit
- *
  * Created by nant on 2014/7/4.
  */
 
-var async = require('async');
-var fs = require('fs');
-var path = require('path');
 var params = require('commander');
-var browserScriptModule = require('./../libs/browserScript.js');
-var adbScriptModule = require('./../libs/adbScript.js');
-var pagetimelineModule = require('./../core/pagetimeline.js');
-var bs,as,pagetimeline;
+var pagetimeline = require("./../index");
 
 params
 	.version( require('./../package').version )
@@ -41,170 +29,16 @@ params
 	.option('--reload', 'reload the page, only once, e.g. --reload')
 	.parse(process.argv);
 
-//default setting
-if (params.config) {
-	var jsonConfig;
-	try {
-		jsonConfig = JSON.parse( fs.readFileSync(params.config) ) || {};
-	}
-	catch(ex) {
-		jsonConfig = {};
-		params.config = false;
-	}
-	Object.keys(jsonConfig).forEach(function(key) {
-		if (typeof params[key] === 'undefined') {
-			params[key] = jsonConfig[key];
-		}
-	});
-}
-
-var isMobile = ( params.mobile == 'android' || params.mobile == 'iphone' );
-params.server = isMobile ? 'localhost' : params.server;
-params.server = params.server ? params.server : 'localhost';
-params.viewport = params.viewport || '1280x1024';
-params.format = params.format || 'plain';
-params.browser = params.browser || 'chrome';
-params.timeout = (params['timeout'] > 0 && parseInt(params['timeout'], 10)) || 5000;
-params.modules = (typeof params['modules'] === 'string') ? params['modules'].split(',') : [];
-params.skipModules = (typeof params.skipModules === 'string') ? params.skipModules.split(',') : [];
-params.userAgent = params.userAgent || getDefaultUserAgent();
-params.diskCache = params.diskCache == 'true' ? 'true' : 'false';
-params.homedir = path.resolve(__dirname, './../');
-params.reload = params.reload != undefined;
-
-if( params.harDir ){
-	params.harDir = path.resolve( params.harDir );
-}else{
-	params.skipModules.push('har');
-}
-
-if( params.resultDir ){
-	params.resultDir = path.resolve( params.resultDir );
-}
-
-//appointed port or auto port
-if( params.port ){
-	run(isMobile,params);
-}else{
-	async.series([getAvailablePort],function(err,res){
-		if( !err ){
-			var port = res[0];
-			params.port = port;
-			run( isMobile,params );
-		}
-	})
-}
-
-/**
- * run
- *
- * @param execArgv
- */
-function run(isMobile,params){
-	if( !bs ) bs = new browserScriptModule( params );
-	if( !as ) as = new adbScriptModule( params );
-	if( !isMobile && params.server == 'localhost' ){
-		async.series( [openBrowser, async.apply( analyzePerformance, params ), closeBrowser], function(err, res){
-			if( err ) console.log(res);
-			closeBrowser( function(err, result){} );
-			setTimeout(function(){
-				process.exit();
-			},100);
-			;
-		} );
-	}else{
-		if( isMobile ){
-			async.series([async.apply( enableMobileDebugging, params ), async.apply( analyzePerformance, params )],function(err,res){
-				if( err ) console.log(res);
-				setTimeout(function(){
-					process.exit();
-				},100);
-			})
-		}else{
-			analyzePerformance( params, function(err,res){
-				if( err ) console.log(res);
-				setTimeout(function(){
-					process.exit();
-				},100);
-			});
-		}
-	}
-}
-
-/**
- * open browser
- *
- * @param execArgv
- * @param callback
- */
-function openBrowser(callback){
-	bs.openBrowser(function(err,result){
-		callback(err, result);
-	});
-}
-
-/**
- * analyze performance
- *
- * @param params
- * @param callback
- */
-function analyzePerformance(params,callback){
-	if( !pagetimeline ) pagetimeline = new pagetimelineModule( params );
-	pagetimeline.run( 1,function(err,result){
-		if( !params.reload ){
-			callback( err, result );
-		}else{
-			pagetimeline.run( 2,function(err,result){
-				callback( err,result );
-			});
-		}
-	});
-}
-
-/**
- * close browser
- *
- * @param callback
- */
-function closeBrowser(callback){
-	bs.closeBrowser(function(err,result){
-		callback(err, result);
-	});
-}
-
-/**
- *  enalbe adb port forwarding
- *
- * @param params
- * @param callback
- */
-function enableMobileDebugging(params,callback){
-	if( !as ) as = new adbScriptModule( params );
-	as.enableDebugging( callback );
-}
-
-/**
- * get available port
- *
- * @param callback
- */
-function getAvailablePort(callback){
-	var portfinder = require('portfinder');
-	portfinder.getPort(function(err,port){
-		err ? port=9222 : port;
-		callback(err,port);
-	});
-}
-
-/**
- *  get default UA
- *
- * @returns {string}
- */
-function getDefaultUserAgent(){
-	var VERSION = require('./../package').version;
-	var os = require('os');
-	return "pagetimeline/" + VERSION + "(" + os.platform() + " " + os.arch() + ")";
-}
+var pt = new pagetimeline( params );
+pt.start();
+pt.on('report',function(res){
+	process.stdout.write(res);
+});
+pt.on('error',function(res){
+	process.stderr.write(res);
+	process.exit( 1 );
+});
+pt.on('end', function(res){
+	process.exit( 0 );
+});
 

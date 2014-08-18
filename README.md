@@ -58,9 +58,17 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
     
     node ./bin/pagetimeline.js --url=http://www.baidu.com --verbose --mobile=android
     
+带缓存测试：
+
 测试两遍，no cache vs cache
 
     node ./bin/pagetimeline.js --url=http://www.baidu.com --verbose --reload
+
+CLI支持:
+    
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --silent
+    
+    此时仅输出结果数据到stdout或者stderr
 
 ###命令行参数支持
 

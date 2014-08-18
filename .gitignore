@@ -10,5 +10,5 @@ browsers/ubuntu
 config.json
 *.har
 *.json
-test.j
+test.js
 node_modules

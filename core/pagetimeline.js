@@ -1,13 +1,8 @@
 /**
  * Created by nant on 2014/7/9.
  */
-// exit codes
-var EXIT_SUCCESS = 0,
-	EXIT_TIMED_OUT = 252,
-	EXIT_CONFIG_FAILED = 253,
-	EXIT_LOAD_FAILED = 254,
-	EXIT_ERROR = 255
 
+var EXIT_SUCCESS = 0;
 var VERSION = require('../package').version;
 
 var pagetimeline = function(params){
@@ -85,14 +80,6 @@ var pagetimeline = function(params){
 }
 
 pagetimeline.prototype = {
-	// simple version of jQuery.proxy
-	proxy: function(fn, scope) {
-		scope = scope || this;
-		return function () {
-			return fn.apply(scope, arguments);
-		};
-	},
-
 	// emit given event
 	emit: function(/* eventName, arg1, arg2, ... */) {
 		this.log('Event ' + arguments[0] + ' emitted');
@@ -285,18 +272,21 @@ pagetimeline.prototype = {
 		this.log('Done!');
 	},
 	saveResult:function(){
-		if( this.results && this.resultDir ){
-			var fs = require( 'fs' );
-			var path = require('path');
+		if( this.results ){
 			var Formatter = require( './formatter' );
 			var renderer = new Formatter( this.results, 'json' );
 			var renderResult = renderer.render();
-			var timestamp = +new Date();
-			var fileName = path.resolve( this.resultDir, encodeURIComponent( this.url ) + '-' + timestamp + '.json');
-			if( !fs.existsSync( this.resultDir ) ){
-				fs.mkdirSync( this.resultDir );
+			this.emit( 'report',renderResult );
+			if( this.resultDir ){
+				var fs = require( 'fs' );
+				var path = require( 'path' );
+				var timestamp = +new Date();
+				var fileName = path.resolve( this.resultDir, encodeURIComponent( this.url ) + '-' + timestamp + '.json' );
+				if( !fs.existsSync( this.resultDir ) ){
+					fs.mkdirSync( this.resultDir );
+				}
+				fs.writeFileSync( fileName, renderResult );
 			}
-			fs.writeFileSync( fileName, renderResult );
 		}
 	},
 	tearDown: function(exitCode) {
