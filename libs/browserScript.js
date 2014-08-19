@@ -124,12 +124,11 @@ browserScript.prototype = {
         });
     },
     closeAllXvfb:function(callback){
-        if( os.platform == 'win32' ){
+        if( os.platform() == 'win32' ){
             callback( false, {message:'close nothing!'} );
         }else{
             var execFile = require('child_process' ).execFile;
-            execFile( this.closeAllXvfbScript,{cwd:this.dirname}, function(err, stdout, stderr){
-            } );
+            execFile( this.closeAllXvfbScript,{cwd:this.dirname}, function(err, stdout, stderr){} );
             setTimeout( function(){
                 callback( false, {message:'kill xvfb done!'} );
             },100 );
