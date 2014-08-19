@@ -110,10 +110,6 @@ pagetimeline.prototype = {
 
 			// metrics
 			setMetric: this.setMetric.bind(this),
-			setMetricEvaluate: this.setMetricEvaluate.bind(this),
-			setMetricFromScope: this.setMetricFromScope.bind(this),
-			setMarkerMetric: this.setMarkerMetric.bind(this),
-			getFromScope: this.getFromScope.bind(this),
 			incrMetric: this.incrMetric.bind(this),
 			getMetric: this.getMetric.bind(this),
 
@@ -300,39 +296,6 @@ pagetimeline.prototype = {
 	setMetric: function(name, value) {
 		value = typeof value === 'string' ? value : (value || 0); // set to zero if undefined / null is provided
 		this.results.setMetric(name, value);
-	},
-
-	setMetricEvaluate: function(name, fn) {
-		this.setMetric(name, this.page.evaluate(fn));
-	},
-
-	setMarkerMetric: function(name) {
-		var now = Date.now(),
-			value = now - this.responseEndTime;
-
-		if (typeof this.responseEndTime === 'undefined') {
-			throw 'setMarkerMetric() called before responseEnd event!';
-		}
-
-		this.results.setMetric(name, value);
-		return value;
-	},
-
-	// set metric from browser's scope that was set there using using window.__phantomas.set()
-	setMetricFromScope: function(name, key) {
-		key = key || name;
-
-		// @ee https://github.com/ariya/phantomjs/wiki/API-Reference-WebPage#evaluatefunction-arg1-arg2--object
-		this.setMetric(name, this.page.evaluate(function(key) {
-			return window.__phantomas.get(key) || 0;
-		}, key));
-	},
-
-	// get a value set using window.__phantomas browser scope
-	getFromScope: function(key) {
-		return this.page.evaluate(function(key) {
-			return window.__phantomas.get(key);
-		}, key);
 	},
 
 	// increements given metric by given number (default is one)

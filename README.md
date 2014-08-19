@@ -159,7 +159,6 @@ CLI支持:
 ### think
 
 * 网速模拟
-* 区分无缓冲和有缓存性能
 * 并行
 
     ubuntu下，chrome在切换user data directory时会弹出默认浏览器设置，暂时无法去除，导致时间相关性能指标为空

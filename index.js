@@ -26,6 +26,7 @@ var pagetimeline = function(params){
 	this.bs = null;
 	this.as = null;
 	this.pagetimelineIns = null;
+    this.runstep = 1;
 
 	//default setting
 	if( params.config ){
@@ -81,12 +82,15 @@ pagetimeline.prototype = {
 	emit:function(){
 		this.emitter.emit.apply( this.emitter, arguments );
 	},
+
 	on:function(ev, fn){
 		this.emitter.on( ev, fn );
 	},
+
 	once:function(ev, fn){
 		this.emitter.once( ev, fn );
 	},
+
 	start:function(){
 		var self = this;
 		if( self.params.port ){
@@ -100,6 +104,7 @@ pagetimeline.prototype = {
 			} );
 		}
 	},
+
 	run:function(){
 		var self = this;
 		if( !this.bs ) this.bs = new browserScriptModule( this.params );
@@ -108,7 +113,9 @@ pagetimeline.prototype = {
 
 		this.pagetimelineIns.on('report',function(res){
 			if( self.params.silent ){
-				self.emit('report',res );
+                var result = JSON.parse(res );
+                result['runstep'] = self.runstep;
+                self.emit('report', JSON.stringify( result ) )
 			}
 		});
 
@@ -118,14 +125,14 @@ pagetimeline.prototype = {
 
 		if( !this.isMobile && this.params.server == 'localhost' ){
 			async.series( [
-				async.apply( this.openBrowser, this.bs ),
-				async.apply( this.analyzePerformance, this.pagetimelineIns, this.params ),
-				async.apply( this.closeBrowser, this.bs )
+                async.apply( this.closeAllXvfb, this ),
+				async.apply( this.openBrowser, this ),
+				async.apply( this.analyzePerformance, this ),
+				async.apply( this.closeBrowser, this )
 			], function(err, res){
 				if( err ) {
 					self.emit('error', res);
 				}
-				self.closeBrowser( self.bs, function(err, result){} );
 				setTimeout( function(){
 					self.emit('end', res);
 				}, 100 );
@@ -133,8 +140,8 @@ pagetimeline.prototype = {
 		}else{
 			if( this.isMobile ){
 				async.series( [
-					async.apply( this.enableMobileDebugging, this.as ),
-					async.apply( this.analyzePerformance, this.pagetimelineIns, this.params )
+					async.apply( this.enableMobileDebugging, this ),
+					async.apply( this.analyzePerformance, this )
 				], function(err, res){
 					if( err ) {
 						self.emit('error', res);
@@ -144,7 +151,7 @@ pagetimeline.prototype = {
 					}, 100 );
 				} )
 			}else{
-				self.analyzePerformance( this.params, function(err, res){
+				self.analyzePerformance( this, function(err, res){
 					if( err ) {
 						self.emit('error', res);
 					}
@@ -155,30 +162,43 @@ pagetimeline.prototype = {
 			}
 		}
 	},
-	openBrowser:function(bs, callback){
-		bs.openBrowser( function(err, result){
-			callback( err, result );
+
+	openBrowser:function(self, callback){
+		self.bs.openBrowser( function(err, res){
+			callback( err, res );
 		} );
 	},
-	analyzePerformance:function(pagetimeline, params, callback){
-		pagetimeline.run( 1, function(err, result){
-			if( !params.reload ){
-				callback( err, result );
+
+	analyzePerformance:function(self, callback){
+        var step = 1;
+        self.runstep = step;
+		self.pagetimelineIns.run( step, function(err, res){
+			if( !self.params.reload ){
+				callback( err, res );
 			}else{
-				pagetimeline.run( 2, function(err, result){
-					callback( err, result );
+                step = 2;
+                self.runstep = step;
+				self.pagetimelineIns.run( step, function(err, res){
+					callback( err, res );
 				} );
 			}
 		} );
 	},
-	closeBrowser:function(bs, callback){
-		bs.closeBrowser( function(err, result){
-			callback( err, result );
+
+	closeBrowser:function(self, callback){
+		self.bs.closeBrowser( function(err, res){
+			callback( err, res );
 		} );
 	},
 
-	enableMobileDebugging:function(as, callback){
-		as.enableDebugging( callback );
+    closeAllXvfb:function(self,callback){
+        self.bs.closeAllXvfb( function(err,res){
+            callback( err, res );
+        })
+    },
+
+	enableMobileDebugging:function(self, callback){
+		self.as.enableDebugging( callback );
 	},
 
 	getAvailablePort:function(callback){

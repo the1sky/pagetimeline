@@ -7,6 +7,7 @@ exports.version = '0.1';
 
 exports.module = function(pagetimeline, callback){
 	pagetimeline.log( 'connect to server ...' );
+
 	var server = pagetimeline.getParam( 'server' );
 	var port = pagetimeline.getParam( 'port' );
 	var browserType = pagetimeline.getParam( 'browser' );
@@ -19,8 +20,10 @@ exports.module = function(pagetimeline, callback){
 
 	var browserProxyModule = require('./../../browserProxy.js');
 	var browser = new browserProxyModule(server, port,browserType );
+
 	browser.init(function(res){
 		if( !res ){
+            pagetimeline.emit('error', {message:'test'});
 			callback( true, {'message':'connect to browser fail!'} );
 		}else{
 			pagetimeline.model['browser'] = browser;
@@ -30,6 +33,10 @@ exports.module = function(pagetimeline, callback){
 			},100, callback)
 		}
 	});
+
+    browser.on( 'error', function(res){
+        pagetimeline.emit('error', res );
+    });
 }
 
 exports.name = 'connectserver';

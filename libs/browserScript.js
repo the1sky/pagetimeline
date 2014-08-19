@@ -15,6 +15,7 @@ var browserScript = function(params){
 	this.browserLoc = '';
 	this.installScript = '';
     this.installXvfbScript = '';
+    this.closeAllXvfbScript = '';
     this.findXvfbAuthDirNameScript = '';
 	this.user_agent = params ? params['user-agent'] : "";
 	this.browser = params ? params.browser : "chrome";
@@ -54,6 +55,7 @@ var browserScript = function(params){
 			this.installScript = path.resolve( this.dirname, './installChrome.sh' );
             this.installXvfbScript = path.resolve( this.dirname, './installXvfb.sh');
             this.findXvfbAuthDirNameScript = path.resolve( this.dirname, './findCurXvfbAuthDirName.sh' );
+            this.closeAllXvfbScript = path.resolve(this.dirname, './killXvfb.sh' );
             /*
             var userDataDir = path.resolve( this.homedir, './user-data-dir');
             if( !fs.existsSync( userDataDir ) ){
@@ -120,6 +122,18 @@ browserScript.prototype = {
         execFile( this.installXvfbScript, {cwd:this.dirname},function(err,stdout,stderr ){
             callback( err,stderr );
         });
+    },
+    closeAllXvfb:function(callback){
+        if( os.platform == 'win32' ){
+            callback( false, {message:'close nothing!'} );
+        }else{
+            var execFile = require('child_process' ).execFile;
+            execFile( this.closeAllXvfbScript,{cwd:this.dirname}, function(err, stdout, stderr){
+            } );
+            setTimeout( function(){
+                callback( false, {message:'kill xvfb done!'} );
+            },100 );
+        }
     }
 }
 

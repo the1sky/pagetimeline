@@ -12,6 +12,8 @@ var browserProxy = function(host, port, browserType){
 	this.host = host;
 	this.port = port;
 
+    this.emitter = new (require( 'events' ).EventEmitter)();
+
 	browserType = "chrome";
 	if( browserType == 'chrome' ){
 		this.Network = {
@@ -206,10 +208,22 @@ var browserProxy = function(host, port, browserType){
  * @param callback
  */
 browserProxy.prototype = {
+    emit: function() {
+        this.emitter.emit.apply(this.emitter, arguments);
+    },
+
+    on: function(ev, fn) {
+        this.emitter.on(ev, fn);
+    },
+
+    once: function(ev, fn) {
+        this.emitter.once(ev, fn);
+    },
+
 	init:function(callback){
 		var Chrome = require( 'chrome-remote-interface' );
 		var self = this;
-		Chrome( {host:this.host, port:this.port}, function(browser){
+		var notifier = Chrome( {host:this.host, port:this.port}, function(browser){
 			self.browser = browser;
 			self.connected = browser ? true : false;
 			if( browser ){
@@ -224,6 +238,10 @@ browserProxy.prototype = {
 			}
 			callback( browser );
 		} );
+
+        notifier.on( 'error', function(res){
+            self.emit('error', res );
+        });
 	},
 
 	/**

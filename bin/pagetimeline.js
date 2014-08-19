@@ -35,7 +35,7 @@ pt.on('report',function(res){
 	process.stdout.write(res);
 });
 pt.on('error',function(res){
-	process.stderr.write(res);
+	process.stderr.write( JSON.stringify( res ) );
 	process.exit( 1 );
 });
 pt.on('end', function(res){
