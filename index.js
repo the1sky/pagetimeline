@@ -11,14 +11,15 @@
 
 var async = require( 'async' );
 var fs = require( 'fs' );
+var os = require( 'os' );
 var path = require( 'path' );
+var _ = require('underscore');
 var browserScriptModule = require( './libs/browserScript.js' );
 var adbScriptModule = require( './libs/adbScript.js' );
 var pagetimelineModule = require( './core/pagetimeline.js' );
 
 function getDefaultUserAgent(){
 	var VERSION = require( './package' ).version;
-	var os = require( 'os' );
 	return "pagetimeline/" + VERSION + "(" + os.platform() + " " + os.arch() + ")";
 }
 
@@ -114,7 +115,17 @@ pagetimeline.prototype = {
 		this.pagetimelineIns.on('report',function(res){
 			if( self.params.silent ){
                 var result = JSON.parse(res );
+				var platform = os.platform();
                 result['runstep'] = self.runstep;
+
+				var win32Platform = self.params.isMobile ?  self.params.mobile : platform;
+				result['platform'] = platform == 'win32' ? win32Platform : platform;
+
+				var mobileBrowser = self.params.mobile == 'android' ? 'android chrome' : 'safari';
+				result['browser'] = self.params.isMobile ? mobileBrowser : self.params.browser;
+
+				result['timestamp'] = _.now();
+
                 self.emit('report', JSON.stringify( result ) )
 			}
 		});
