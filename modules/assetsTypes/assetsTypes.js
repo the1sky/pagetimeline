@@ -15,6 +15,9 @@ exports.module = function(pagetimeline, callback){
 		var timestamp = res['timestamp'];
 		var response = res.response;
 		var url = response.url;
+
+		if( /v=pagetimeline/.test(url) ) return ;
+
 		if( !requestId_info[requestId] ){
 			requestId_info[requestId] = {}
 		}
