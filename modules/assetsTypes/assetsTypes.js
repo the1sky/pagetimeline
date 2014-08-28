@@ -16,7 +16,7 @@ exports.module = function(pagetimeline, callback){
 		var response = res.response;
 		var url = response.url;
 
-		if( /v=pagetimeline/.test(url) ) return ;
+		if( /v=pagetimeline/.test( url ) ) return;
 
 		if( !requestId_info[requestId] ){
 			requestId_info[requestId] = {}
@@ -49,30 +49,14 @@ exports.module = function(pagetimeline, callback){
 				var url = value.url;
 				var responseBody = value.responseBody;
 				if( !responseBody ) return;
-				var mimeExt = mime.extension( responseBody.mimeType );
-				if( !mimeExt ){
-					console.log( mimeExt );
-				}
-				if( mimeExt == 'flash' ){
-					console.log( mimeExt );
-				}
-				/*
-				 if( mimeExt == 'js' ){
-				 console.log(mimeExt );
-				 }
-				 */
+				var mimeType = responseBody.mimeType;
+				var mimeExt = mime.extension( mimeType );
 				var contentLen = 0;
+
 				if( responseBody.headers['Content-Length'] ){
 					contentLen = parseFloat( responseBody.headers['Content-Length'] );
 				}else{
 					contentLen = 0;
-					/*
-					 var browser = pagetimeline.core.browser;
-					 browser.send('Network.getResponseBody',{requestId:key},function(err,data){
-					 "use strict";
-					 console.log(data);
-					 })
-					 */
 				}
 				if( !assertsInfo[mimeExt] ){
 					assertsInfo[mimeExt] = {
@@ -81,18 +65,29 @@ exports.module = function(pagetimeline, callback){
 						urls:[]
 					}
 				}
-
 				assertsInfo[mimeExt].count++;
 				assertsInfo[mimeExt].size += contentLen;
 				assertsInfo[mimeExt].urls.push( url );
 				totalRequests++;
 				totalSize += contentLen;
+
+				if( /image/.test( mimeType ) ){
+					if( !assertsInfo['image'] ){
+						assertsInfo['image'] = {
+							count:0,
+							size:0,
+							urls:[]
+						}
+					}
+					assertsInfo['image'].count++;
+					assertsInfo['image'].size += contentLen;
+					assertsInfo['image'].urls.push( url );
+				}
 			} );
 
 			if( totalRequests > 0 ){
 				pagetimeline.setMetric( 'total_requests', totalRequests );
 			}
-
 			if( totalSize > 0 ){
 				pagetimeline.setMetric( 'total_size', ( totalSize / 1024 ).toFixed( 2 ) + 'KB' );
 			}
@@ -104,7 +99,6 @@ exports.module = function(pagetimeline, callback){
 					pagetimeline.addOffender( key + '_requests', url );
 				} )
 			} )
-
 			pagetimeline.log( 'asserts types done in ' + (+new Date() - start ) + 'ms' );
 		}, timeout );
 	} );
