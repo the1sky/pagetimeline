@@ -52,6 +52,7 @@ var pagetimeline = function(params){
 	params.format = params.format || 'plain';
 	params.browser = params.browser || 'chrome';
 	params.timeout = (params['timeout'] > 0 && parseInt( params['timeout'], 10 )) || 2000;
+	params.browserTimeout = (params.browserTimeout > 0 && parseInt( params.browserTimeout, 10 )) || 2000;
 	params.modules = (typeof params['modules'] === 'string') ? params['modules'].split( ',' ) : [];
 	params.skipModules = (typeof params.skipModules === 'string') ? params.skipModules.split( ',' ) : [];
 	params.userAgent = params.userAgent || getDefaultUserAgent();

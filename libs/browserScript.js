@@ -19,6 +19,7 @@ var browserScript = function(params){
     this.findXvfbAuthDirNameScript = '';
 	this.user_agent = params ? params['user-agent'] : "";
 	this.browser = params ? params.browser : "chrome";
+	this.browserTimeout = params ? params.browserTimeout : 2000;
 	this.port = params ? params.port : 9222;
     this.user_data_dir = '';
 	this.execArgv = [];
@@ -96,7 +97,7 @@ browserScript.prototype = {
                 });
             }
 			callback( false, {message:'open browser done!'} );
-		}, 1000 );
+		}, self.browserTimeout );
 	},
 	closeBrowser:function(callback){
 		var execFile = require( 'child_process' ).execFile;
