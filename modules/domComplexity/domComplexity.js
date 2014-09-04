@@ -22,9 +22,9 @@ exports.module = function(pagetimeline, callback){
 		var inline_css_count = 0;
 		var size = 0;
 
-		res['comment_size_offender'] = [];
-		res['hidden_size_offender'] = [];
-		res['inline_css_count_offender'] = [];
+		res['dom_comment_size_offender'] = [];
+		res['dom_hidden_size_offender'] = [];
+		res['dom_inline_css_count_offender'] = [];
 
 		var walk = function(node, callback, depth){
 			var childNode;
@@ -94,7 +94,7 @@ exports.module = function(pagetimeline, callback){
 					comment_size += size;
 					// log HTML comments bigger than 64 characters
 					if( size > 64 ){
-						res['comment_size_offender'].push( getDOMPath( node ) + ' (' + size + ' characters)' );
+						res['dom_comment_size_offender'].push( getDOMPath( node ) + ' (' + size + ' characters)' );
 					}
 					break;
 
@@ -113,11 +113,11 @@ exports.module = function(pagetimeline, callback){
 					if( styles && styles.getPropertyValue( 'display' ) === 'none' ){
 						if( typeof node.innerHTML === 'string' ){
 							size = node.innerHTML.length;
-							hidden_count++;
-							hidden_size += size;
 							// log hidden containers bigger than 1 kB
 							if( size > 1024 ){
-								res['hidden_size_offender'].push( getDOMPath( node ) + ' (' + size + ' characters)' );
+								hidden_count++;
+								hidden_size += size;
+								res['dom_hidden_size_offender'].push( getDOMPath( node ) + ' (' + size + ' characters)' );
 							}
 						}
 						// don't run for child nodes as they're hidden as well
@@ -127,7 +127,7 @@ exports.module = function(pagetimeline, callback){
 					// count nodes with inline CSS
 					if( node.hasAttribute( 'style' ) ){
 						inline_css_count++;
-						res['inline_css_count_offender'].push( getDOMPath( node ) + ' (' + node.getAttribute( 'style' ) + ')' );
+						res['dom_inline_css_count_offender'].push( getDOMPath( node ) + ' (' + node.getAttribute( 'style' ) + ')' );
 					}
 
 					break;
@@ -141,11 +141,12 @@ exports.module = function(pagetimeline, callback){
 		} );
 
 		res['dom_count'] = dom_count;
-		res['comment_size'] = comment_size;
-		res['hidden_count'] = hidden_count;
-		res['hidden_size'] = hidden_size;
-		res['inline_css_count'] = inline_css_count;
-		res['white_space_size'] = white_space_size;
+		res['dom_max_depth'] = DOMelementMaxDepth;
+		res['dom_comment_size'] = comment_size;
+		res['dom_hidden_count'] = hidden_count;
+		res['dom_hidden_size'] = hidden_size;
+		res['dom_inline_css_count'] = inline_css_count;
+		res['dom_white_space_size'] = white_space_size;
 
 		return res;
 	};
