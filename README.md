@@ -22,7 +22,7 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
     sudo visudo
     在secure_path值前面添加/usr/bin
 
-安装pagetimeline
+安装pagetimeline:
 
     sudo npm install pagetimeline
     
@@ -33,6 +33,26 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
 安装chrome:
 
     ./libs/installChrome.sh
+    
+
+#####centos
+
+切换到root权限:
+
+    su root
+
+安装pagetimeline:
+    
+    npm install pagetimeline
+    
+安装xvfb:
+
+    ./libs/installXvfb.sh
+    
+安装chrome:
+
+    ./llibs/installChrome.sh
+    
 
 ###使用示例
 
@@ -83,6 +103,7 @@ CLI支持:
 * --modules, specify module, e.g. --modules=firstscreen,whitescreen
 * --skip-modules, skip selected modules [moduleOne],[moduleTwo],.., e.g. --skip-modules=firstscreen,whitescreen.
 * --timeout, time after onload event, default 2000, e.g. --timeout=2000
+* --browser-timeout,time after open browser command, default 2000, e.g. --browser-timeout=2000
 * --user-agent, provide a custom user agent, e.g. --user-agent=Mozilla/5.0 (Windows NT 6.3; WOW64; rv:30.0) Gecko/20100101 Firefox/30.0
 * --verbose, write debug messages to console, e.g. --verbose
 * --silent, dont\'t write anything to the console, e.g. --slient
@@ -124,6 +145,8 @@ CLI支持:
     gif_requests
     
     gif_size
+    
+    slowest_requests
     
     ...
 
