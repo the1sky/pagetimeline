@@ -14,6 +14,7 @@ var fs = require( 'fs' );
 var os = require( 'os' );
 var path = require( 'path' );
 var _ = require('underscore');
+var crypto = require('crypto');
 var browserScriptModule = require( './libs/browserScript.js' );
 var adbScriptModule = require( './libs/adbScript.js' );
 var pagetimelineModule = require( './core/pagetimeline.js' );
@@ -73,6 +74,10 @@ var pagetimeline = function(params){
 
 	this.params = params;
 
+	var md5 = crypto.createHash('md5');
+	md5.update( params.url );
+	this.id = md5.digest('hex');
+
 	// setup the stuff
 	this.emitter = new (require( 'events' ).EventEmitter)();
 	this.emitter.setMaxListeners( 200 );
@@ -118,6 +123,7 @@ pagetimeline.prototype = {
                 var result = JSON.parse(res );
 				var platform = os.platform();
                 result['runstep'] = self.runstep;
+				result['id'] = self.id;
 
 				var win32Platform = self.params.isMobile ?  self.params.mobile : platform;
 				result['platform'] = platform == 'win32' ? win32Platform : platform;
