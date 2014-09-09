@@ -19,8 +19,6 @@ params
 	.option('--modules [value]','specify module, e.g. --modules=firstscreen,whitescreen')
 	.option('--skip-modules [value]','skip selected modules [moduleOne],[moduleTwo],.., e.g. --skip-modules=firstscreen,whitescreen.')
 	.option('--timeout [value]','time after onload, default 2000, e.g. --timeout=2000')
-	//todo,auto judgement
-	.option('--browser-timeout [value]','time after open browser command, default 2000, e.g. --browser-timeout=2000')
 	.option('--user-agent [value]','provide a custom user agent, e.g. --user-agent=Mozilla/5.0 (Windows NT 6.3; WOW64; rv:30.0) Gecko/20100101 Firefox/30.0')
 	.option('--verbose [value]','write debug messages to console, e.g. --verbose')
 	.option('--silent [value]','dont\'t write anything to the console, e.g. --slient')

@@ -223,25 +223,31 @@ browserProxy.prototype = {
 	init:function(callback){
 		var Chrome = require( 'chrome-remote-interface' );
 		var self = this;
-		var notifier = Chrome( {host:this.host, port:this.port}, function(browser){
-			self.browser = browser;
-			self.connected = browser ? true : false;
-			if( browser ){
-				//general
-				self.Network = browser.Network;
-				self.Page = browser.Page;
-				self.Timeline = browser.Timeline;
-				self.Runtime = browser.Runtime;
-				self.Console= browser.Console;
-				self.callbacks = browser.callbacks;
-				self.chooseTab = browser.chooseTab;
-			}
-			callback( browser );
-		} );
 
-        notifier.on( 'error', function(res){
-            self.emit('error', res );
-        });
+		var intervalId = setInterval( function(){
+			var notifier = Chrome( {host:self.host, port:self.port});
+
+			notifier.on( 'error', function(res){
+				notifier = null;
+			} );
+
+			notifier.on( 'connect', function(browser){
+				clearInterval( intervalId );
+
+				self.browser = browser;
+				self.connected = browser ? true : false;
+				if( browser ){
+					self.Network = browser.Network;
+					self.Page = browser.Page;
+					self.Timeline = browser.Timeline;
+					self.Runtime = browser.Runtime;
+					self.Console = browser.Console;
+					self.callbacks = browser.callbacks;
+					self.chooseTab = browser.chooseTab;
+				}
+				callback( browser );
+			} );
+		},1000 );
 	},
 
 	/**
