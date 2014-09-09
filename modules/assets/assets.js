@@ -9,12 +9,14 @@ exports.module = function(pagetimeline, callback){
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam( 'timeout' );
 	var requestId_info = {};
-	var _ = require('underscore');
+	var url_size_list = [];
+	var _ = require( 'underscore' );
 
 	browser.onResponseReceived( function(res){
-		if( res.response.timing ){
-			console.log( res.response.timing['requestTime'], res.response.timing['receiveHeadersEnd'], res.response.url );
-		}
+		/*
+		 if( res.response.timing ){
+		 console.log( res.response.timing['requestTime'], res.response.timing['receiveHeadersEnd'], res.response.url );
+		 }*/
 		var requestId = res['requestId'];
 		var timestamp = res['timestamp'];
 		var response = res.response;
@@ -35,7 +37,8 @@ exports.module = function(pagetimeline, callback){
 	browser.onLoadEventFired( function(res){
 		setTimeout( function(){
 			calculateTypeCountSize();
-			calculateSlowestRequests();
+			calculateSlowRequests();
+			calculateBigRequests();
 		}, timeout );
 	} );
 
@@ -81,6 +84,8 @@ exports.module = function(pagetimeline, callback){
 			totalRequests++;
 			totalSize += contentLen;
 
+			url_size_list.push( {url:url, size:contentLen} );
+
 			if( /image/.test( mimeType ) ){
 				if( !assertsInfo['image'] ){
 					assertsInfo['image'] = {
@@ -113,28 +118,56 @@ exports.module = function(pagetimeline, callback){
 	}
 
 	/**
-	 * top 5
+	 * slow top 5
 	 */
-	function calculateSlowestRequests(){
+	function calculateSlowRequests(){
 		var script = getEntries.toString() + ';getEntries()';
 		browser.evaluate( script, function(err, res){
 			if( !err && res.result ){
-				res.result.value.sort(function(x,y){
+				var result = res.result.value;
+				result.sort( function(x, y){
 					if( x.duration > y.duration ){
 						return -1;
 					}else{
 						return 1;
 					}
-				});
+				} );
 
 				var count = 5;
-				pagetimeline.setMetric( 'slowest_requests', count );
-				_.forEach( res.result.value,function(item,index){
+				count = count < result.length ? count : result.length;
+				pagetimeline.setMetric( 'slow_requests', count );
+				_.forEach( result, function(item, index){
 					if( index < count ){
-						pagetimeline.addOffender( 'slowest_requests', item.name + '    ' + item.duration );
+						pagetimeline.addOffender( 'slow_requests', item.name + '    ' + item.duration );
 					}
-				});
-				console.log( res.result );
+				} );
+			}
+		} );
+	}
+
+	/**
+	 * big top 5
+	 */
+	function calculateBigRequests(){
+		var compare = function(obj1, obj2){
+			var val1 = obj1.size;
+			var val2 = obj2.size;
+			if( val1 < val2 ){
+				return 1;
+			}else if( val1 > val2 ){
+				return -1;
+			}else{
+				return 0;
+			}
+		}
+		url_size_list.sort( compare );
+
+		var count = 5;
+		count = count < url_size_list.length ? count : url_size_list.length;
+		pagetimeline.setMetric( 'big_requests', count );
+		_.forEach( url_size_list, function(item, index){
+			if( index < count ){
+				pagetimeline.addOffender( 'big_requests', item.url + '      ' + item.size );
 			}
 		} );
 	}
