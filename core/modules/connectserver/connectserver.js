@@ -18,25 +18,23 @@ exports.module = function(pagetimeline, callback){
 		browser && browser.closeConnection();
 	}
 
-	var browserProxyModule = require('./../../browserProxy.js');
-	var browser = new browserProxyModule(server, port,browserType );
+	var browserProxyModule = require( './../../browserProxy.js' );
+	var browser = new browserProxyModule( server, port, browserType );
 
-	browser.init(function(res){
+	browser.init( function(res){
 		if( !res ){
-            pagetimeline.emit('error', {message:'test'});
 			callback( true, {'message':'connect to browser fail!'} );
 		}else{
 			pagetimeline.model['browser'] = browser;
 			pagetimeline.model.startTime = +new Date();
-			setTimeout(function(callback){
-				callback( false, {message:'connect to server success!'} );
-			},100, callback)
-		}
-	});
 
-    browser.on( 'error', function(res){
-        pagetimeline.emit('error', res );
-    });
+			callback( false, {message:'connect to server success!'} );
+		}
+	} );
+
+	browser.on( 'error', function(res){
+		pagetimeline.emit( 'error', res );
+	} );
 }
 
 exports.name = 'connectserver';

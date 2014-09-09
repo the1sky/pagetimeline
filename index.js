@@ -71,11 +71,12 @@ var pagetimeline = function(params){
 		params.resultDir = path.resolve( params.resultDir );
 	}
 
-	this.params = params;
-
 	var md5 = crypto.createHash('md5');
-	md5.update( params.url );
-	this.id = md5.digest('hex');
+	md5.update( params.url + (+new Date()) );
+	this.uid = md5.digest('hex');
+	params.uid = this.uid;
+
+	this.params = params;
 
 	// setup the stuff
 	this.emitter = new (require( 'events' ).EventEmitter)();
@@ -122,7 +123,7 @@ pagetimeline.prototype = {
                 var result = JSON.parse(res );
 				var platform = os.platform();
                 result['runstep'] = self.runstep;
-				result['id'] = self.id;
+				result['uid'] = self.uid;
 
 				var win32Platform = self.params.isMobile ?  self.params.mobile : platform;
 				result['platform'] = platform == 'win32' ? win32Platform : platform;

@@ -18,6 +18,8 @@ var pagetimeline = function(params){
 	this.url = this.params.url;
 	this.model.url = this.url;
 
+	this.model.uid = params.uid;
+
 	this.format = params.format;
 
 	this.viewport = params.viewport;

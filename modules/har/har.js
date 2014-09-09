@@ -15,6 +15,7 @@ exports.module = function(pagetimeline, callback){
 	var fs = require( 'fs' );
 	var browser = pagetimeline.model.browser;
 	var startTime = pagetimeline.model.startTime;
+	var uid = pagetimeline.model.uid;
 	var url = pagetimeline.getParam( 'url' );
 	var timeout = pagetimeline.getParam( 'timeout' );
 	var harDir = pagetimeline.getParam( 'harDir' );
@@ -64,8 +65,7 @@ exports.module = function(pagetimeline, callback){
 		var har = getHAR();
 		var json = JSON.stringify( har, null, 4 );
 		var path = require('path');
-		var timestamp = +new Date();
-		var harName = path.resolve( harDir, encodeURIComponent( url ) + '-' + timestamp + '.har');
+		var harName = path.resolve( harDir, uid + '.har');
 		if( !fs.existsSync( harDir ) ){
 			fs.mkdirSync( harDir );
 		}
