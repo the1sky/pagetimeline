@@ -26,7 +26,8 @@ params
 	.option('--browser [value]','chrome,firefox, default chrome, invalid when debugging on mobile, e.g. --browser=chrome')
 	.option('--har-dir [value]', 'har file directory, e.g. --har-dir=./')
 	.option('--result-dir [value]', 'performance analyze result file directory, e.g. --har-dir=./')
-	.option('--reload', 'reload the page, only once, e.g. --reload')
+	.option('--reload', 'reload the page, e.g. --reload')
+	.option('--reload-count [value]', 'reload count, e.g. --reload-count=2')
 	.parse(process.argv);
 
 var pt = new pagetimeline( params );

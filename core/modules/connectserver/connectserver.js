@@ -12,8 +12,9 @@ exports.module = function(pagetimeline, callback){
 	var port = pagetimeline.getParam( 'port' );
 	var browserType = pagetimeline.getParam( 'browser' );
 	var runstep = pagetimeline.model.runstep;
+	var maxstep = pagetimeline.model.maxstep;
 
-	if( runstep == 2 ){
+	if( runstep <= maxstep ){
 		var browser = pagetimeline.model.browser;
 		browser && browser.closeConnection();
 	}
@@ -36,5 +37,3 @@ exports.module = function(pagetimeline, callback){
 		pagetimeline.emit( 'error', res );
 	} );
 }
-
-exports.name = 'connectserver';

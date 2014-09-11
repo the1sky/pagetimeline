@@ -13,8 +13,8 @@ var async = require( 'async' );
 var fs = require( 'fs' );
 var os = require( 'os' );
 var path = require( 'path' );
-var _ = require('underscore');
-var crypto = require('crypto');
+var _ = require( 'underscore' );
+var crypto = require( 'crypto' );
 var browserScriptModule = require( './libs/browserScript.js' );
 var adbScriptModule = require( './libs/adbScript.js' );
 var pagetimelineModule = require( './core/pagetimeline.js' );
@@ -28,7 +28,7 @@ var pagetimeline = function(params){
 	this.bs = null;
 	this.as = null;
 	this.pagetimelineIns = null;
-    this.runstep = 1;
+	this.runstep = 1;
 
 	//default setting
 	if( params.config ){
@@ -60,6 +60,7 @@ var pagetimeline = function(params){
 	params.homedir = path.resolve( __dirname, './' );
 	params.silent = params.silent || ( params.silent != undefined );
 	params.reload = params.reload || ( params.reload != undefined );
+	params.reloadCount = params.reload ? ( parseInt( params.reloadCount ) || 2 ) : 1;
 
 	if( params.harDir ){
 		params.harDir = path.resolve( params.harDir );
@@ -71,9 +72,9 @@ var pagetimeline = function(params){
 		params.resultDir = path.resolve( params.resultDir );
 	}
 
-	var md5 = crypto.createHash('md5');
+	var md5 = crypto.createHash( 'md5' );
 	md5.update( params.url + (+new Date()) );
-	this.uid = md5.digest('hex');
+	this.uid = md5.digest( 'hex' );
 	params.uid = this.uid;
 
 	this.params = params;
@@ -118,14 +119,14 @@ pagetimeline.prototype = {
 		if( !this.as ) this.as = new adbScriptModule( this.params );
 		if( !this.pagetimelineIns ) this.pagetimelineIns = new pagetimelineModule( this.params );
 
-		this.pagetimelineIns.on('report',function(res){
+		this.pagetimelineIns.on( 'report', function(res){
 			if( self.params.silent ){
-                var result = JSON.parse(res );
+				var result = JSON.parse( res );
 				var platform = os.platform();
-                result['runstep'] = self.runstep;
+				result['runstep'] = self.runstep;
 				result['uid'] = self.uid;
 
-				var win32Platform = self.params.isMobile ?  self.params.mobile : platform;
+				var win32Platform = self.params.isMobile ? self.params.mobile : platform;
 				result['platform'] = platform == 'win32' ? win32Platform : platform;
 
 				var mobileBrowser = self.params.mobile == 'android' ? 'android chrome' : 'safari';
@@ -133,48 +134,44 @@ pagetimeline.prototype = {
 
 				result['timestamp'] = _.now();
 
-                self.emit('report', JSON.stringify( result ) )
+				self.emit( 'report', JSON.stringify( result ) )
 			}
-		});
+		} );
 
-		this.pagetimelineIns.on('error',function(res){
-			self.emit('error',res);
-		});
+		this.pagetimelineIns.on( 'error', function(res){
+			self.emit( 'error', res );
+		} );
 
 		if( !this.isMobile && this.params.server == 'localhost' ){
 			async.series( [
-                async.apply( this.closeAllXvfb, this ),
-				async.apply( this.openBrowser, this ),
-				async.apply( this.analyzePerformance, this ),
-				async.apply( this.closeBrowser, this )
+				async.apply( this.closeAllXvfb, this ), async.apply( this.openBrowser, this ), async.apply( this.analyzePerformance, this ), async.apply( this.closeBrowser, this )
 			], function(err, res){
-				if( err ) {
-					self.emit('error', res);
+				if( err ){
+					self.emit( 'error', res );
 				}
 				setTimeout( function(){
-					self.emit('end', res);
+					self.emit( 'end', res );
 				}, 100 );
 			} );
 		}else{
 			if( this.isMobile ){
 				async.series( [
-					async.apply( this.enableMobileDebugging, this ),
-					async.apply( this.analyzePerformance, this )
+					async.apply( this.enableMobileDebugging, this ), async.apply( this.analyzePerformance, this )
 				], function(err, res){
-					if( err ) {
-						self.emit('error', res);
+					if( err ){
+						self.emit( 'error', res );
 					}
 					setTimeout( function(){
-						self.emit('end', res);
+						self.emit( 'end', res );
 					}, 100 );
 				} )
 			}else{
 				self.analyzePerformance( this, function(err, res){
-					if( err ) {
-						self.emit('error', res);
+					if( err ){
+						self.emit( 'error', res );
 					}
 					setTimeout( function(){
-						self.emit('end', res);
+						self.emit( 'end', res );
 					}, 100 );
 				} );
 			}
@@ -188,17 +185,16 @@ pagetimeline.prototype = {
 	},
 
 	analyzePerformance:function(self, callback){
-        var step = 1;
-        self.runstep = step;
+		self.runIns( self, 1, self.params.reloadCount, callback );
+	},
+
+	runIns:function(self, step, maxStep, callback){
 		self.pagetimelineIns.run( step, function(err, res){
-			if( !self.params.reload ){
-				callback( err, res );
+			if( step < maxStep ){
+				step++;
+				self.runIns( self, step, maxStep, callback );
 			}else{
-                step = 2;
-                self.runstep = step;
-				self.pagetimelineIns.run( step, function(err, res){
-					callback( err, res );
-				} );
+				callback( err, res );
 			}
 		} );
 	},
@@ -209,11 +205,11 @@ pagetimeline.prototype = {
 		} );
 	},
 
-    closeAllXvfb:function(self,callback){
-        self.bs.closeAllXvfb( function(err,res){
-            callback( err, res );
-        })
-    },
+	closeAllXvfb:function(self, callback){
+		self.bs.closeAllXvfb( function(err, res){
+			callback( err, res );
+		} )
+	},
 
 	enableMobileDebugging:function(self, callback){
 		self.as.enableDebugging( callback );

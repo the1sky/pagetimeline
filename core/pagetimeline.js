@@ -17,6 +17,8 @@ var pagetimeline = function(params){
 
 	this.url = this.params.url;
 	this.model.url = this.url;
+	this.model.originalUrl = this.url;
+	this.model.maxstep = this.params.reloadCount;
 
 	this.model.uid = params.uid;
 
