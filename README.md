@@ -25,15 +25,10 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
 安装pagetimeline:
 
     sudo npm install pagetimeline
-    
-安装xvfb：
 
-    ./libs/installXvfb.sh
+注意事项:
 
-安装chrome:
-
-    ./libs/installChrome.sh
-    
+    大陆可能需要翻墙
 
 #####centos
 
@@ -44,15 +39,6 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
 安装pagetimeline:
     
     npm install pagetimeline
-    
-安装xvfb:
-
-    ./libs/installXvfb.sh
-    
-安装chrome:
-
-    ./llibs/installChrome.sh
-    
 
 ###使用示例
 
@@ -112,6 +98,7 @@ CLI支持:
 * --har-dir, file directory, e.g. --har-dir=./
 * --result-dir, performance analyze result file directory, e.g. --result-dir=./
 * --reload, performance analyze twice, first with no-cahce and second with cache, e.g. --reload
+* --reload-count,reload count, 2 or bigger, e.g. --reload-count=2
 
 
 ###支持的功能

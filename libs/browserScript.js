@@ -112,15 +112,17 @@ browserScript.prototype = {
 	},
 	installBrowser:function(callback){
 		var execFile = require( 'child_process' ).execFile;
-		execFile( this.installScript, {cwd:this.dirname}, function(err, stdout, stderr){
+		var subProc = execFile( this.installScript, {cwd:this.dirname}, function(err, stdout, stderr){
 			callback( err, stderr );
 		} );
+        subProc.stdout.pipe( process.stdout );
 	},
 	installXvfb:function(callback){
 		var execFile = require( 'child_process' ).execFile;
-		execFile( this.installXvfbScript, {cwd:this.dirname}, function(err, stdout, stderr){
+		var subProc = execFile( this.installXvfbScript, {cwd:this.dirname}, function(err, stdout, stderr){
 			callback( err, stderr );
 		} );
+        subProc.stdout.pipe( process.stdout );
 	},
 	closeAllXvfb:function(callback){
 		if( os.platform() == 'win32' ){

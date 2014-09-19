@@ -32,10 +32,29 @@ if( process.platform == 'linux' ){
     //priviledge,x
     var cp = require( 'child_process' );
     cp.exec( 'chmod -R u+x ' + path.resolve( __dirname ) );
-	exit( 0 );
+
+    var BrowserScript = require( './libs/browserScript' );
+    var bs = new BrowserScript( {browser:'chrome'} );
+    bs.installXvfb( function(err, res){
+        if( !err ){
+            console.log( 'install xvfb succ!' );
+            bs.installBrowser( function(err, res){
+                if( !err ){
+                    console.log( 'install browser succ!' );
+                    exit( 0 );
+                }else{
+                    console.log( res );
+                    exit( 1 );
+                }
+            } );
+        }else{
+            console.log( res );
+            exit( 1 );
+        }
+    } );
 }else{
 	//download portable browser
-	var downloadUrl = 'http://fe.baidu.com/pagetimeline/tools/ChromiumPortable.zip';
+	var downloadUrl = 'http://pagetimeline.duapp.com/browser/ChromiumPortable.zip';
 	var windowsPath = path.join( browserPath, 'windows' );
 	if( !fs.existsSync( windowsPath ) ){
 		fs.mkdirSync( windowsPath );
