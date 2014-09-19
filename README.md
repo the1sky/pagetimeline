@@ -1,5 +1,3 @@
-###PageTimeline, 基于远程过程调试协议的性能分析工具
-
 ###操作系统/浏览器支持
 
 windows:chrome
