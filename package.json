@@ -1,46 +1,47 @@
 {
-    "name":"pagetimeline",
-    "version":"0.1.7",
-    "author":"nant <dumingtan@gmail.com> (http://www.rialive.com)",
-    "description":"web performance analyze tool base on remote debugging protocol",
-    "main":"./index.js",
-    "repository":{
-        "type":"git",
-        "url":"git://github.com/the1sky/pagetimeline.git"
+    "name": "pagetimeline",
+    "version": "0.1.8",
+    "author": "nant <dumingtan@gmail.com> (http://www.rialive.com)",
+    "description": "web performance analyze tool base on remote debugging protocol",
+    "main": "./index.js",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/the1sky/pagetimeline.git"
     },
-    "keywords":[
+    "keywords": [
         "high performance web sites", "metrics", "monitoring", "pagetimeline", "web development", "webperf"
     ],
-    "license":"BSD",
-    "engines":{
-        "node":">=0.6"
+    "license": "BSD",
+    "engines": {
+        "node": ">=0.6"
     },
-    "dependencies":{
-        "adm-zip":"0.4.4",
-        "analyze-css":"0.2.x",
-        "ansicolors":"~0.3.2",
-        "ansistyles":"~0.1.0",
-        "async":"0.9.0",
-        "chrome-remote-interface":"0.4.1",
-        "commander":"1.1.1",
-        "crypto":"0.0.3",
-        "debug":"0.7.x",
-        "fast-stats":">=0.0.2",
-        "kew":"0.4.0",
-        "mime":"1.2.11",
-        "mkdirp":"0.5.0",
-        "ncp":"0.6.0",
-        "npmconf":"1.1.5",
-        "optimist":"0.6.x",
-        "portfinder":"0.2.1",
-        "rimraf":"2.2.8",
-        "travis-fold":">=0.1.2",
-        "underscore":"1.6.0",
-        "which":"1.0.5"
+    "dependencies": {
+        "adm-zip": "0.4.4",
+        "analyze-css": "0.2.x",
+        "ansicolors": "~0.3.2",
+        "ansistyles": "~0.1.0",
+        "async": "0.9.0",
+        "chrome-remote-interface": "0.4.1",
+        "commander": "1.1.1",
+        "crypto": "0.0.3",
+        "debug": "0.7.x",
+        "fast-stats": ">=0.0.2",
+        "kew": "0.4.0",
+        "mime": "1.2.11",
+        "mkdirp": "0.5.0",
+        "ncp": "0.6.0",
+        "npmconf": "1.1.5",
+        "optimist": "0.6.x",
+        "portfinder": "0.2.1",
+        "rimraf": "2.2.8",
+        "travis-fold": ">=0.1.2",
+        "underscore": "1.6.0",
+        "which": "1.0.5"
     },
-    "optionalDependencies":{},
-    "bin":"./bin/pagetimeline.js",
-    "preferGlobal":true,
+    "optionalDependencies": {},
+    "bin": "./bin/pagetimeline.js",
+    "preferGlobal": true,
+    "unsafe-perm": true,
     "scripts": {
         "postinstall": "node ./install.js"
     }

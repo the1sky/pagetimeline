@@ -22,7 +22,7 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
 
 安装pagetimeline:
 
-    sudo npm install pagetimeline
+    sudo npm install pagetimeline --unsafe-perm
 
 注意事项:
 
@@ -36,7 +36,7 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
 
 安装pagetimeline:
     
-    npm install pagetimeline
+    npm install pagetimeline --unsafe-perm
 
 ###使用示例
 
