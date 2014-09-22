@@ -7,19 +7,18 @@ if [ $? -eq 0 ]; then
 else
     cat /etc/issue | grep Ubuntu
     if [ $? -eq 0 ]; then
-        base_url='http://115.28.244.165//browser/ubuntu/'
+        base_url='http://115.28.244.165/browser/ubuntu/'
         prefix='google-chrome-stable_current'
         suffix='.deb'
         cd /tmp
         arch=`uname -m`
-        if [ $arch == 'x86_64' ]; then
+        if [ $arch = 'x86_64' ]; then
             arch='_amd64'
         else
             arch='_i386'
         fi
         chrome_url=${base_url}${prefix}${arch}${suffix}
-        wget $chrome_url
-        chmod u+x ${prefix}${arch}${suffix}
+        wget -v $chrome_url
         sudo dpkg -i google-chrome*
         sudo apt-get -f install -y
     fi
