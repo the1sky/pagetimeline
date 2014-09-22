@@ -4,13 +4,23 @@ if [ $? -eq 0 ]; then
     wget http://chrome.richardlloyd.org.uk/install_chrome.sh
     chmod +x install_chrome.sh
     sh install_chrome.sh
-fi
-
-
-cat /etc/issue | grep Ubuntu
-if [ $? -eq 0 ]; then
-    sudo wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-    sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-    sudo apt-get update -y
-    sudo apt-get install -y google-chrome-stable
+else
+    cat /etc/issue | grep Ubuntu
+    if [ $? -eq 0 ]; then
+        base_url='http://115.28.244.165//browser/ubuntu/'
+        prefix='google-chrome-stable_current'
+        suffix='.deb'
+        cd /tmp
+        arch=`uname -m`
+        if [ $arch == 'x86_64' ]; then
+            arch='_amd64'
+        else
+            arch='_i386'
+        fi
+        chrome_url=${base_url}${prefix}${arch}${suffix}
+        wget $chrome_url
+        chmod u+x ${prefix}${arch}${suffix}
+        sudo dpkg -i google-chrome*
+        sudo apt-get -f install -y
+    fi
 fi

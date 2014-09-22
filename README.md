@@ -164,6 +164,8 @@ CLI支持:
 ### 参考：
     http://remotedebug.org/integrations/
 
+    https://github.com/macbre/phantomas
+
 ### think
 
 * 网速模拟
