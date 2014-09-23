@@ -58,7 +58,7 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
     
 使用android chrome测试：
 
-    usb连接手机
+    usb连接手机，并启动usb调试功能
     
     node ./bin/pagetimeline.js --url=http://www.baidu.com --verbose --mobile=android
     
