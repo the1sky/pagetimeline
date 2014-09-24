@@ -59,6 +59,7 @@ var pagetimeline = function(params){
 	params.diskCache = params.diskCache == 'true' ? 'true' : 'false';
 	params.homedir = path.resolve( __dirname, './' );
 	params.silent = params.silent || ( params.silent != undefined );
+    params.remoteBrowser = params.remoteBrowser || ( params.remoteBrowser != undefined );
 	params.reloadCount = params.reload ? ( parseInt( params.reloadCount ) || 2 ) : 1;
 
 	if( params.harDir ){
@@ -151,7 +152,7 @@ pagetimeline.prototype = {
 			self.emit( 'error', res );
 		} );
 
-		if( !this.isMobile && this.params.server != 'localhost' ){
+		if( !this.isMobile && !this.params.remoteBrowser ){
 			async.series( [
 				async.apply( this.closeAllXvfb, this ),
 				async.apply( this.openBrowser, this ),
@@ -177,7 +178,7 @@ pagetimeline.prototype = {
 					self.emit( 'end', res );
 				}, 100 );
 			} )
-		}else{
+		}else if( this.params.remoteBrowser ){
 			self.analyzePerformance( this, function(err, res){
 				if( err ){
 					self.emit( 'error', res );

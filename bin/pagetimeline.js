@@ -11,6 +11,7 @@ params
 	.option('--url [value]','target url, e.g. --url=http://www.baidu.com' )
 	.option('--server [value]', 'remote debugger server, e.g. --server=localhost | xxx ' )
 	.option('--port [value]','remote debugger port, default 9222, if not setting,auto find available port, e.g. --port=9222')
+    .option('--remote-browser [value]', 'use remote browser, e.g. --remote-browser ' )
 	.option('--disk-cache [value]', 'disk cache, default false, e.g. --disk-cache=true')
 	.option('--mobile [value]','mobile type, android or iphone, server is fixed as "localhost", e.g. --mobile=android')
 	.option('--config [value]','JSON-formatted config file, e.g. --config=./config.log')
