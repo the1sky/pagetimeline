@@ -59,7 +59,6 @@ var pagetimeline = function(params){
 	params.diskCache = params.diskCache == 'true' ? 'true' : 'false';
 	params.homedir = path.resolve( __dirname, './' );
 	params.silent = params.silent || ( params.silent != undefined );
-	params.reload = params.reload || ( params.reload != undefined );
 	params.reloadCount = params.reload ? ( parseInt( params.reloadCount ) || 2 ) : 1;
 
 	if( params.harDir ){
@@ -72,9 +71,7 @@ var pagetimeline = function(params){
 		params.resultDir = path.resolve( params.resultDir );
 	}
 
-	var md5 = crypto.createHash( 'md5' );
-	md5.update( params.url + (+new Date()) );
-	this.uid = md5.digest( 'hex' );
+	this.uid = this.getMd5( params.url );
 	params.uid = this.uid;
 
 	this.params = params;
@@ -97,6 +94,18 @@ pagetimeline.prototype = {
 
 	once:function(ev, fn){
 		this.emitter.once( ev, fn );
+	},
+
+	changeUrl:function(url){
+		this.params.url = url;
+		this.uid = this.getMd5( url );
+		this.params.uid = this.uid;
+	},
+
+	getMd5:function(url){
+		var md5 = crypto.createHash( 'md5' );
+		md5.update( url + (+new Date()) );
+		return md5.digest( 'hex' );
 	},
 
 	start:function(){
@@ -142,9 +151,12 @@ pagetimeline.prototype = {
 			self.emit( 'error', res );
 		} );
 
-		if( !this.isMobile && this.params.server == 'localhost' ){
+		if( !this.isMobile && this.params.server != 'localhost' ){
 			async.series( [
-				async.apply( this.closeAllXvfb, this ), async.apply( this.openBrowser, this ), async.apply( this.analyzePerformance, this ), async.apply( this.closeBrowser, this )
+				async.apply( this.closeAllXvfb, this ),
+				async.apply( this.openBrowser, this ),
+				async.apply( this.analyzePerformance, this ),
+				async.apply( this.closeBrowser, this )
 			], function(err, res){
 				if( err ){
 					self.emit( 'error', res );
@@ -153,28 +165,27 @@ pagetimeline.prototype = {
 					self.emit( 'end', res );
 				}, 100 );
 			} );
+		}else if( this.isMobile ){
+			async.series( [
+				async.apply( this.enableMobileDebugging, this ),
+				async.apply( this.analyzePerformance, this )
+			], function(err, res){
+				if( err ){
+					self.emit( 'error', res );
+				}
+				setTimeout( function(){
+					self.emit( 'end', res );
+				}, 100 );
+			} )
 		}else{
-			if( this.isMobile ){
-				async.series( [
-					async.apply( this.enableMobileDebugging, this ), async.apply( this.analyzePerformance, this )
-				], function(err, res){
-					if( err ){
-						self.emit( 'error', res );
-					}
-					setTimeout( function(){
-						self.emit( 'end', res );
-					}, 100 );
-				} )
-			}else{
-				self.analyzePerformance( this, function(err, res){
-					if( err ){
-						self.emit( 'error', res );
-					}
-					setTimeout( function(){
-						self.emit( 'end', res );
-					}, 100 );
-				} );
-			}
+			self.analyzePerformance( this, function(err, res){
+				if( err ){
+					self.emit( 'error', res );
+				}
+				setTimeout( function(){
+					self.emit( 'end', res );
+				}, 100 );
+			} );
 		}
 	},
 

@@ -2,7 +2,7 @@
 
 windows:chrome
 
-ubuntu(desktop+server):chrome
+unix/linux(desktop+server):chrome
 
 android:chrome
 
@@ -22,13 +22,16 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
 
 安装pagetimeline:
 
+    sudo npm install pagetimeline
+    
+    遇到nobody账户问题时：
     sudo npm install pagetimeline --unsafe-perm
 
 注意事项:
 
     大陆可能需要翻墙
 
-#####centos
+#####centOS
 
 切换到root权限:
 
@@ -36,6 +39,9 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
 
 安装pagetimeline:
     
+    npm install pagetimeline
+    
+    遇到nobody账户问题时：
     npm install pagetimeline --unsafe-perm
 
 ###使用示例
@@ -46,15 +52,15 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
     
 输出格式为json：
 
-    node ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=2000 --verbose --format=json
+    node ./bin/pagetimeline.js --url=http://www.baidu.com  --verbose --format=json
     
 输出har文件：
 
-    node ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=2000 --verbose --har-dir=./har/
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --verbose --har-dir=./har/
     
 输出性能分析结果文件:
 
-    node ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=2000 --verbpse --result-dir=./result/
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --verbpse --result-dir=./result/
     
 使用android chrome测试：
 
@@ -64,9 +70,13 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
     
 带缓存测试：
 
-测试两遍，no cache vs cache
+测试两遍：no cache vs cache
 
     node ./bin/pagetimeline.js --url=http://www.baidu.com --verbose --reload
+
+测试多遍：no cache vs n cache
+
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --verbose --reload --reload-count=10
 
 CLI支持:
     
@@ -162,8 +172,8 @@ CLI支持:
 * 更多见: pagetimeline/modules
 
 ### 参考：
-    http://remotedebug.org/integrations/
 
+    http://remotedebug.org/integrations/
     https://github.com/macbre/phantomas
 
 ### think

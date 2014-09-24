@@ -104,12 +104,12 @@ exports.module = function(pagetimeline, callback){
 			pagetimeline.setMetric( 'total_requests', totalRequests );
 		}
 		if( totalSize > 0 ){
-			pagetimeline.setMetric( 'total_size', ( totalSize / 1024 ).toFixed( 2 ) + 'KB' );
+			pagetimeline.setMetric( 'total_size', totalSize );
 		}
 
 		_.each( assertsInfo, function(value, key){
 			pagetimeline.setMetric( key + '_requests', value.count );
-			pagetimeline.setMetric( key + '_size', ( value.size / 1024 ).toFixed( 2 ) + 'KB' );
+			pagetimeline.setMetric( key + '_size', value.size );
 			_.each( value.urls, function(url){
 				pagetimeline.addOffender( key + '_requests', url );
 			} )

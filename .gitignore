@@ -12,3 +12,8 @@ config.json
 *.json
 test.js
 node_modules
+test.json
+modules/alxea500
+modules/hao123
+modules/alxea500/alxea500.js
+modules/hao123/hao123.js
