@@ -27,10 +27,6 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
     遇到nobody账户问题时：
     sudo npm install pagetimeline --unsafe-perm
 
-注意事项:
-
-    大陆可能需要翻墙
-
 #####centOS
 
 切换到root权限:
