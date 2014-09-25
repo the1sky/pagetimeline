@@ -1,6 +1,6 @@
 {
     "name": "pagetimeline",
-    "version": "0.1.9",
+    "version": "0.1.10",
     "author": "nant <dumingtan@gmail.com> (http://www.rialive.com)",
     "description": "web performance analyze tool base on remote debugging protocol",
     "main": "./index.js",

@@ -70,12 +70,16 @@ exports.module = function(pagetimeline, callback){
 
 			var script = getCookiesLen.toString() + ';getCookiesLen()';
 			browser.evaluate( script, function(err, res){
-				pagetimeline.setMetric( 'cookies_document_size', res.result.value );
+                if( res && res.result ){
+				    pagetimeline.setMetric( 'cookies_document_size', res.result.value );
+                }
 			} );
 
 			script = getCookiesCount.toString() + ';getCookiesCount()';
 			browser.evaluate( script, function(err, res){
-				pagetimeline.setMetric( 'cookies_document_count', res.result.value );
+                if( res && res.result ){
+				    pagetimeline.setMetric( 'cookies_document_count', res.result.value );
+                }
 			} );
 		}, timeout );
 	} );
