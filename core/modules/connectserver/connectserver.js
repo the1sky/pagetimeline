@@ -16,7 +16,7 @@ exports.module = function(pagetimeline, callback){
 
 	if( runstep <= maxstep ){
 		var browser = pagetimeline.model.browser;
-		browser && browser.closeConnection();
+		browser && browser.closeConnection(function(){});
 	}
 
 	var browserProxyModule = require( './../../browserProxy.js' );

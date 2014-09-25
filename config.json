@@ -1,7 +1,8 @@
 {
-	"url":"http://m.baidu.com/img",
-	"verbose": false,
-	"timeout":2000,
-	"viewport":"800x600",
+	"url":"http://www.pconline.com.cn",
+	"reload":false,
+	"verbose":true,
+	"timeout":1000,
+	"viewport":"1680x768",
 	"log": "log/pagetimeline.log"
 }
