@@ -18,8 +18,9 @@ exports.module = function(pagetimeline, callback){
 			pagetimeline.addOffender( 'js_errors', msg.text + ' - ' + trace.join( ' / ' ) );
 		}
 	} );
-
 	callback( false, 'add devices module done!' );
+    pagetimeline.log('js error...');
+    pagetimeline.finishModule();
 
 	function formatTrace(trace){
 		var ret = [];

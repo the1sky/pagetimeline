@@ -10,13 +10,15 @@ exports.module = function(pagetimeline, callback){
 	browser.onLoadEventFired(function(res){
 		var funcStr = storageSize.toString() + ';storageSize()';
 		browser.evaluate( funcStr, function(err,res){
-			if( !err && res.result && res.result.value ){
-				pagetimeline.setMetric('localstorage_size', ( res.result.value / 1024 ).toFixed(2) + 'KB' );
+			if( !err && res && res.result ){
+				pagetimeline.setMetric('localstorage_size', res.result.value );
 			}
+            pagetimeline.finishModule();
 		});
 	});
 
 	callback(false,{message:'add localstorage module done!'});
+    pagetimeline.log('localstorage...');
 
 	function storageSize() {
 		var numKeys = function(storage){

@@ -19,6 +19,8 @@ var pagetimeline = function(params){
 	this.model.url = this.url;
 	this.model.originalUrl = this.url;
 	this.model.maxstep = this.params.reloadCount;
+    this.modulesFinishCount = 0;
+    this.modulesTotalCount = 0;
 
 	this.model.uid = params.uid;
 
@@ -106,6 +108,7 @@ pagetimeline.prototype = {
 			getParam: (function(key) {
 				return this.params[key];
 			}).bind(this),
+            finishModule:this.finishModule.bind(this),
 
 			// events
 			on: this.on.bind(this),
@@ -141,6 +144,8 @@ pagetimeline.prototype = {
 			this.clearAllMetrics();
 			this.log('start second time analysis...');
 		}
+        this.modulesTotalCount = this.coreModules.length + this.modules.length;
+        this.modulesFinishCount = 0;
 
 		async.series(self.coreModules,function(err,res){
 			if( err ){
@@ -179,6 +184,16 @@ pagetimeline.prototype = {
 	clearTimeout:function(){
 		clearTimeout( this.timeoutId );
 	},
+
+    finishModule:function(){
+        if( this.modulesFinishCount < this.modulesTotalCount ){
+            this.modulesFinishCount++;
+            console.log( this.modulesFinishCount, this.modulesTotalCount );
+            if( this.modulesFinishCount == this.modulesTotalCount ){
+                this.emit('modulesFinished');
+            }
+        }
+    },
 
 	addCoreModules:function(){
 		this.log('add core module...');

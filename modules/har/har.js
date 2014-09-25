@@ -12,6 +12,8 @@ exports.version = '0.1';
 exports.module = function(pagetimeline, callback){
 	callback( false, {message:'add har module done!'} );
 
+    pagetimeline.log('har...');
+
 	var fs = require( 'fs' );
 	var browser = pagetimeline.model.browser;
 	var startTime = pagetimeline.model.startTime;
@@ -31,6 +33,7 @@ exports.module = function(pagetimeline, callback){
 		setTimeout( function(){
 			page.end();
 			createHAR();
+            pagetimeline.finishModule();
 		}, timeout );
 	} );
 

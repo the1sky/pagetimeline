@@ -5,7 +5,10 @@
 exports.version = '0.1';
 
 exports.module = function(pagetimeline,callback){
-	callback( false, {message:'add redirects module done!'});
+	callback( false, {message:'add redirects module done!'})
+    pagetimeline.log('redirect...');
+    pagetimeline.finishModule();
+
 
 	var browser = pagetimeline.model.browser;
 

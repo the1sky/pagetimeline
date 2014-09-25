@@ -60,6 +60,7 @@ exports.module = function(pagetimeline, callback){
 			pagetimeline.addOffender( 'max_requests_per_domain', maxRequests );
 
 			pagetimeline.log( 'domains done in ' + (+new Date() - start ) + 'ms' );
+            pagetimeline.finishModule();
 		}, timeout );
 	} );
 

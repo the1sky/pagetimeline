@@ -6,6 +6,9 @@ exports.version = '0.1';
 
 exports.module = function(pagetimeline, callback){
 	callback( false, {message:'add headers module done!'} );
+    pagetimeline.finishModule();
+
+    pagetimeline.log('headers...');
 
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam( 'timeout' );

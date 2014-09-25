@@ -6,6 +6,7 @@
 exports.version = '0.1';
 
 exports.module = function(pagetimeline,callback){
-	"use strict";
+    pagetimeline.log( 'block domain...' );
 	callback( false, {message:'add block domain module done!'} );
+    pagetimeline.finishModule();
 }

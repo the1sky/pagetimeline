@@ -9,19 +9,26 @@ exports.module = function(pagetimeline, callback){
 
 	var browser = pagetimeline.model.browser;
 	var startTime = pagetimeline.model.startTime;
-	var timeout = pagetimeline.getParam( 'timeout' ) + 1000;
+	var timeout = pagetimeline.getParam( 'timeout' ) * 10;
 	var url = pagetimeline.model.url;
 	var runstep = pagetimeline.model.runstep;
 
 	var domready_time = 0;
 	var onload_time = 0;
 
+    pagetimeline.on('modulesFinished',function(e){
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+            callback( false, {message:'analyze page done!'} );
+    });
+
 	browser.onDomContentEventFired( function(res){
 		var toInejctScript = getInjectScript();
 		browser.evaluate( toInejctScript, function(err, res){
 		} );
 		getStartTime( function(err, tmpRes){
-			if( !err ) startTime = tmpRes.result.value['navigationStart'];
+			if( !err && tmpRes && tmpRes.result && ( tmpRes.result.value != undefined ) ){
+                startTime = tmpRes.result.value['navigationStart'];
+            }
 
 			domready_time = res.timestamp * 1000 - startTime;
 			setMetrics();
@@ -34,10 +41,6 @@ exports.module = function(pagetimeline, callback){
 
 			onload_time = res.timestamp * 1000 - startTime;
 			setMetrics();
-
-			setTimeout( function(callback){
-				callback( false, {message:'analyze page done!'} );
-			}, timeout, callback );
 		} );
 	} );
 

@@ -30,6 +30,7 @@ exports.module = function(pagetimeline, callback){
 			pagetimeline.model.startTime = +new Date();
 
 			callback( false, {message:'connect to server success!'} );
+            pagetimeline.finishModule();
 		}
 	} );
 

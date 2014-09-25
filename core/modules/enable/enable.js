@@ -19,6 +19,7 @@ exports.module = function(pagetimeline, callback){
 		}else{
 			callback( true, {message:'enable page fail!'} );
 		}
+        pagetimeline.finishModule();
 	})
 }
 

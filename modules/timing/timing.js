@@ -13,7 +13,7 @@ exports.module = function(pagetimeline, callback){
 		var str = getTiming.toString() + ';getTiming()';
 
 		browser.evaluate( str, function(err, res){
-			if( !err ){
+			if( !err && res && res.result ){
 				var timing = res.result.value;
 				pagetimeline.log( 'timing done in ' + (+new Date() - start ) + 'ms' );
 				pagetimeline.setMetric( 'timing', timing );
@@ -62,6 +62,7 @@ exports.module = function(pagetimeline, callback){
 					pagetimeline.setMetric( 'timing_ttfb', responseStart - navigationStart );
 				}
 			}
+            pagetimeline.finishModule();
 		} );
 
 	} );

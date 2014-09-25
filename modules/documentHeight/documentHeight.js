@@ -5,6 +5,7 @@
 exports.version = '0.1';
 
 exports.module = function(pagetimeline,callback){
+    pagetimeline.log( 'document height...' );
 	callback( false, {message:'add document height module done!'});
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam('timeout');
@@ -13,9 +14,10 @@ exports.module = function(pagetimeline,callback){
 		setTimeout(function(){
 			var script = getDocumentHeight.toString() + ';getDocumentHeight()';
 			browser.evaluate( script, function(err,res){
-				if( !err ){
+				if( !err && res && res.result ){
 					pagetimeline.setMetric('document_height', res.result.value );
 				}
+                pagetimeline.finishModule();
 			})
 		}, timeout);
 	})

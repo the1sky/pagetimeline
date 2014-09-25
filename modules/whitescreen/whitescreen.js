@@ -4,6 +4,7 @@
 exports.version = '0.1';
 
 exports.module = function(pagetimeline, callback){
+    pagetimeline.log('white screen...');
 	callback( false, {message:'add white screen module done!'} );
 
 	var startTime = pagetimeline.model.startTime;
@@ -16,15 +17,16 @@ exports.module = function(pagetimeline, callback){
 
 	browser.onLoadEventFired( function(res){
 		getStartTime( function(err, tmpRes){
-			if( !err )  startTime = tmpRes.result.value['navigationStart'];
+			if( !err && tmpRes && tmpRes.result )  startTime = tmpRes.result.value['navigationStart'];
 
 			var str = getFirstPaintTime.toString() + ';getFirstPaintTime()';
 			browser.evaluate( str, function(err, res){
-				if( !err ){
+				if( !err && res && res.result ){
 					var firstPaintTime = res.result['value'] * 1000;
 					var whiteScreenTime = firstPaintTime - startTime;
 					pagetimeline.setMetric( 'white_screen_time', parseInt( whiteScreenTime ) );
 				}
+                pagetimeline.finishModule();
 			} );
 		} );
 	} );

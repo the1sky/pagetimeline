@@ -5,6 +5,7 @@
 exports.version = '0.1';
 
 exports.module = function(pagetimeline, callback){
+    pagetimeline.log( 'dom complexity...' );
 	callback( false, {message:'add dom complexity module done!'} );
 
 	var browser = pagetimeline.model.browser;
@@ -153,7 +154,7 @@ exports.module = function(pagetimeline, callback){
 
 	browser.onLoadEventFired( function(res){
 		browser.evaluate( '(' + script.toString() + ')()', function(err, res){
-			if( !err && res.result ){
+			if( !err && res && res.result ){
 				var result = res.result.value;
 				var flag = '_offender';
 				_.forEach( result, function(value, key){
@@ -167,6 +168,7 @@ exports.module = function(pagetimeline, callback){
 					}
 				} );
 			}
+            pagetimeline.finishModule();
 		} );
 	} );
 }

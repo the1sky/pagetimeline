@@ -39,6 +39,7 @@ exports.module = function(pagetimeline, callback){
 			calculateTypeCountSize();
 			calculateSlowRequests();
 			calculateBigRequests();
+            pagetimeline.finishModule();
 		}, timeout );
 	} );
 
@@ -123,7 +124,7 @@ exports.module = function(pagetimeline, callback){
 	function calculateSlowRequests(){
 		var script = getEntries.toString() + ';getEntries()';
 		browser.evaluate( script, function(err, res){
-			if( !err && res.result ){
+			if( !err && res && res.result ){
 				var result = res.result.value;
 				result.sort( function(x, y){
 					if( x.duration > y.duration ){

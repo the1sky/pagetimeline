@@ -34,7 +34,7 @@ exports.module = function(pagetimeline, callback){
 	browser.onLoadEventFired( function(res){
 		setTimeout( function(){
 			getStartTime( function(err,res){
-				if( !err ){
+				if( !err && res && res.result ){
 					startTime = res.result.value['navigationStart'];
 				}
 				var start = +new Date();
@@ -42,6 +42,7 @@ exports.module = function(pagetimeline, callback){
 				pagetimeline.log( 'load time done in ' + (+new Date() - start ) + 'ms' );
 				pagetimeline.setMetric( 'load_time', parseInt( loadTime ) );
 			});
+            pagetimeline.finishModule();
 		}, timeout );
 	} );
 

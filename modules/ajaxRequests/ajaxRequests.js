@@ -62,7 +62,8 @@ exports.module = function(pagetimeline, callback){
 				} )
 			}
 			pagetimeline.log( 'ajax requests done in ' + (+new Date() - start ) + 'ms' );
-		}, timeout );
+            pagetimeline.finishModule();
+        }, timeout );
 	} );
 
 	callback( false, {message:'add ajax request'} );

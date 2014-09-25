@@ -8,6 +8,7 @@
 exports.version = '0.1';
 
 exports.module = function(pagetimeline,callback){
+    pagetimeline.log( 'caching...' );
 	callback( false, {message:"add module caching done!"});
 
 	var browser = pagetimeline.model.browser;
@@ -52,6 +53,7 @@ exports.module = function(pagetimeline,callback){
 					pagetimeline.addOffender('caching_too_short', url + ' cached for ' + ttl + ' s');
 				}
 			}
+            pagetimeline.finishModule();
 		},timeout)
 	});
 

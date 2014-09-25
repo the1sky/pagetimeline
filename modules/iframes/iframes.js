@@ -10,11 +10,12 @@ exports.module = function(pagetimeline, callback){
 	var browser = pagetimeline.model.browser;
 	browser.onLoadEventFired( function(res){
 		browser.evaluate('$("iframe").length', function(err,res){
-			if( res.result ){
+			if( res && res.result ){
 				pagetimeline.incrMetric( 'iframe_count', res.result.value );
 			}else{
 				pagetimeline.setMetric( 'iframe_count', 0 );
 			}
+            pagetimeline.finishModule();
 		});
 	} );
 }

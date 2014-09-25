@@ -36,7 +36,7 @@ exports.module = function(pagetimeline, callback){
 		setTimeout( function(){
 			start = +new Date();
 			getStartTime( function(err, res){
-				if( !err ){
+				if( !err && res && res.result ){
 					startTime = res.result.value['navigationStart'];
 				}
 				getFirstScreenTime( pagetimeline );
@@ -65,6 +65,7 @@ exports.module = function(pagetimeline, callback){
 		//计算首屏内的图形
 		var str = getClientScreenImages.toString() + ';getClientScreenImages()';
 		browser.evaluate( str, function(err, res){
+            if( res && res.result ){
 			//计算最慢时间,timestamp为1970以来的秒
 			var inClientImages = res['result']['value'];
 			var slowestTime = 0;
@@ -81,6 +82,8 @@ exports.module = function(pagetimeline, callback){
 			var firstScreenTime = slowestTime - startTime
 			pagetimeline.log( 'first screen done in ' + (+new Date() - start ) + 'ms' );
 			pagetimeline.setMetric( 'first_screen_time', parseInt( firstScreenTime ) );
+            }
+            pagetimeline.finishModule();
 		} );
 	}
 

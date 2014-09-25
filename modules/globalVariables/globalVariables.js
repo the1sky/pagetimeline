@@ -7,12 +7,12 @@ exports.version = '0.1';
 exports.module = function(pagetimeline,callback){
 	callback( false, {message:'add global variables module done!'});
 
+    pagetimeline.log( 'global variables...' );
 	var browser = pagetimeline.model.browser;
-
 	browser.onLoadEventFired(function(res){
 		var script = getGlobalVariables.toString() + ';getGlobalVariables()';
 		browser.evaluate(script,function(err,res){
-			if( !err ){
+			if( !err && res && res.result ){
 				if( res.result.value && res.result.value.globalVariables ){
 					pagetimeline.setMetric('global_variables'); // @desc number of JS globals variables @offenders
 					var globalVariables = res.result.value.globalVariables;
@@ -33,6 +33,7 @@ exports.module = function(pagetimeline,callback){
 					}
 				}
 			}
+            pagetimeline.finishModule();
 		});
 	});
 

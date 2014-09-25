@@ -10,17 +10,17 @@ exports.module = function(pagetimeline, callback){
 
 	browser.onLoadEventFired( function(res){
 		var str = getWebspeed.toString() + ';getWebspeed()';
-
 		browser.evaluate( str, function(err, res){
-			if( !err && res.result.value ){
+			if( !err && res && res.result && res.result.value  ){
 				var speedData = res.result.value;
-				var fields = speedData.fields
+				var fields = speedData.fields;
 				pagetimeline.log( 'webspeed done in ' + (+new Date() - start ) + 'ms' );
 				pagetimeline.setMetric( 'webspeed', fields );
 				for( var key in fields ){
 					pagetimeline.addOffender( 'webspeed', key + ":" + fields[key] );
 				}
 			}
+            pagetimeline.finishModule();
 		} )
 	} )
 
