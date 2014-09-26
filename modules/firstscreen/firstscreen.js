@@ -36,7 +36,7 @@ exports.module = function(pagetimeline, callback){
 		setTimeout( function(){
 			start = +new Date();
 			getStartTime( function(err, res){
-				if( !err ){
+				if( !err && res && res.result ){
 					startTime = res.result.value['navigationStart'];
 				}
 				getFirstScreenTime( pagetimeline );
@@ -230,7 +230,6 @@ exports.module = function(pagetimeline, callback){
 			}
 			return inClientImages;
 		}
-
 		return getInClientImages();
 	}
 }
