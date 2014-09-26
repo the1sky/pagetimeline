@@ -94,21 +94,25 @@ browserScript.prototype = {
 				self.closeArgv.push( self.xvfbAuthDirName );
 			} );
 		}
-		callback( false, {message:'open browser done!'} );
+        setTimeout( function(){
+            callback( false, {message:'open browser done!'} );
+        }, 100 );
 	},
 	closeBrowser:function(callback){
 		var execFile = require( 'child_process' ).execFile;
 		execFile( this.closeScript, this.closeArgv, {cwd:this.dirname}, function(err, stdout, stderr){
-			callback( err, stdout );
+            if( err || stderr ){
+                callback( true, {message:err || stderr } );
+            }
 		} );
-
 		if( fs.existsSync( this.user_data_dir ) ){
 			var exec = require( 'child_process' ).exec;
 			exec( 'rm -rf ' + this.user_data_dir, {cwd:this.dirname}, function(err, stdout, stderr){
 			} );
 		}
-
-		callback( false, {message:'close browser done'} );
+        setTimeout( function(){
+            callback( false, {message:'close browser done'} );
+        }, 100 );
 	},
 	installBrowser:function(callback){
 		var execFile = require( 'child_process' ).execFile;
