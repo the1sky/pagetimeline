@@ -167,7 +167,7 @@ pagetimeline.prototype = {
 		});
 
 		//timeout and exit
-		var timeout = 10000 + this.timeout * 2;
+		var timeout = 10000 + this.timeout * 4;
 		self.timeoutId = setTimeout( function(){
 			var msg = 'onload event not fired in ' +  timeout + 'ms.';
 			self.log( msg );
