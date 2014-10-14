@@ -159,7 +159,9 @@ pagetimeline.prototype = {
                 async.apply( this.closeBrowser, this )
             ], function(err, res){
                 if( err ){
-                    self.emit( 'error', res );
+	                self.closeBrowser( self, function(closeBrowserErr, closeBrowserRes){
+		                self.emit( 'error', res );
+	                });
                 }
                 setTimeout( function(){
                     self.emit( 'end', res );
