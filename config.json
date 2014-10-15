@@ -1,8 +1,8 @@
 {
-	"url":"http://www.pconline.com.cn",
+	"url":"http://www.baidu.com",
 	"reload":false,
 	"verbose":true,
-	"timeout":1000,
+	"timeout":10000,
 	"viewport":"1680x768",
 	"log": "log/pagetimeline.log"
 }

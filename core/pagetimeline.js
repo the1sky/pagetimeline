@@ -204,7 +204,7 @@ pagetimeline.prototype = {
 		var ls = fs.readdirSync(modulesDir) || [];
 		ls.forEach(function(entry) {
 			if (self.skipModules.indexOf(entry) > -1) {
-				self.log('Module ' + name + ' skipped!');
+				self.log('Module ' + entry + ' skipped!');
 				return;
 			}
 			if (fs.lstatSync(modulesDir + '/' + entry + '/' + entry + '.js' ).isFile) {

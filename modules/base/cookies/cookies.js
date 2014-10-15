@@ -13,7 +13,7 @@ exports.module = function(pagetimeline, callback){
 	var urlModule = require( 'url' );
 
 	// monitor cookies in HTTP headers
-	var Collection = require( '../../libs/collection' );
+	var Collection = require( '../../../libs/collection' );
 	var cookiesDomains = new Collection();
 	var cookies = [];
 
