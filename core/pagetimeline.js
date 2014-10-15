@@ -36,6 +36,7 @@ var pagetimeline = function(params){
 	this.pageModule = null;
 	this.modules = params.modules;
 	this.skipModules = params.skipModules;
+	this.specialModules = params.specialModules;
 
 	// setup the stuff
 	this.emitter = new (this.require('events').EventEmitter)();
@@ -167,9 +168,9 @@ pagetimeline.prototype = {
 		});
 
 		//timeout and exit
-		var timeout = 10000 + this.timeout * 4;
+		var timeout = this.timeout * 2;
 		self.timeoutId = setTimeout( function(){
-			var msg = 'onload event not fired in ' +  timeout + 'ms.';
+			var msg = 'dom content ready event not fired in ' +  timeout + 'ms.';
 			self.log( msg );
 			clearTimeout( self.timeoutId );
 			callback( true, {message:msg} );
@@ -195,39 +196,53 @@ pagetimeline.prototype = {
 	listModules: function() {
 		this.log('Getting the list of all modules...');
 
+		var modules = [];
+		var self = this;
 		var fs = require('fs');
 		var path = require('path');
-		var modulesDir = path.resolve( this.homedir,'./modules');
+		var modulesDir = path.resolve( this.homedir,'./modules/base');
 		var ls = fs.readdirSync(modulesDir) || [];
-		var modules = [];
 		ls.forEach(function(entry) {
-			if (fs.lstatSync(modulesDir + '/' + entry + '/' + entry + '.js' ).isFile) {
-				modules.push(entry);
+			if (self.skipModules.indexOf(entry) > -1) {
+				self.log('Module ' + name + ' skipped!');
+				return;
 			}
+			if (fs.lstatSync(modulesDir + '/' + entry + '/' + entry + '.js' ).isFile) {
+				modules.push(path.resolve( modulesDir, entry , entry ) );
+			}
+		});
+		var specialModulesDir = path.resolve( this.homedir, './modules/special' );
+		this.specialModules.forEach(function(entry){
+			modules.push(path.resolve( specialModulesDir, entry , entry ) );
 		});
 		return modules;
 	},
 	addModules:function(){
 		this.log('add all modules...');
-		var modules = (this.modules.length > 0) ? this.modules : this.listModules();
+		var modules = [];
+		var path = require('path');
+		if( this.modules.length > 0 ){
+			var modulesDir = path.resolve( this.homedir, './modules/base' );
+			this.modules.forEach(function(entry){
+				modules.push(path.resolve( modulesDir, entry , entry ) );
+			});
+		}else{
+			modules = this.listModules();
+		}
 		var pkgs = [];
 		var async = require('async');
 
-		modules.forEach(function(name) {
-			if (this.skipModules.indexOf(name) > -1) {
-				this.log('Module ' + name + ' skipped!');
-				return;
-			}
+		modules.forEach(function(modulePath) {
 			var pkg;
 			try {
-				pkg = require('./../modules/' + name + '/' + name);
+				pkg = require(modulePath);
 			}
 			catch (e) {
-				this.log('Unable to load module "' + name + '"!');
+				this.log('Unable to load module "' + modulePath + '"!');
 				return;
 			}
 			if (pkg.skip) {
-				this.log('Module ' + name + ' skipped!');
+				this.log('Module ' + modulePath + ' skipped!');
 				return;
 			}
 			pkgs.push( async.apply( pkg.module, this.getPublicWrapper() ) );
