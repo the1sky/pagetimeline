@@ -12,6 +12,7 @@ exports.module = function(pagetimeline, callback){
 	pagetimeline.log( 'load time...' );
 	var startTime = pagetimeline.model.startTime;
 	var timeout = pagetimeline.getParam( 'timeout' );
+	var domreadytimeout = pagetimeline.model.domreadyTimeout;
 	var browser = pagetimeline.model.browser;
 
 	var requestId_info = {};
@@ -31,20 +32,31 @@ exports.module = function(pagetimeline, callback){
 		};
 	} );
 
-	browser.onDomContentEventFired( function(res){
+	browser.onLoadEventFired( function(res){
 		setTimeout( function(){
-			getStartTime( function(err,res){
-				if( !err ){
-					startTime = res.result.value['navigationStart'];
-				}
-				var start = +new Date();
-				var loadTime = getSlowestTime() - startTime;
-				pagetimeline.log( 'load time done in ' + (+new Date() - start ) + 'ms' );
-				pagetimeline.setMetric( 'load_time', parseInt( loadTime ) );
-			});
+			calculate();
 		}, timeout );
 	} );
 
+	browser.onDomContentEventFired( function(res){
+		setTimeout( function(){
+			if( !pagetimeline.model.afteronload ){
+				calculate();
+			}
+		}, domreadytimeout );
+	} );
+
+	function calculate(){
+		getStartTime( function(err, res){
+			if( !err ){
+				startTime = res.result.value['navigationStart'];
+			}
+			var start = +new Date();
+			var loadTime = getSlowestTime() - startTime;
+			pagetimeline.log( 'load time done in ' + (+new Date() - start ) + 'ms' );
+			pagetimeline.setMetric( 'load_time', parseInt( loadTime ) );
+		} );
+	}
 
 	function getSlowestTime(){
 		var slowestTime = 0;
@@ -56,19 +68,6 @@ exports.module = function(pagetimeline, callback){
 			}
 		}
 		return slowestTime * 1000;
-	}
-
-	function getRequestTimeByUrl(requests){
-		var requestsByUrl = {};
-		for( var requestId in requests ){
-			var requestInfo = requests[requestId];
-			var url = requestInfo['url'];
-			var timestamp = requestInfo['timestamp'];
-			if( timestamp && !requestsByUrl[url] ){
-				requestsByUrl[url] = timestamp;
-			}
-		}
-		return requestsByUrl;
 	}
 
 	function getTiming(){

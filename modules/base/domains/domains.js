@@ -8,6 +8,7 @@ exports.module = function(pagetimeline, callback){
 	pagetimeline.log( 'domains ...' );
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam( 'timeout' );
+	var domreadytimeout = pagetimeline.model.domreadyTimeout;
 	var requestId_info = {};
 
 	browser.onResponseReceived( function(res){
@@ -25,43 +26,55 @@ exports.module = function(pagetimeline, callback){
 		};
 	} );
 
-	browser.onDomContentEventFired( function(res){
+	browser.onLoadEventFired( function(res){
 		setTimeout( function(){
-			var start = +new Date();
-			var domainInfo = {}
-			var _ = require( 'underscore' );
-
-			_.each( requestId_info, function(value, key){
-				var url = value.url;
-				var reg = /http[s]*:\/\/([^\/]*)/;
-				var res = url.match( reg );
-				if( res ){
-					var host = res[1];
-					if( !domainInfo[host] ){
-						domainInfo[host] = 0;
-					}
-					domainInfo[host]++;
-				}
-			} );
-
-			var domains = [];
-			var maxRequestsDomain = "";
-			var maxRequests = 0;
-			_.each( domainInfo, function(value, key){
-				domains.push( key );
-				pagetimeline.addOffender( 'domains', key );
-				if( value > maxRequests ){
-					maxRequests = value;
-					maxRequestsDomain = key;
-				}
-			} )
-			pagetimeline.setMetric( 'domains', domains.length );
-			pagetimeline.setMetric( 'max_requests_per_domain', maxRequestsDomain );
-			pagetimeline.addOffender( 'max_requests_per_domain', maxRequests );
-
-			pagetimeline.log( 'domains done in ' + (+new Date() - start ) + 'ms' );
+			calculate();
 		}, timeout );
 	} );
+
+	browser.onDomContentEventFired( function(res){
+		setTimeout( function(){
+			if( !pagetimeline.model.afteronload ){
+				calculate();
+			}
+		}, domreadytimeout );
+	} );
+
+	function calculate(){
+		var start = +new Date();
+		var domainInfo = {}
+		var _ = require( 'underscore' );
+
+		_.each( requestId_info, function(value, key){
+			var url = value.url;
+			var reg = /http[s]*:\/\/([^\/]*)/;
+			var res = url.match( reg );
+			if( res ){
+				var host = res[1];
+				if( !domainInfo[host] ){
+					domainInfo[host] = 0;
+				}
+				domainInfo[host]++;
+			}
+		} );
+
+		var domains = [];
+		var maxRequestsDomain = "";
+		var maxRequests = 0;
+		_.each( domainInfo, function(value, key){
+			domains.push( key );
+			pagetimeline.addOffender( 'domains', key );
+			if( value > maxRequests ){
+				maxRequests = value;
+				maxRequestsDomain = key;
+			}
+		} )
+		pagetimeline.setMetric( 'domains', domains.length );
+		pagetimeline.setMetric( 'max_requests_per_domain', maxRequestsDomain );
+		pagetimeline.addOffender( 'max_requests_per_domain', maxRequests );
+
+		pagetimeline.log( 'domains done in ' + (+new Date() - start ) + 'ms' );
+	}
 
 	callback( false, {message:'add domain module done!'} );
 }

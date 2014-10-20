@@ -8,6 +8,7 @@ exports.module = function(pagetimeline, callback){
 	var browser = pagetimeline.model.browser;
 
 	var timeout = pagetimeline.getParam( 'timeout' );
+	var domreadytimeout = pagetimeline.model.domreadyTimeout;
 	var reload = pagetimeline.getParam( 'reload' );
 	var startTime = pagetimeline.model.startTime;
 	var requestUrl_info = {};
@@ -25,7 +26,7 @@ exports.module = function(pagetimeline, callback){
 				'timestamp':timestamp
 			}
 		}
-	});
+	} );
 	browser.onResponseReceived( function(res){
 		var timestamp = res['timestamp'];
 		var response = res.response;
@@ -35,34 +36,46 @@ exports.module = function(pagetimeline, callback){
 				'timestamp':timestamp
 			}
 		}
-
 		//get suggestion response
-		if( /wd=iphone/.test(url) ){
+		if( /wd=iphone/.test( url ) ){
 			if( requestUrl_info[url] && responseUrl_info[url] ){
 				var requestTime = requestUrl_info[url].timestamp * 1000;
 				var responseTime = responseUrl_info[url].timestamp * 1000;
-				pagetimeline.setMetric('hao123_global_suggest_load_time', responseTime - requestTime );
+				pagetimeline.setMetric( 'hao123_global_suggest_load_time', responseTime - requestTime );
 
-				checkSuggestionShowId = setInterval(function(){
+				checkSuggestionShowId = setInterval( function(){
 					var js = checkSuggestionShow.toString() + ';checkSuggestionShow()';
-					browser.evaluate( js, function(err,res){
+					browser.evaluate( js, function(err, res){
 						if( res && res.result && res.result.value ){
 							var endTime = +new Date();
 							pagetimeline.setMetric( 'hao123_global_suggest_show_time', endTime - startSuggestionTime );
 							clearInterval( checkSuggestionShowId );
 						}
-					});
-				},100);
+					} );
+				}, 100 );
 			}
 		}
 	} );
 
+	browser.onLoadEventFired( function(res){
+		setTimeout( function(){
+			calculate();
+		}, timeout );
+
+	} );
+
 	browser.onDomContentEventFired( function(res){
 		setTimeout( function(){
-			getCoreLinkTime();
-			getSuggestionTime();
-		}, timeout );
+			if( !pagetimeline.model.afteronload ){
+				calculate();
+			}
+		}, domreadytimeout );
 	} );
+
+	function calculate(){
+		getCoreLinkTime();
+		getSuggestionTime();
+	}
 
 	function getCoreLinkTime(){
 		var js = getCoreLink.toString() + ';getCoreLink()';
@@ -87,8 +100,9 @@ exports.module = function(pagetimeline, callback){
 	function getSuggestionTime(){
 		startSuggestion = true;
 		var js = simulateSuggestion.toString() + ';simulateSuggestion()';
-		startSuggestionTime = + new Date();
-		browser.evaluate( js, function(err, res){} );
+		startSuggestionTime = +new Date();
+		browser.evaluate( js, function(err, res){
+		} );
 	}
 
 	function simulateSuggestion(){
@@ -119,6 +133,6 @@ exports.module = function(pagetimeline, callback){
 	}
 
 	function checkSuggestionShow(){
-		return ( $('.sg').length > 0 );
+		return ( $( '.sg' ).length > 0 );
 	}
 }

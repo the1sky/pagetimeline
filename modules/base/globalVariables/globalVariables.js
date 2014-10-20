@@ -4,72 +4,85 @@
 
 exports.version = '0.1';
 
-exports.module = function(pagetimeline,callback){
-	callback( false, {message:'add global variables module done!'});
+exports.module = function(pagetimeline, callback){
+	callback( false, {message:'add global variables module done!'} );
 
 	var browser = pagetimeline.model.browser;
-	var timeout = pagetimeline.getParam('timeout');
+	var timeout = pagetimeline.getParam( 'timeout' );
+	var domreadytimeout = pagetimeline.model.domreadyTimeout;
 
-	browser.onDomContentEventFired(function(res){
+	browser.onLoadEventFired( function(res){
 		setTimeout( function(){
-			var script = getGlobalVariables.toString() + ';getGlobalVariables()';
-			browser.evaluate(script,function(err,res){
-				if( !err ){
-					if( res.result.value && res.result.value.globalVariables ){
-						pagetimeline.setMetric('global_variables'); // @desc number of JS globals variables @offenders
-						var globalVariables = res.result.value.globalVariables;
-						var len = globalVariables.length;
-						for( var i = 0; i < len; i++ ){
-							pagetimeline.incrMetric('global_variables');
-							pagetimeline.addOffender( 'global_variables', globalVariables[i] );
-						}
-					}
+			calculate();
+		}, timeout );
+	}, timeout );
+	browser.onDomContentEventFired( function(res){
+		setTimeout( function(){
+			if( !pagetimeline.model.afteronload ){
+				calculate();
+			}
+		}, domreadytimeout );
+	} );
 
-					if( res.result.value && res.result.value.globalVariablesFalsy ){
-						pagetimeline.setMetric('global_variables_falsy'); // @desc number of JS globals variables with falsy value @offenders
-						var globalVariablesFalsy = res.result.value.globalVariablesFalsy;
-						var len = globalVariablesFalsy.length;
-						for( var i = 0; i < len; i++ ){
-							pagetimeline.incrMetric('global_variables_falsy');
-							pagetimeline.addOffender( 'global_variables_falsy', globalVariables[i] );
-						}
+	function calculate(){
+		var script = getGlobalVariables.toString() + ';getGlobalVariables()';
+		browser.evaluate( script, function(err, res){
+			if( !err ){
+				if( res.result.value && res.result.value.globalVariables ){
+					pagetimeline.setMetric( 'global_variables' ); // @desc number of JS globals variables @offenders
+					var globalVariables = res.result.value.globalVariables;
+					var len = globalVariables.length;
+					for( var i = 0; i < len; i++ ){
+						pagetimeline.incrMetric( 'global_variables' );
+						pagetimeline.addOffender( 'global_variables', globalVariables[i] );
 					}
 				}
-			});
-		},timeout);
-	});
+
+				if( res.result.value && res.result.value.globalVariablesFalsy ){
+					pagetimeline.setMetric( 'global_variables_falsy' ); // @desc number of JS globals variables with falsy value @offenders
+					var globalVariablesFalsy = res.result.value.globalVariablesFalsy;
+					var len = globalVariablesFalsy.length;
+					for( var i = 0; i < len; i++ ){
+						pagetimeline.incrMetric( 'global_variables_falsy' );
+						pagetimeline.addOffender( 'global_variables_falsy', globalVariables[i] );
+					}
+				}
+			}
+		} );
+	}
 
 	function getGlobalVariables(){
-		var globals = {},
-			allowed = ['Components','XPCNativeWrapper','XPCSafeJSObjectWrapper','getInterface','netscape','GetWeakReference','window', 'performance', 'getGlobalVariables'],
-			varName,
-			iframe,
-			cleanWindow;
+		var globals = {};
+		var allowed = ['Components', 'XPCNativeWrapper', 'XPCSafeJSObjectWrapper', 'getInterface', 'netscape',
+			'GetWeakReference', 'window', 'performance', 'getGlobalVariables'];
+		var varName;
+		var iframe;
+		var cleanWindow;
 
-		if (!document.body) {
+		if( !document.body ){
 			return false;
 		}
 
 		// create an empty iframe to get the list of core members
-		iframe = document.createElement('iframe');
+		iframe = document.createElement( 'iframe' );
 		iframe.style.display = 'none';
 		iframe.src = 'about:blank';
-		document.body.appendChild(iframe);
+		document.body.appendChild( iframe );
 
 		cleanWindow = iframe.contentWindow;
 
-		for (varName in cleanWindow) {
-			allowed.push(varName);
+		for( varName in cleanWindow ){
+			allowed.push( varName );
 		}
 
 		// get all members of window and filter them
-		for (varName in window) {
-			if ( (allowed.indexOf(varName) > -1) || (typeof window[varName] === 'undefined') /* ignore variables exposed by window.__defineGetter__ */) {
+		for( varName in window ){
+			if( (allowed.indexOf( varName ) > -1) || (typeof window[varName] === 'undefined') /* ignore variables exposed by window.__defineGetter__ */ ){
 				continue;
 			}
 
 			// filter out 0, 1, 2, ...
-			if (/^\d+$/.test(varName)) {
+			if( /^\d+$/.test( varName ) ){
 				continue;
 			}
 
@@ -78,15 +91,15 @@ exports.module = function(pagetimeline,callback){
 			}
 			globals['globalVariables'].push( varName );
 
-			if ([false, null].indexOf(window[varName]) > -1) {
+			if( [false, null].indexOf( window[varName] ) > -1 ){
 				if( !globals['globalVariablesFalsy'] ){
 					globals['globalVariablesFalsy'] = [];
 				}
-				globals['globalVariablesFalsy'].push( varName + ' = ' + JSON.stringify(window[varName]));
+				globals['globalVariablesFalsy'].push( varName + ' = ' + JSON.stringify( window[varName] ) );
 			}
 		}
 		// cleanup (issue #297)
-		document.body.removeChild(iframe);
+		document.body.removeChild( iframe );
 
 		return globals;
 	}

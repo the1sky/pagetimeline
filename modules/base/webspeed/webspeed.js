@@ -8,25 +8,38 @@ exports.module = function(pagetimeline, callback){
 	var start = +new Date();
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam( 'timeout' );
+	var domreadytimeout = pagetimeline.model.domreadyTimeout;
+
+	browser.onDomContentEventFired( function(res){
+		setTimeout( function(){
+			if( !pagetimeline.model.afteronload ){
+				calculate();
+			}
+		}, domreadytimeout );
+	} );
 
 	browser.onLoadEventFired( function(res){
 		setTimeout( function(){
-			var str = getWebspeed.toString() + ';getWebspeed()';
-			browser.evaluate( str, function(err, res){
-				if( !err && res.result.value ){
-					var speedData = res.result.value;
-					var fields = speedData.fields
-					pagetimeline.log( 'webspeed done in ' + (+new Date() - start ) + 'ms' );
-					pagetimeline.setMetric( 'webspeed', fields );
-					for( var key in fields ){
-						pagetimeline.addOffender( 'webspeed', key + ":" + fields[key] );
-					}
-				}
-			} )
-		},timeout );
+			calculate();
+		}, timeout );
 	} )
 
 	callback( false, 'add webspeed module done!' );
+
+	function calculate(){
+		var str = getWebspeed.toString() + ';getWebspeed()';
+		browser.evaluate( str, function(err, res){
+			if( !err && res.result.value ){
+				var speedData = res.result.value;
+				var fields = speedData.fields
+				pagetimeline.log( 'webspeed done in ' + (+new Date() - start ) + 'ms' );
+				pagetimeline.setMetric( 'webspeed', fields );
+				for( var key in fields ){
+					pagetimeline.addOffender( 'webspeed', key + ":" + fields[key] );
+				}
+			}
+		} )
+	}
 
 	/**
 	 *  baidu webspeed performance data,see:http://webspeed.baidu.com

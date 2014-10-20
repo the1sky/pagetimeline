@@ -18,6 +18,7 @@ exports.module = function(pagetimeline, callback){
 	var uid = pagetimeline.model.uid;
 	var url = pagetimeline.getParam( 'url' );
 	var timeout = pagetimeline.getParam( 'timeout' );
+	var domreadytimeout = pagetimeline.model.domreadyTimeout;
 	var harDir = pagetimeline.getParam( 'harDir' );
 
 	var page = new Page( 0, url );
@@ -25,9 +26,15 @@ exports.module = function(pagetimeline, callback){
 
 	browser.onDomContentEventFired( function(res){
 		page.domLoaded();
+		setTimeout( function(){
+			if( !pagetimeline.model.afteronload ){
+				page.end();
+				createHAR();
+			}
+		}, domreadytimeout );
 	} );
 
-	browser.onDomContentEventFired( function(res){
+	browser.onLoadEventFired( function(res){
 		setTimeout( function(){
 			page.end();
 			createHAR();
@@ -64,8 +71,8 @@ exports.module = function(pagetimeline, callback){
 	function createHAR(){
 		var har = getHAR();
 		var json = JSON.stringify( har, null, 4 );
-		var path = require('path');
-		var harName = path.resolve( harDir, uid + '.har');
+		var path = require( 'path' );
+		var harName = path.resolve( harDir, uid + '.har' );
 		if( !fs.existsSync( harDir ) ){
 			fs.mkdirSync( harDir );
 		}
@@ -267,7 +274,7 @@ Page.prototype.getHAR = function(){
 };
 
 function convertQueryString(fullUrl){
-	var url = require('url');
+	var url = require( 'url' );
 	var query = url.parse( fullUrl, true ).query;
 	var pairs = [];
 	for( var name in query ){

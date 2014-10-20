@@ -9,28 +9,41 @@ exports.module = function(pagetimeline, callback){
 	var startTime = pagetimeline.model.startTime;
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam( 'timeout' );
+	var domreadytimeout = pagetimeline.model.domreadyTimeout;
 
 	function getFirstPaintTime(){
 		var loadtimes = chrome.loadTimes();
 		return loadtimes.firstPaintTime;
 	}
 
+	browser.onLoadEventFired( function(res){
+		setTimeout( function(){
+			calculate();
+		}, timeout );
+	} );
+
 	browser.onDomContentEventFired( function(res){
 		setTimeout( function(){
-			getStartTime( function(err, tmpRes){
-				if( !err )  startTime = tmpRes.result.value['navigationStart'];
-
-				var str = getFirstPaintTime.toString() + ';getFirstPaintTime()';
-				browser.evaluate( str, function(err, res){
-					if( !err ){
-						var firstPaintTime = res.result['value'] * 1000;
-						var whiteScreenTime = firstPaintTime - startTime;
-						pagetimeline.setMetric( 'white_screen_time', parseInt( whiteScreenTime ) );
-					}
-				} );
-			} );
-		},timeout );
+			if( !pagetimeline.model.afteronload ){
+				calculate();
+			}
+		}, domreadytimeout );
 	} );
+
+	function calculate(){
+		getStartTime( function(err, tmpRes){
+			if( !err )  startTime = tmpRes.result.value['navigationStart'];
+
+			var str = getFirstPaintTime.toString() + ';getFirstPaintTime()';
+			browser.evaluate( str, function(err, res){
+				if( !err ){
+					var firstPaintTime = res.result['value'] * 1000;
+					var whiteScreenTime = firstPaintTime - startTime;
+					pagetimeline.setMetric( 'white_screen_time', parseInt( whiteScreenTime ) );
+				}
+			} );
+		} );
+	}
 
 	function getTiming(){
 		return window.performance.timing;

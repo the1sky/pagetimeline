@@ -8,7 +8,8 @@ exports.module = function(pagetimeline, callback){
 	callback( false, {message:'add dom complexity module done!'} );
 
 	var browser = pagetimeline.model.browser;
-	var timeout = pagetimeline.getParam('timeout');
+	var timeout = pagetimeline.getParam( 'timeout' );
+	var domreadytimeout = pagetimeline.model.domreadyTimeout;
 	var _ = require( 'underscore' );
 
 	var script = function(){
@@ -152,24 +153,36 @@ exports.module = function(pagetimeline, callback){
 		return res;
 	};
 
+	browser.onLoadEventFired( function(res){
+		setTimeout( function(){
+			calculate();
+		}, timeout );
+	} );
+
 	browser.onDomContentEventFired( function(res){
 		setTimeout( function(){
-			browser.evaluate( '(' + script.toString() + ')()', function(err, res){
-				if( !err && res.result ){
-					var result = res.result.value;
-					var flag = '_offender';
-					_.forEach( result, function(value, key){
-						if( /_offender/.test( key ) ){
-							key = key.substr( 0, key.length - flag.length );
-							_.forEach( value, function(offenderEveryValue, index){
-								pagetimeline.addOffender( key, offenderEveryValue );
-							} );
-						}else{
-							pagetimeline.setMetric( key, value );
-						}
-					} );
-				}
-			} );
-		},timeout );
+			if( !pagetimeline.model.afteronload ){
+				calculate();
+			}
+		}, domreadytimeout );
 	} );
+
+	function calculate(){
+		browser.evaluate( '(' + script.toString() + ')()', function(err, res){
+			if( !err && res.result ){
+				var result = res.result.value;
+				var flag = '_offender';
+				_.forEach( result, function(value, key){
+					if( /_offender/.test( key ) ){
+						key = key.substr( 0, key.length - flag.length );
+						_.forEach( value, function(offenderEveryValue, index){
+							pagetimeline.addOffender( key, offenderEveryValue );
+						} );
+					}else{
+						pagetimeline.setMetric( key, value );
+					}
+				} );
+			}
+		} );
+	}
 }

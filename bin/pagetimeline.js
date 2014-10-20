@@ -22,7 +22,7 @@ params
 	.option('--special-modules [value]','specify module under "modules/special", e.g. --modules=hao123global')
 	.option('--extensions [value]','specify extensions, e.g. --extensions=capturescreen')
 	.option('--skip-extensions [value]','skip selected extensions, e.g. --skip-extensions=capturescreen.')
-	.option('--timeout [value]','time after onload, default 20000, e.g. --timeout=20000')
+	.option('--timeout [value]','time after onload, default 5000, e.g. --timeout=5000')
 	.option('--user-agent [value]','provide a custom user agent, e.g. --user-agent=Mozilla/5.0 (Windows NT 6.3; WOW64; rv:30.0) Gecko/20100101 Firefox/30.0')
 	.option('--verbose [value]','write debug messages to console, e.g. --verbose')
 	.option('--silent [value]','dont\'t write anything to the console, e.g. --slient')

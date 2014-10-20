@@ -7,36 +7,32 @@ var VERSION = require('../package').version;
 
 var pagetimeline = function(params){
 	var path = require('path');
-
 	this.params = params;
 
 	this.homedir =  params.homedir;
 	this.resultDir = params.resultDir;
 
-	this.model = {};
-
-	this.url = this.params.url;
-	this.model.url = this.url;
-	this.model.originalUrl = this.url;
-	this.model.maxstep = this.params.reloadCount;
-
-	this.model.uid = params.uid;
 
 	this.format = params.format;
-
+	this.url = params.url;
 	this.viewport = params.viewport;
-
 	this.verboseMode = params.verbose === true;
-
 	this.silentMode = params.silent === true;
-
-	this.timeout = params.timeout;;
-
-	this.coreModules = [];
-	this.pageModule = null;
+	this.timeout = params.timeout;
 	this.modules = params.modules;
 	this.skipModules = params.skipModules;
 	this.specialModules = params.specialModules;
+
+	this.model = {};
+	this.model.url = this.url;
+	this.model.originalUrl = this.url;
+	this.model.maxstep = this.params.reloadCount;
+	this.model.afteronload = false;
+	this.model.domreadyTimeout = 20000 + this.timeout * 2;
+	this.model.uid = params.uid;
+
+	this.coreModules = [];
+	this.pageModule = null;
 
 	// setup the stuff
 	this.emitter = new (this.require('events').EventEmitter)();
@@ -65,18 +61,15 @@ var pagetimeline = function(params){
 	// set up results wrapper
 	var Results = require('./results');
 	this.results = new Results();
-
 	this.results.setGenerator('pagetimeline v' + VERSION);
 	this.results.setUrl(this.url);
 	this.results.setAsserts(this.params.asserts);
 
 	// allow asserts to be provided via command-line options (#128)
 	Object.keys(this.params).forEach(function(param) {
-		var value = parseFloat(this.params[param]),
-			name;
+		var value = parseFloat(this.params[param]);
 		if (!isNaN(value) && param.indexOf('assert-') === 0) {
-			name = param.substr(7);
-
+			var name = param.substr(7);
 			if (name.length > 0) {
 				this.results.setAssert(name, value);
 			}
@@ -168,9 +161,9 @@ pagetimeline.prototype = {
 		});
 
 		//timeout and exit
-		var timeout = this.timeout * 2;
+		var timeout = 20000 + this.timeout * 3 + 2000;
 		self.timeoutId = setTimeout( function(){
-			var msg = 'dom content ready event not fired in ' +  timeout + 'ms.';
+			var msg = 'dom ready and onload event not fired in ' +  timeout + 'ms.';
 			self.log( msg );
 			clearTimeout( self.timeoutId );
 			callback( true, {message:msg} );

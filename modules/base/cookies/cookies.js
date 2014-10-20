@@ -54,35 +54,47 @@ exports.module = function(pagetimeline, callback){
 		} );
 	} );
 
+	browser.onLoadEventFired(function(res){
+		setTimeout( function(){
+			calculate();
+		},timeout );
+	});
+
 	browser.onDomContentEventFired( function(res){
 		setTimeout( function(){
-			//cookies
-			pagetimeline.setMetric( 'cookies_count', cookies.length );
-			_.forEach( cookies, function(value, key){
-				pagetimeline.addOffender( 'cookies_count', value.domain + ': ' + value.value );
-			} );
-
-			// domains with cookies
-			cookiesDomains.forEach( function(domain, cnt){
-				pagetimeline.incrMetric( 'cookies_domains' );
-				pagetimeline.addOffender( 'cookies_domains', domain + ': ' + cnt + ' cookie(s)' );
-			} );
-
-			var script = getCookiesLen.toString() + ';getCookiesLen()';
-			browser.evaluate( script, function(err, res){
-                if( res && res && res.result ){
-				    pagetimeline.setMetric( 'cookies_document_size', res.result.value );
-                }
-			} );
-
-			script = getCookiesCount.toString() + ';getCookiesCount()';
-			browser.evaluate( script, function(err, res){
-                if( res && res && res.result ){
-				    pagetimeline.setMetric( 'cookies_document_count', res.result.value );
-                }
-			} );
+			if( !pagetimeline.model.afteronload ){
+				calculate();
+			}
 		}, timeout );
 	} );
+
+	function calculate(){
+		//cookies
+		pagetimeline.setMetric( 'cookies_count', cookies.length );
+		_.forEach( cookies, function(value, key){
+			pagetimeline.addOffender( 'cookies_count', value.domain + ': ' + value.value );
+		} );
+
+		// domains with cookies
+		cookiesDomains.forEach( function(domain, cnt){
+			pagetimeline.incrMetric( 'cookies_domains' );
+			pagetimeline.addOffender( 'cookies_domains', domain + ': ' + cnt + ' cookie(s)' );
+		} );
+
+		var script = getCookiesLen.toString() + ';getCookiesLen()';
+		browser.evaluate( script, function(err, res){
+			if( res && res && res.result ){
+				pagetimeline.setMetric( 'cookies_document_size', res.result.value );
+			}
+		} );
+
+		script = getCookiesCount.toString() + ';getCookiesCount()';
+		browser.evaluate( script, function(err, res){
+			if( res && res && res.result ){
+				pagetimeline.setMetric( 'cookies_document_count', res.result.value );
+			}
+		} );
+	}
 
 	function getCookiesLen(){
 		try{

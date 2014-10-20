@@ -105,7 +105,7 @@ CLI支持:
 * --modules, specify module, unber "modules/base", e.g. --modules=firstscreen,whitescreen
 * --skip-modules, skip module, under "modules/base", skip selected modules [moduleOne],[moduleTwo],.., e.g. --skip-modules=firstscreen,whitescreen.
 * --special-modules, specify special module, unber "modules/special", e.g. --modules=hao123global,hao123global
-* --timeout, time after dom ready event, default 20000, e.g. --timeout=20000
+* --timeout, time after onload event, default 5000, e.g. --timeout=5000
 * --browser-timeout,time after open browser command, default 2000, e.g. --browser-timeout=2000
 * --user-agent, provide a custom user agent, e.g. --user-agent=Mozilla/5.0 (Windows NT 6.3; WOW64; rv:30.0) Gecko/20100101 Firefox/30.0
 * --verbose, write debug messages to console, e.g. --verbose

@@ -13,6 +13,7 @@ exports.module = function(pagetimeline, callback){
 	var start = +new Date();
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam( 'timeout' );
+	var domreadytimeout = pagetimeline.model.domreadyTimeout;
 	var startTime = pagetimeline.model.startTime;
 
 	var requestId_info = {};
@@ -32,17 +33,29 @@ exports.module = function(pagetimeline, callback){
 		};
 	} );
 
+	browser.onLoadEventFired( function(res){
+		setTimeout( function(){
+			calculate();
+		}, timeout );
+	} )
+
 	browser.onDomContentEventFired( function(res){
 		setTimeout( function(){
-			start = +new Date();
-			getStartTime( function(err, res){
-				if( !err && res && res.result ){
-					startTime = res.result.value['navigationStart'];
-				}
-				getFirstScreenTime( pagetimeline );
-			} );
-		}, timeout );
+			if( !pagetimeline.model.afteronload ){
+				calculate();
+			}
+		}, domreadytimeout );
 	} );
+
+	function calculate(){
+		start = +new Date();
+		getStartTime( function(err, res){
+			if( !err && res && res.result ){
+				startTime = res.result.value['navigationStart'];
+			}
+			getFirstScreenTime( pagetimeline );
+		} );
+	}
 
 	function getTiming(){
 		return window.performance.timing;
@@ -66,21 +79,23 @@ exports.module = function(pagetimeline, callback){
 		var str = getClientScreenImages.toString() + ';getClientScreenImages()';
 		browser.evaluate( str, function(err, res){
 			//计算最慢时间,timestamp为1970以来的秒
-			var inClientImages = res['result']['value'];
-			var slowestTime = 0;
-			for( var url in inClientImages ){
-				var offset = inClientImages[url];
-				var urlTime = requests[url];
-				pagetimeline.addOffender( 'first_screen_time', url + '  offsetLeft:' + offset.offsetLeft + '    offsetTop:' + offset.offsetTop );
-				if( urlTime > slowestTime ){
-					slowestTime = urlTime;
+			if( res && res.result ){
+				var inClientImages = res.result.value;
+				var slowestTime = 0;
+				for( var url in inClientImages ){
+					var offset = inClientImages[url];
+					var urlTime = requests[url];
+					pagetimeline.addOffender( 'first_screen_time', url + '  offsetLeft:' + offset.offsetLeft + '    offsetTop:' + offset.offsetTop );
+					if( urlTime > slowestTime ){
+						slowestTime = urlTime;
+					}
 				}
+				// to ms
+				slowestTime = parseInt( slowestTime * 1000 );
+				var firstScreenTime = slowestTime - startTime
+				pagetimeline.log( 'first screen done in ' + (+new Date() - start ) + 'ms' );
+				pagetimeline.setMetric( 'first_screen_time', parseInt( firstScreenTime ) );
 			}
-			// to ms
-			slowestTime = parseInt( slowestTime * 1000 );
-			var firstScreenTime = slowestTime - startTime
-			pagetimeline.log( 'first screen done in ' + (+new Date() - start ) + 'ms' );
-			pagetimeline.setMetric( 'first_screen_time', parseInt( firstScreenTime ) );
 		} );
 	}
 
@@ -230,6 +245,7 @@ exports.module = function(pagetimeline, callback){
 			}
 			return inClientImages;
 		}
+
 		return getInClientImages();
 	}
 }

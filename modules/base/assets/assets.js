@@ -8,6 +8,7 @@ exports.module = function(pagetimeline, callback){
 	pagetimeline.log( 'asserts types ...' );
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam( 'timeout' );
+	var domreadytimeout = pagetimeline.model.domreadyTimeout;
 	var requestId_info = {};
 	var url_size_list = [];
 	var _ = require( 'underscore' );
@@ -34,13 +35,25 @@ exports.module = function(pagetimeline, callback){
 		};
 	} );
 
+	browser.onLoadEventFired(function(){
+		setTimeout( function(){
+			calculate();
+		}, timeout );
+	});
+
 	browser.onDomContentEventFired( function(res){
 		setTimeout( function(){
-			calculateTypeCountSize();
-			calculateSlowRequests();
-			calculateBigRequests();
-		}, timeout );
+			if( !pagetimeline.model.afteronload ){
+				calculate();
+			}
+		}, domreadytimeout );
 	} );
+
+	function calculate(){
+		calculateTypeCountSize();
+		calculateSlowRequests();
+		calculateBigRequests();
+	}
 
 	function calculateTypeCountSize(){
 		var start = +new Date();
