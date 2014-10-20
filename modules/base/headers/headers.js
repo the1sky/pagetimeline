@@ -9,7 +9,8 @@ exports.module = function(pagetimeline, callback){
 
 	var browser = pagetimeline.model.browser;
 	var timeout = pagetimeline.getParam( 'timeout' );
-	var _ = require( 'underscore' );
+	var _ = require( 'underscore' )
+	var requestId_size = {};
 
 	pagetimeline.setMetric( 'headers_count' ); // @desc number of requests and responses headers
 	pagetimeline.setMetric( 'headers_sent_count' ); // @desc number of headers sent in requests
@@ -21,14 +22,24 @@ exports.module = function(pagetimeline, callback){
 
 	pagetimeline.setMetric( 'headers_bigger_than_content' ); // @desc number of responses with headers part bigger than the response body
 
+	browser.onDataReceived(function(res){
+		var requestId = res['requestId'];
+		var len = res['dataLength'];
+		if( !requestId_size[requestId] ){
+			requestId_size[requestId] = 0;
+		}
+		requestId_size[requestId] += len;
+	});
 
 	browser.onResponseReceived( function(res){
 		var requestHeaders = processHeaders( res.response.requestHeaders );
 		var responseHeaders = processHeaders( res.response.headers );
 		var status = res.response.status;
-		var url = res.response.url;
+		var url = res.response.url
+		var requestId = res.requestId;
 		var contentLength = res.response.headers['Content-Length'];
-		contentLength = ( contentLength && contentLength > 0 ) ? contentLength : 0;
+		contentLength = ( contentLength && contentLength > 0 ) ? contentLength :
+			( requestId_size[requestId] != undefined ? requestId_size[requestId] : 0 );
 
 		pagetimeline.incrMetric( 'headers_count', requestHeaders.count );
 		pagetimeline.incrMetric( 'headers_size', requestHeaders.size );

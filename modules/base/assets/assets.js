@@ -10,6 +10,7 @@ exports.module = function(pagetimeline, callback){
 	var timeout = pagetimeline.getParam( 'timeout' );
 	var domreadytimeout = pagetimeline.model.domreadyTimeout;
 	var requestId_info = {};
+	var requestId_size = {};
 	var url_size_list = [];
 	var _ = require( 'underscore' );
 
@@ -23,7 +24,7 @@ exports.module = function(pagetimeline, callback){
 		var response = res.response;
 		var url = response.url;
 
-		if( /v=pagetimeline/.test( url ) ) return;
+		if( /v=pagetimeline|about:blank/.test( url ) ) return;
 
 		if( !requestId_info[requestId] ){
 			requestId_info[requestId] = {}
@@ -35,11 +36,20 @@ exports.module = function(pagetimeline, callback){
 		};
 	} );
 
-	browser.onLoadEventFired(function(){
+	browser.onDataReceived( function(res){
+		var requestId = res['requestId'];
+		var len = res['dataLength'];
+		if( !requestId_size[requestId] ){
+			requestId_size[requestId] = 0;
+		}
+		requestId_size[requestId] += len;
+	} );
+
+	browser.onLoadEventFired( function(){
 		setTimeout( function(){
 			calculate();
 		}, timeout );
-	});
+	} );
 
 	browser.onDomContentEventFired( function(res){
 		setTimeout( function(){
@@ -66,12 +76,13 @@ exports.module = function(pagetimeline, callback){
 			'text/javascript':['js'],
 			'application/x-javascript':['js'],
 			'text/json':['json'],
+			'baiduapp/json':['json'],
 			'text/xml':['xml'],
 			'image/jpg':['jpeg'],
 			'application/x-shockwave-flash':['flash']
 		} );
 
-		_.each( requestId_info, function(value, key){
+		_.each( requestId_info, function(value, requestId){
 			var url = value.url;
 			var responseBody = value.responseBody;
 			if( !responseBody ) return;
@@ -81,8 +92,8 @@ exports.module = function(pagetimeline, callback){
 
 			if( responseBody.headers['Content-Length'] ){
 				contentLen = parseFloat( responseBody.headers['Content-Length'] );
-			}else{
-				contentLen = 0;
+			}else if( requestId_size[requestId] != undefined ){
+				contentLen = requestId_size[requestId];
 			}
 			if( !assertsInfo[mimeExt] ){
 				assertsInfo[mimeExt] = {
