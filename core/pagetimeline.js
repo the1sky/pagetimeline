@@ -138,13 +138,11 @@ pagetimeline.prototype = {
 
 		async.series(self.coreModules,function(err,res){
 			if( err ){
-				self.clearTimeout();
 				callback(true,{message:'run core module fail!',detail:res});
 				return;
 			}
 			async.parallel( self.modules,function(err,res){
 				if( err ){
-					self.clearTimeout();
 					callback(true,{message:'run module fail!',detail:res});
 					return;
 				}
@@ -152,22 +150,12 @@ pagetimeline.prototype = {
 					if( err ){
 						callback(true,{message:'run openPage fail!',detail:res});
 					}
-					self.clearTimeout();
 					self.report();
 					callback(false,{message:'all done!'});
 					return;
 				})
 			});
 		});
-
-		//timeout and exit
-		var timeout = 20000 + this.timeout * 3 + 2000;
-		self.timeoutId = setTimeout( function(){
-			var msg = 'dom ready and onload event not fired in ' +  timeout + 'ms.';
-			self.log( msg );
-			clearTimeout( self.timeoutId );
-			callback( true, {message:msg} );
-		}, timeout );
 	},
 
 	clearTimeout:function(){
