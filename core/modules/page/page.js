@@ -17,8 +17,6 @@ exports.module = function(pagetimeline, callback){
 	var domreadytimeout = pagetimeline.model.domreadyTimeout;
 	var analysisDomreadyTimeout= domreadytimeout + 2000;
 
-	console.log( analysisDomreadyTimeout, analysisOnloadTimeout );
-
 	var domready_time = 0;
 	var onload_time = 0;
 
@@ -30,7 +28,6 @@ exports.module = function(pagetimeline, callback){
 			if( !err ) startTime = tmpRes.result.value['navigationStart'];
 
 			domready_time = res.timestamp * 1000 - startTime;
-			console.log( 'dom ready', domready_time );
 			pagetimeline.setMetric( 'domready_event', parseInt( domready_time ) );
 
 			setTimeout( function(){
