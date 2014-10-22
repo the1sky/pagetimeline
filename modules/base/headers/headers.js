@@ -35,9 +35,12 @@ exports.module = function(pagetimeline, callback){
 		var requestHeaders = processHeaders( res.response.requestHeaders );
 		var responseHeaders = processHeaders( res.response.headers );
 		var status = res.response.status;
-		var url = res.response.url
+		var url = res.response.url;
 		var requestId = res.requestId;
 		var contentLength = res.response.headers['Content-Length'];
+
+		if( /chrome:\/\//.test( urli ) ) return;
+
 		contentLength = ( contentLength && contentLength > 0 ) ? contentLength :
 			( requestId_size[requestId] != undefined ? requestId_size[requestId] : 0 );
 

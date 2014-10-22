@@ -24,7 +24,7 @@ exports.module = function(pagetimeline, callback){
 		var response = res.response;
 		var url = response.url;
 
-		if( /v=pagetimeline|about:blank/.test( url ) ) return;
+		if( /v=pagetimeline|about:blank|chrome:\/\//.test( url ) ) return;
 
 		if( !requestId_info[requestId] ){
 			requestId_info[requestId] = {}
