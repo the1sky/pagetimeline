@@ -1,4 +1,11 @@
 #!/bin/sh
+
+type xvfb-run >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+	echo "you have installed Xvfb!"
+	exit 0;
+fi
+
 cat /etc/issue | grep CentOS
 if [ $? -eq 0 ]; then
     yum install -y xorg-x11-server-Xvfb

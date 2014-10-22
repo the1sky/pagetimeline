@@ -80,19 +80,21 @@ browserScript.prototype = {
 	openBrowser:function(callback){
 		var execFile = require( 'child_process' ).execFile;
 		var self = this;
-		var cp = execFile( this.runScript, this.execArgv, {cwd:this.dirname}, function(err, stdout, stderr){
+		var subProc = execFile( this.runScript, this.execArgv, {cwd:this.dirname}, function(err, stdout, stderr){
 			if( err || stderr ){
 				callback( true, {message:err || stderr } );
 			}
 		} );
+        //subProc.stdout.pipe( process.stdout );
 
 		if( self.findXvfbAuthDirNameScript ){
-			cp = execFile( self.findXvfbAuthDirNameScript, {cwd:self.dirname}, function(err, stdout, stderr){
+			var cp = execFile( self.findXvfbAuthDirNameScript, {cwd:self.dirname}, function(err, stdout, stderr){
 				if( err || stderr ) return;
 
 				self.xvfbAuthDirName = stdout.substr( 0, stdout.length - 1 );
 				self.closeArgv.push( self.xvfbAuthDirName );
 			} );
+			//cp.stdout.pipe( process.stdout );
 		}
         setTimeout( function(){
             callback( false, {message:'open browser done!'} );
@@ -100,11 +102,13 @@ browserScript.prototype = {
 	},
 	closeBrowser:function(callback){
 		var execFile = require( 'child_process' ).execFile;
-		execFile( this.closeScript, this.closeArgv, {cwd:this.dirname}, function(err, stdout, stderr){
+		var subProc = execFile( this.closeScript, this.closeArgv, {cwd:this.dirname}, function(err, stdout, stderr){
             if( err || stderr ){
                 callback( true, {message:err || stderr } );
             }
 		} );
+        //subProc.stdout.pipe( process.stdout );
+
 		if( fs.existsSync( this.user_data_dir ) ){
 			var exec = require( 'child_process' ).exec;
 			exec( 'rm -rf ' + this.user_data_dir, {cwd:this.dirname}, function(err, stdout, stderr){
@@ -133,8 +137,9 @@ browserScript.prototype = {
 			callback( false, {message:'close nothing!'} );
 		}else{
 			var execFile = require( 'child_process' ).execFile;
-			execFile( this.closeAllXvfbScript, {cwd:this.dirname}, function(err, stdout, stderr){
+			var subProc = execFile( this.closeAllXvfbScript, {cwd:this.dirname}, function(err, stdout, stderr){
 			} );
+			//subProc.stdout.pipe( process.stdout );
 			setTimeout( function(){
 				callback( false, {message:'kill xvfb done!'} );
 			}, 100 );
