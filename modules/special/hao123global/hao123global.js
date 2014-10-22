@@ -118,10 +118,14 @@ exports.module = function(pagetimeline, callback){
 	 */
 	function getCoreLink(){
 		var arr = [];
+
 		//核心区图片类列表
-		$( '.hotsite_link' ).each( function(i, e){
-			arr.push( this.href );
-		} );
+		var url = $('.i-hot-sprites').css('background-image');
+		if( url ) {
+			url = /url\(['"]?([^")]+)/.exec( url ) || [];
+			url = url[1];
+			arr.push( url );
+		}
 
 		//页面logo地址
 		arr.push( $( '#indexLogoImg' )[0].src );
