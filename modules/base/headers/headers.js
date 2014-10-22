@@ -39,7 +39,7 @@ exports.module = function(pagetimeline, callback){
 		var requestId = res.requestId;
 		var contentLength = res.response.headers['Content-Length'];
 
-		if( /chrome:\/\//.test( urli ) ) return;
+		if( /chrome:\/\//.test( url ) ) return;
 
 		contentLength = ( contentLength && contentLength > 0 ) ? contentLength :
 			( requestId_size[requestId] != undefined ? requestId_size[requestId] : 0 );
