@@ -46,6 +46,18 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
 
     node ./bin/pagetimeline.js --url=http://www.baidu.com --timeout=2000 --verbose
     
+使用配置文件配置:
+
+    node ./bin/pagetimeline.js --config=config.json
+    
+排除某些基础模块：
+
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --skip-modules=assets,har
+    
+包含某些特殊模块:
+
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --special-modules=hao123global
+    
 输出格式为json：
 
     node ./bin/pagetimeline.js --url=http://www.baidu.com  --verbose --format=json
@@ -90,9 +102,10 @@ CLI支持:
 * --config, JSON-formatted config file, e.g. --config=./config.log
 * --viewport, window viewport width and height, e.g. --viewport=1920x768 
 * --proxy, specifies the proxy server to use, e.g. --proxy=192.168.1.42:8080
-* --modules, specify module, e.g. --modules=firstscreen,whitescreen
-* --skip-modules, skip selected modules [moduleOne],[moduleTwo],.., e.g. --skip-modules=firstscreen,whitescreen.
-* --timeout, time after onload event, default 2000, e.g. --timeout=2000
+* --modules, specify module, unber "modules/base", e.g. --modules=firstscreen,whitescreen
+* --skip-modules, skip module, under "modules/base", skip selected modules [moduleOne],[moduleTwo],.., e.g. --skip-modules=firstscreen,whitescreen.
+* --special-modules, specify special module, unber "modules/special", e.g. --modules=hao123global,hao123global
+* --timeout, time after onload event, default 5000, e.g. --timeout=5000
 * --browser-timeout,time after open browser command, default 2000, e.g. --browser-timeout=2000
 * --user-agent, provide a custom user agent, e.g. --user-agent=Mozilla/5.0 (Windows NT 6.3; WOW64; rv:30.0) Gecko/20100101 Firefox/30.0
 * --verbose, write debug messages to console, e.g. --verbose

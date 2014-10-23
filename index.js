@@ -52,9 +52,10 @@ var pagetimeline = function(params){
     params.viewport = params.viewport || '1280x1024';
     params.format = params.format || 'plain';
     params.browser = params.browser || 'chrome';
-    params.timeout = (params['timeout'] > 0 && parseInt( params['timeout'], 10 )) || 2000;
+    params.timeout = (params['timeout'] > 0 && parseInt( params['timeout'], 10 )) || 5000;
     params.modules = (typeof params['modules'] === 'string') ? params['modules'].split( ',' ) : [];
     params.skipModules = (typeof params.skipModules === 'string') ? params.skipModules.split( ',' ) : [];
+	params.specialModules = (typeof params.specialModules === 'string') ? params.specialModules.split( ',' ) : [];
     params.userAgent = params.userAgent || getDefaultUserAgent();
     params.diskCache = params.diskCache == 'true' ? 'true' : 'false';
     params.homedir = path.resolve( __dirname, './' );
@@ -159,7 +160,9 @@ pagetimeline.prototype = {
                 async.apply( this.closeBrowser, this )
             ], function(err, res){
                 if( err ){
-                    self.emit( 'error', res );
+	                self.closeBrowser( self, function(closeBrowserErr, closeBrowserRes){
+		                self.emit( 'error', res );
+	                });
                 }
                 setTimeout( function(){
                     self.emit( 'end', res );

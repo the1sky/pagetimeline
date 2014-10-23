@@ -387,6 +387,16 @@ browserProxy.prototype = {
 		}
 	},
 
+	getResponseBody:function(requestId,callback){
+		try{
+			this.browser && this.browser.Network.getResponseBody( { requestId:requestId}, function(err,res){
+				callback( err,res );
+			});
+		}catch( err ){
+
+		}
+	},
+
 	/**
 	 *
 	 * @param callback

@@ -5,7 +5,6 @@ getXvfbAuthDir()
 	xvfbDir=$(ls -t /tmp | grep 'xvfb-run\..*');
 	for dir in $xvfbDir
 	do
-	    echo $1;
 	    if [ $dir = $1 ]; then
 		    echo "$dir";
 		    return 0;
@@ -22,9 +21,10 @@ getXvfbPid()
 
 killProc()
 {
-    echo $1;
-	if [ $1 -gt 0 ];then
-		kill -9 $1;
+	if [ ! $1 ]; then
+		if [ $1 -gt 0 ];then
+			kill -9 $1;
+		fi
 	fi
 }
 
@@ -34,4 +34,9 @@ killProc $xvfbPid;
 xvfbAuthDir=$(getXvfbAuthDir $2);
 xvfbAuthPid=$(getXvfbPid $xvfbAuthDir);
 killProc $xvfbAuthPid;
+curDir=$( pwd )
+cd /tmp
+rm -rf $xvfbAuthDir
+cd $curDir
+
 

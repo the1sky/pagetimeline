@@ -7,37 +7,32 @@ var VERSION = require('../package').version;
 
 var pagetimeline = function(params){
 	var path = require('path');
-
 	this.params = params;
 
 	this.homedir =  params.homedir;
 	this.resultDir = params.resultDir;
 
-	this.model = {};
 
-	this.url = this.params.url;
+	this.format = params.format;
+	this.url = params.url;
+	this.viewport = params.viewport;
+	this.verboseMode = params.verbose === true;
+	this.silentMode = params.silent === true;
+	this.timeout = params.timeout;
+	this.modules = params.modules;
+	this.skipModules = params.skipModules;
+	this.specialModules = params.specialModules;
+
+	this.model = {};
 	this.model.url = this.url;
 	this.model.originalUrl = this.url;
 	this.model.maxstep = this.params.reloadCount;
-    this.modulesFinishCount = 0;
-    this.modulesTotalCount = 0;
-
+	this.model.afteronload = false;
+	this.model.domreadyTimeout = 20000 + this.timeout * 2;
 	this.model.uid = params.uid;
-
-	this.format = params.format;
-
-	this.viewport = params.viewport;
-
-	this.verboseMode = params.verbose === true;
-
-	this.silentMode = params.silent === true;
-
-	this.timeout = params.timeout;;
 
 	this.coreModules = [];
 	this.pageModule = null;
-	this.modules = params.modules;
-	this.skipModules = params.skipModules;
 
 	// setup the stuff
 	this.emitter = new (this.require('events').EventEmitter)();
@@ -66,18 +61,15 @@ var pagetimeline = function(params){
 	// set up results wrapper
 	var Results = require('./results');
 	this.results = new Results();
-
 	this.results.setGenerator('pagetimeline v' + VERSION);
 	this.results.setUrl(this.url);
 	this.results.setAsserts(this.params.asserts);
 
 	// allow asserts to be provided via command-line options (#128)
 	Object.keys(this.params).forEach(function(param) {
-		var value = parseFloat(this.params[param]),
-			name;
+		var value = parseFloat(this.params[param]);
 		if (!isNaN(value) && param.indexOf('assert-') === 0) {
-			name = param.substr(7);
-
+			var name = param.substr(7);
 			if (name.length > 0) {
 				this.results.setAssert(name, value);
 			}
@@ -108,7 +100,6 @@ pagetimeline.prototype = {
 			getParam: (function(key) {
 				return this.params[key];
 			}).bind(this),
-            finishModule:this.finishModule.bind(this),
 
 			// events
 			on: this.on.bind(this),
@@ -144,18 +135,14 @@ pagetimeline.prototype = {
 			this.clearAllMetrics();
 			this.log('start second time analysis...');
 		}
-        this.modulesTotalCount = this.coreModules.length + this.modules.length;
-        this.modulesFinishCount = 0;
 
 		async.series(self.coreModules,function(err,res){
 			if( err ){
-				self.clearTimeout();
 				callback(true,{message:'run core module fail!',detail:res});
 				return;
 			}
 			async.parallel( self.modules,function(err,res){
 				if( err ){
-					self.clearTimeout();
 					callback(true,{message:'run module fail!',detail:res});
 					return;
 				}
@@ -163,37 +150,17 @@ pagetimeline.prototype = {
 					if( err ){
 						callback(true,{message:'run openPage fail!',detail:res});
 					}
-					self.clearTimeout();
 					self.report();
 					callback(false,{message:'all done!'});
 					return;
 				})
 			});
 		});
-
-		//timeout and exit
-		var timeout = 10000 + this.timeout * 2;
-		self.timeoutId = setTimeout( function(){
-			var msg = 'onload event not fired in ' +  timeout + 'ms.';
-			self.log( msg );
-			clearTimeout( self.timeoutId );
-			callback( true, {message:msg} );
-		}, timeout );
 	},
 
 	clearTimeout:function(){
 		clearTimeout( this.timeoutId );
 	},
-
-    finishModule:function(){
-        if( this.modulesFinishCount < this.modulesTotalCount ){
-            this.modulesFinishCount++;
-            console.log( this.modulesFinishCount, this.modulesTotalCount );
-            if( this.modulesFinishCount == this.modulesTotalCount ){
-                this.emit('modulesFinished');
-            }
-        }
-    },
 
 	addCoreModules:function(){
 		this.log('add core module...');
@@ -210,39 +177,53 @@ pagetimeline.prototype = {
 	listModules: function() {
 		this.log('Getting the list of all modules...');
 
+		var modules = [];
+		var self = this;
 		var fs = require('fs');
 		var path = require('path');
-		var modulesDir = path.resolve( this.homedir,'./modules');
+		var modulesDir = path.resolve( this.homedir,'./modules/base');
 		var ls = fs.readdirSync(modulesDir) || [];
-		var modules = [];
 		ls.forEach(function(entry) {
-			if (fs.lstatSync(modulesDir + '/' + entry + '/' + entry + '.js' ).isFile) {
-				modules.push(entry);
+			if (self.skipModules.indexOf(entry) > -1) {
+				self.log('Module ' + entry + ' skipped!');
+				return;
 			}
+			if (fs.lstatSync(modulesDir + '/' + entry + '/' + entry + '.js' ).isFile) {
+				modules.push(path.resolve( modulesDir, entry , entry ) );
+			}
+		});
+		var specialModulesDir = path.resolve( this.homedir, './modules/special' );
+		this.specialModules.forEach(function(entry){
+			modules.push(path.resolve( specialModulesDir, entry , entry ) );
 		});
 		return modules;
 	},
 	addModules:function(){
 		this.log('add all modules...');
-		var modules = (this.modules.length > 0) ? this.modules : this.listModules();
+		var modules = [];
+		var path = require('path');
+		if( this.modules.length > 0 ){
+			var modulesDir = path.resolve( this.homedir, './modules/base' );
+			this.modules.forEach(function(entry){
+				modules.push(path.resolve( modulesDir, entry , entry ) );
+			});
+		}else{
+			modules = this.listModules();
+		}
 		var pkgs = [];
 		var async = require('async');
 
-		modules.forEach(function(name) {
-			if (this.skipModules.indexOf(name) > -1) {
-				this.log('Module ' + name + ' skipped!');
-				return;
-			}
+		modules.forEach(function(modulePath) {
 			var pkg;
 			try {
-				pkg = require('./../modules/' + name + '/' + name);
+				pkg = require(modulePath);
 			}
 			catch (e) {
-				this.log('Unable to load module "' + name + '"!');
+				this.log('Unable to load module "' + modulePath + '"!');
 				return;
 			}
 			if (pkg.skip) {
-				this.log('Module ' + name + ' skipped!');
+				this.log('Module ' + modulePath + ' skipped!');
 				return;
 			}
 			pkgs.push( async.apply( pkg.module, this.getPublicWrapper() ) );

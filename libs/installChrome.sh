@@ -1,4 +1,11 @@
 #!/bin/sh
+
+type google-chrome >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+	echo "you have installed chrome!"
+	exit 0;
+fi
+
 cat /etc/issue | grep CentOS
 if [ $? -eq 0 ]; then
     wget http://chrome.richardlloyd.org.uk/install_chrome.sh
