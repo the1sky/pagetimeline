@@ -91,6 +91,15 @@ CLI支持:
     node ./bin/pagetimeline.js --url=http://www.baidu.com --silent
     
     此时仅输出结果数据到stdout或者stderr
+    
+禁止数据上传:
+
+    数据默认会上传到sitearchive.baidu.com，进行可视化展现
+    
+    禁止默认上传：
+    
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --disable-upload
+    
 
 ###命令行参数支持
 
@@ -116,6 +125,7 @@ CLI支持:
 * --result-dir, performance analyze result file directory, e.g. --result-dir=./
 * --reload, performance analyze twice, first with no-cahce and second with cache, e.g. --reload
 * --reload-count,reload count, 2 or bigger, e.g. --reload-count=2
+* --disable-upload, disalbe upload data to sitearchive, e.g. --disable-upload
 
 
 ###支持的功能

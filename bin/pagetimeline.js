@@ -32,6 +32,7 @@ params
 	.option('--result-dir [value]', 'performance analyze result file directory, e.g. --har-dir=./')
 	.option('--reload', 'reload the page, e.g. --reload')
 	.option('--reload-count [value]', 'reload count, e.g. --reload-count=2')
+	.option('--disable-upload [value]', 'disalbe upload data to sitearchive, e.g. --disable-upload')
 	.parse(process.argv);
 
 var pt = new pagetimeline( params );
