@@ -12,7 +12,6 @@ var pagetimeline = function(params){
 	this.homedir =  params.homedir;
 	this.resultDir = params.resultDir;
 
-
 	this.format = params.format;
 	this.url = params.url;
 	this.viewport = params.viewport;

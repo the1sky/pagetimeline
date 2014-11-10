@@ -67,8 +67,6 @@ var pagetimeline = function(params){
 
 	if( params.harDir ){
 		params.harDir = path.resolve( params.harDir );
-	}else{
-		params.skipModules.push( 'har' );
 	}
 
 	if( params.resultDir ){

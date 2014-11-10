@@ -1,6 +1,6 @@
 {
   "name": "pagetimeline",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "author": "nant <dumingtan@gmail.com> (http://www.rialive.com)",
   "description": "web performance analyze tool base on remote debugging protocol,fex",
   "main": "./index.js",
@@ -31,6 +31,7 @@
     "crypto": "0.0.3",
     "debug": "0.7.x",
     "fast-stats": ">=0.0.2",
+    "jsdom": "^1.2.1",
     "kew": "0.4.0",
     "mime": "1.2.11",
     "mkdirp": "0.5.0",
@@ -42,7 +43,8 @@
     "travis-fold": ">=0.1.2",
     "underscore": "1.6.0",
     "url-template": "^2.0.4",
-    "which": "1.0.5"
+    "which": "1.0.5",
+    "yslow": "^3.1.0"
   },
   "optionalDependencies": {},
   "bin": "./bin/pagetimeline.js",

@@ -13,6 +13,7 @@ exports.module = function(pagetimeline, callback){
 	callback( false, {message:'add har module done!'} );
 
 	var fs = require( 'fs' );
+	var path = require( 'path' );
 	var browser = pagetimeline.model.browser;
 	var startTime = pagetimeline.model.startTime;
 	var uid = pagetimeline.model.uid;
@@ -29,7 +30,8 @@ exports.module = function(pagetimeline, callback){
 		setTimeout( function(){
 			if( !pagetimeline.model.afteronload ){
 				page.end();
-				createHAR();
+				var har = createHAR();
+				yslowScore( har );
 			}
 		}, domreadytimeout );
 	} );
@@ -37,7 +39,8 @@ exports.module = function(pagetimeline, callback){
 	browser.onLoadEventFired( function(res){
 		setTimeout( function(){
 			page.end();
-			createHAR();
+			var har = createHAR();
+			yslowScore( har );
 		}, timeout );
 	} );
 
@@ -70,13 +73,27 @@ exports.module = function(pagetimeline, callback){
 
 	function createHAR(){
 		var har = getHAR();
-		var json = JSON.stringify( har, null, 4 );
-		var path = require( 'path' );
-		var harName = path.resolve( harDir, uid + '.har' );
-		if( !fs.existsSync( harDir ) ){
-			fs.mkdirSync( harDir );
+		if( harDir ){
+			var json = JSON.stringify( har, null, 4 );
+			var path = require( 'path' );
+			var harName = path.resolve( harDir, uid + '.har' );
+			if( !fs.existsSync( harDir ) ){
+				fs.mkdirSync( harDir );
+			}
+			fs.writeFileSync( harName, json );
 		}
-		fs.writeFileSync( harName, json );
+		return har;
+	}
+
+	function yslowScore(har){
+		var YSLOW = require( 'yslow' ).YSLOW;
+		var doc = require( 'jsdom' ).jsdom();
+		var res = YSLOW.harImporter.run( doc, har, 'ydefault' );
+		var content = YSLOW.util.getResults( res.context, 'all' );
+		var score = content['o'];
+		if( score != undefined ){
+			pagetimeline.setMetric( 'yslow_score', score )
+		}
 	}
 
 }
