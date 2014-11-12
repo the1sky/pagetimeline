@@ -31,10 +31,8 @@ exports.module = function(pagetimeline, callback){
 			if( !err ){
 				var timing = res.result.value;
 				pagetimeline.log( 'timing done in ' + (+new Date() - start ) + 'ms' );
-				pagetimeline.setMetric( 'timing', timing );
-				for( var timingKey in timing ){
-					pagetimeline.addOffender( 'timing', timingKey + ':' + timing[timingKey] );
-				}
+				pagetimeline.setMetric( 'timing', true );
+				pagetimeline.addOffender( 'timing', JSON.stringify( timing ) );
 
 				//child section
 				var navigationStart = timing['navigationStart'];
