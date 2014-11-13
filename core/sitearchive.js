@@ -35,7 +35,7 @@ saver.prototype.upload = function(jsonStrData, callback){
 		res.on( 'data', function(chunk){
 		} );
 		res.on( 'end', function(res){
-			callback( 'post date to sitearchive done!' );
+			callback( 'post date to sitearchive.baidu.com done!' );
 		} );
 	} );
 	req.on( 'error', function(e){

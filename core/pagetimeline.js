@@ -30,6 +30,8 @@ var pagetimeline = function(params){
 	this.model.domreadyTimeout = 20000 + this.timeout * 2;
 	this.model.uid = params.uid;
 
+	this.programTimeout = this.model.domreadyTimeout * 2;
+
 	this.coreModules = [];
 	this.pageModule = null;
 
@@ -124,7 +126,11 @@ pagetimeline.prototype = {
 		this.callback = callback;
 		var self = this;
 		var async = require('async');
-		self.timeoutId = 0;
+
+		self.timeoutId = setTimeout( function(){
+			clearTimeout( self.timeoutId );
+			self.emit( 'timeout',{code:2,msg:'program timeout:' + self.programTimeout } );
+		}, self.programTimeout );
 
 		if( runstep == 1 ){
 			this.log('start first time analysis...');
@@ -138,19 +144,23 @@ pagetimeline.prototype = {
 		async.series(self.coreModules,function(err,res){
 			if( err ){
 				callback(true,{message:'run core module fail!',detail:res});
+				self.clearTimeout();
 				return;
 			}
 			async.parallel( self.modules,function(err,res){
 				if( err ){
 					callback(true,{message:'run module fail!',detail:res});
+					self.clearTimeout();
 					return;
 				}
 				self.pageModule(self.getPublicWrapper(),function(err,res){
+					self.clearTimeout();
 					if( err ){
 						callback(true,{message:'run openPage fail!',detail:res});
+					}else{
+						self.report();
+						callback(false,{message:'all done!'});
 					}
-					self.report();
-					callback(false,{message:'all done!'});
 					return;
 				})
 			});
