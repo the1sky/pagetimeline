@@ -171,32 +171,35 @@ pagetimeline.prototype = {
 			], function(err, res){
 				if( err ){
 					self.closeBrowser( self, function(closeBrowserErr, closeBrowserRes){
-						self.emit( 'error', res );
+						setTimeout( function(){
+							self.emit( 'error', res );
+						}, 100 );
 					} );
+				}else{
+					setTimeout( function(){
+						self.emit( 'end', res );
+					}, 100 );
 				}
-				setTimeout( function(){
-					self.emit( 'end', res );
-				}, 100 );
 			} );
 		}else if( this.isMobile ){
 			async.series( [
 				async.apply( this.enableMobileDebugging, this ), async.apply( this.analyzePerformance, this )
 			], function(err, res){
-				if( err ){
-					self.emit( 'error', res );
-				}
 				setTimeout( function(){
-					self.emit( 'end', res );
+					if( err ){
+						self.emit( 'error', res );
+					}else{
+						self.emit( 'end', res );
+					}
 				}, 100 );
 			} )
 		}else if( this.params.remoteBrowser ){
 			self.analyzePerformance( this, function(err, res){
 				if( err ){
 					self.emit( 'error', res );
-				}
-				setTimeout( function(){
+				}else{
 					self.emit( 'end', res );
-				}, 100 );
+				}
 			} );
 		}
 	},
