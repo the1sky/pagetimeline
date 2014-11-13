@@ -32,7 +32,7 @@ exports.module = function(pagetimeline, callback){
 				var timing = res.result.value;
 				pagetimeline.log( 'timing done in ' + (+new Date() - start ) + 'ms' );
 				pagetimeline.setMetric( 'timing', true );
-				pagetimeline.addOffender( 'timing', JSON.stringify( timing ) );
+				pagetimeline.addOffender( 'timing', timing );
 
 				//child section
 				var navigationStart = timing['navigationStart'];
