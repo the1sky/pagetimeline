@@ -144,6 +144,12 @@ pagetimeline.prototype = {
 
 			result['timestamp'] = _.now();
 
+			if( result['metrics']['ip_external'] ){
+				var ip = result['metrics']['ip_external'];
+				result['ip'] = ip;
+				delete  result['metrics']['ip_external'];
+			}
+
 			result = JSON.stringify( result );
 
 			//upload to sitearchive
@@ -174,9 +180,7 @@ pagetimeline.prototype = {
 		} );
 
 		if( !this.isMobile && !this.params.remoteBrowser ){
-			async.series( [
-				async.apply( this.closeAllXvfb, this ), async.apply( this.openBrowser, this ), async.apply( this.analyzePerformance, this ), async.apply( this.closeBrowser, this )
-			], function(err, res){
+			async.series( [async.apply( this.closeAllXvfb, this ), async.apply( this.openBrowser, this ), async.apply( this.analyzePerformance, this ), async.apply( this.closeBrowser, this )], function(err, res){
 				if( err ){
 					self.closeBrowser( self, function(closeBrowserErr, closeBrowserRes){
 						setTimeout( function(){
@@ -190,9 +194,7 @@ pagetimeline.prototype = {
 				}
 			} );
 		}else if( this.isMobile ){
-			async.series( [
-				async.apply( this.enableMobileDebugging, this ), async.apply( this.analyzePerformance, this )
-			], function(err, res){
+			async.series( [async.apply( this.enableMobileDebugging, this ), async.apply( this.analyzePerformance, this )], function(err, res){
 				setTimeout( function(){
 					if( err ){
 						self.emit( 'error', res );

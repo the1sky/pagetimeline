@@ -15,7 +15,7 @@ exports.module = function(pagetimeline, callback){
 	var timeout = pagetimeline.getParam( 'timeout' );
 	var analysisOnloadTimeout = timeout + 2000;
 	var domreadytimeout = pagetimeline.model.domreadyTimeout;
-	var analysisDomreadyTimeout= domreadytimeout + 2000;
+	var analysisDomreadyTimeout = domreadytimeout + 2000;
 
 	var domready_time = 0;
 	var onload_time = 0;
@@ -29,10 +29,11 @@ exports.module = function(pagetimeline, callback){
 
 			domready_time = res.timestamp * 1000 - startTime;
 			pagetimeline.setMetric( 'domready_event', parseInt( domready_time ) );
-
 			setTimeout( function(){
 				if( !afteronload ){
-					callback( false, {message:'analyze page done!'} );
+					getExternalIP( function(ip){
+						callback( false, {message:'analyze page done!'} );
+					} );
 				}
 			}, analysisDomreadyTimeout );
 		} );
@@ -49,7 +50,9 @@ exports.module = function(pagetimeline, callback){
 			pagetimeline.setMetric( 'onload_event', parseInt( onload_time ) );
 
 			setTimeout( function(){
-				callback( false, {message:'analyze page done!'} );
+				getExternalIP( function(ip){
+					callback( false, {message:'analyze page done!'} );
+				} );
 			}, analysisOnloadTimeout );
 		} );
 	} );
@@ -76,6 +79,17 @@ exports.module = function(pagetimeline, callback){
 		var script = getTiming.toString() + ';getTiming()';
 		browser.evaluate( script, function(err, res){
 			callback( err, res );
+		} );
+	}
+
+	function getExternalIP(callback){
+		var network = require( 'network' );
+		callback = callback || function(){};
+		network.get_public_ip( function(err, ip){
+			if( ip ){
+				pagetimeline.setMetric( 'ip_external', ip );
+			}
+			callback( ip );
 		} );
 	}
 
