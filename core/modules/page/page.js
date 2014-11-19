@@ -129,6 +129,8 @@ exports.module = function(pagetimeline, callback){
 						callback( 0, 'maybe not install GraphicsMagick!');
 					}
 				});
+		}else{
+			callback( 0, 'no need to screenshot!');
 		}
 	}
 
