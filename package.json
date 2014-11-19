@@ -1,6 +1,6 @@
 {
   "name": "pagetimeline",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "author": "nant <dumingtan@gmail.com> (http://www.rialive.com)",
   "description": "web performance analyze tool base on remote debugging protocol,fex",
   "main": "./index.js",
@@ -31,6 +31,7 @@
     "crypto": "0.0.3",
     "debug": "0.7.x",
     "fast-stats": ">=0.0.2",
+    "gm": "^1.17.0",
     "jsdom": "^1.2.1",
     "kew": "0.4.0",
     "mime": "1.2.11",

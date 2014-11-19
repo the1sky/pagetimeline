@@ -40,6 +40,12 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
     遇到nobody账户问题时：
     npm install pagetimeline --unsafe-perm
 
+#### GraphicsMagick
+
+如果想得到首屏的热力图截图，请安装GraphicsMagick
+
+本软件依赖的图像处理软模块为[gm](https://github.com/aheckmann/gm),需要依赖于[GraphicsMagick](http://www.graphicsmagick.org/)
+
 ###使用示例
 
 标准：
@@ -65,7 +71,11 @@ ubuntu通过apt-get安装node后默认运行名为nodejs，需要更名为node�
 输出har文件：
 
     node ./bin/pagetimeline.js --url=http://www.baidu.com --verbose --har-dir=./har/
-    
+
+输出性能热力图截图文件：
+
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --verbose --screenshot-dir=./screenshot/
+
 输出性能分析结果文件:
 
     node ./bin/pagetimeline.js --url=http://www.baidu.com --verbpse --result-dir=./result/
@@ -122,6 +132,7 @@ CLI支持:
 * --format, output format, plain | json | csv, default plain, e.g. --format=json
 * --browser, chrome,firefox, default chrome, e.g. --browser=chrome
 * --har-dir, file directory, e.g. --har-dir=./
+* --screenshot-dir, screenshot file directory, e.g. --screenshot-dir=./, only support perfmap now
 * --result-dir, performance analyze result file directory, e.g. --result-dir=./
 * --reload, performance analyze twice, first with no-cahce and second with cache, e.g. --reload
 * --reload-count,reload count, 2 or bigger, e.g. --reload-count=2
@@ -194,6 +205,7 @@ CLI支持:
 
     http://remotedebug.org/integrations/
     https://github.com/macbre/phantomas
+    http://www.graphicsmagick.org/
 
 ### think
 

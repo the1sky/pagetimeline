@@ -171,15 +171,16 @@ pagetimeline.prototype = {
 			self.emit( 'error', res );
 		} );
 
-		this.pagetimelineIns.on( 'timeout', function(res){
-			self.closeBrowser( self, function(closeBrowserErr, closeBrowserRes){
-				setTimeout( function(){
-					self.emit( 'end', res )
-				}, 100 );
-			} );
-		} );
-
 		if( !this.isMobile && !this.params.remoteBrowser ){
+
+			this.pagetimelineIns.on( 'timeout', function(res){
+				self.closeBrowser( self, function(closeBrowserErr, closeBrowserRes){
+					setTimeout( function(){
+						self.emit( 'end', res )
+					}, 100 );
+				} );
+			} );
+
 			async.series( [async.apply( this.closeAllXvfb, this ), async.apply( this.openBrowser, this ), async.apply( this.analyzePerformance, this ), async.apply( this.closeBrowser, this )], function(err, res){
 				if( err ){
 					self.closeBrowser( self, function(closeBrowserErr, closeBrowserRes){

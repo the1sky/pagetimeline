@@ -30,9 +30,7 @@ exports.module = function(pagetimeline, callback){
 			requestId_info[requestId] = {}
 		}
 		requestId_info[requestId] = {
-			'url':url,
-			'timestamp':timestamp,
-			'responseBody':response
+			'url':url, 'timestamp':timestamp, 'responseBody':response
 		};
 	} );
 
@@ -97,9 +95,7 @@ exports.module = function(pagetimeline, callback){
 			}
 			if( !assertsInfo[mimeExt] ){
 				assertsInfo[mimeExt] = {
-					count:0,
-					size:0,
-					urls:[]
+					count:0, size:0, urls:[]
 				}
 			}
 			assertsInfo[mimeExt].count++;
@@ -113,9 +109,7 @@ exports.module = function(pagetimeline, callback){
 			if( /image/.test( mimeType ) ){
 				if( !assertsInfo['image'] ){
 					assertsInfo['image'] = {
-						count:0,
-						size:0,
-						urls:[]
+						count:0, size:0, urls:[]
 					}
 				}
 				assertsInfo['image'].count++;
@@ -149,7 +143,16 @@ exports.module = function(pagetimeline, callback){
 		browser.evaluate( script, function(err, res){
 			if( !err && res.result ){
 				var result = res.result.value;
-				result.sort( function(x, y){
+				var newResult = [];
+				var len = result.length;
+				for( var i = 0; i < len; i++ ){
+					var item = result[i];
+					if( !/v=pagetimeline|about:blank|chrome:\/\//.test( item.name) ){
+						newResult.push( item );
+					}
+				}
+
+				newResult.sort( function(x, y){
 					if( x.duration > y.duration ){
 						return -1;
 					}else{
@@ -158,9 +161,9 @@ exports.module = function(pagetimeline, callback){
 				} );
 
 				var count = 5;
-				count = count < result.length ? count : result.length;
+				count = count < newResult.length ? count : newResult.length;
 				pagetimeline.setMetric( 'slow_requests', count );
-				_.forEach( result, function(item, index){
+				_.forEach( newResult, function(item, index){
 					if( index < count ){
 						pagetimeline.addOffender( 'slow_requests', item.name + '    ' + item.duration );
 					}
