@@ -28,6 +28,7 @@ params
 	.option('--silent [value]','dont\'t write anything to the console, e.g. --slient')
 	.option('--format [value]', 'output format, plain | json | csv, default plain, e.g. --format=json')
 	.option('--browser [value]','chrome,firefox, default chrome, invalid when debugging on mobile, e.g. --browser=chrome')
+	.option('--browser-path [value]','chrome,firefox customer browser path, invalid when debugging on mobile, e.g. --browser-path=env, or --browser-path="C:\Users\nant\AppData\Local\Google\Chrome SxS\Application\chrome.exe"')
 	.option('--har-dir [value]', 'har file directory, e.g. --har-dir=./')
 	.option('--screenshot-dir [value]', 'screenshot file directory, e.g. --screenshot-dir=./')
 	.option('--result-dir [value]', 'performance analyze result file directory, e.g. --har-dir=./')

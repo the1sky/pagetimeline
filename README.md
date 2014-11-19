@@ -101,7 +101,15 @@ CLI支持:
     node ./bin/pagetimeline.js --url=http://www.baidu.com --silent
     
     此时仅输出结果数据到stdout或者stderr
-    
+
+使用系统自带的浏览器-根据环境变量：
+
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --browser-path=env
+
+使用系统自带的浏览器-自定义位置：
+
+    node ./bin/pagetimeline.js --url=http://www.baidu.com --browser-path="c:\chrome.exe"
+
 禁止数据上传:
 
     数据默认会上传到sitearchive.baidu.com，进行可视化展现
@@ -131,6 +139,7 @@ CLI支持:
 * --silent, dont\'t write anything to the console, e.g. --slient
 * --format, output format, plain | json | csv, default plain, e.g. --format=json
 * --browser, chrome,firefox, default chrome, e.g. --browser=chrome
+* --browser-path, customer browser path, e.g. --browser-path=env, or --browser-path="c:\chrome.exe"
 * --har-dir, file directory, e.g. --har-dir=./
 * --screenshot-dir, screenshot file directory, e.g. --screenshot-dir=./, only support perfmap now
 * --result-dir, performance analyze result file directory, e.g. --result-dir=./
