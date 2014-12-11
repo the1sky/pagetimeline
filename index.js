@@ -73,8 +73,11 @@ var pagetimeline = function(params){
 		params.resultDir = path.resolve( params.resultDir );
 	}
 
-	this.uid = this.getMd5( params.url );
+	this.uid = this.getUid( params.url );
 	params.uid = this.uid;
+
+	this.md5 = this.getMd5( params.url );
+	params.md5 = this.md5;
 
 	this.params = params;
 
@@ -100,11 +103,17 @@ pagetimeline.prototype = {
 
 	changeUrl:function(url){
 		this.params.url = url;
-		this.uid = this.getMd5( url );
+		this.uid = this.getUid( url );
 		this.params.uid = this.uid;
 	},
 
 	getMd5:function(url){
+		var md5 = crypto.createHash( 'md5' );
+		md5.update( url );
+		return md5.digest( 'hex' );
+	},
+
+	getUid:function(url){
 		var md5 = crypto.createHash( 'md5' );
 		md5.update( url + (+new Date()) );
 		return md5.digest( 'hex' );
@@ -135,6 +144,7 @@ pagetimeline.prototype = {
 			var platform = os.platform();
 			result['runstep'] = self.runstep;
 			result['uid'] = self.uid;
+			result['md5'] = self.md5;
 
 			var win32Platform = self.params.isMobile ? self.params.mobile : platform;
 			result['platform'] = platform == 'win32' ? win32Platform : platform;

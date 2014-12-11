@@ -10,7 +10,7 @@ exports.module = function(pagetimeline, callback){
 	var fs = require( 'fs' );
 	var path = require( 'path' );
 	var browser = pagetimeline.model.browser;
-	var uid = pagetimeline.model.uid;
+	var md5 = pagetimeline.model.md5;
 	var startTime = pagetimeline.model.startTime;
 	var runstep = pagetimeline.model.runstep;
 	var afteronload = pagetimeline.model.afteronload;
@@ -113,11 +113,11 @@ exports.module = function(pagetimeline, callback){
 				fs.mkdirSync( screenshotDir );
 			}
 			var imageBuffer = decodeBase64Image( base64Data );
-			var perfmapMap = "perfmap_" + uid + '.png';
+			var perfmapMap = "perfmap_" + md5 + '.png';
 			var perfmapPath= path.resolve( screenshotDir, perfmapMap );
 			fs.writeFileSync( perfmapPath,imageBuffer.data );
 
-			var perfmapFirstScreen = "perfmap_first_screen_" + uid + '.png';
+			var perfmapFirstScreen = "perfmap_first_screen_" + md5 + '.png';
 			var perfmapFirstScreenPath= path.resolve( screenshotDir, perfmapFirstScreen );
 			var gm = require('gm');
 			gm(perfmapPath)

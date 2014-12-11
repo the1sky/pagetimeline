@@ -16,7 +16,7 @@ exports.module = function(pagetimeline, callback){
 	var path = require( 'path' );
 	var browser = pagetimeline.model.browser;
 	var startTime = pagetimeline.model.startTime;
-	var uid = pagetimeline.model.uid;
+	var md5 = pagetimeline.model.md5;
 	var url = pagetimeline.getParam( 'url' );
 	var timeout = pagetimeline.getParam( 'timeout' );
 	var domreadytimeout = pagetimeline.model.domreadyTimeout;
@@ -76,7 +76,7 @@ exports.module = function(pagetimeline, callback){
 		if( harDir ){
 			var json = JSON.stringify( har, null, 4 );
 			var path = require( 'path' );
-			var harName = path.resolve( harDir, uid + '.har' );
+			var harName = path.resolve( harDir, md5 + '.har' );
 			if( !fs.existsSync( harDir ) ){
 				fs.mkdirSync( harDir );
 			}
@@ -296,18 +296,27 @@ function convertQueryString(fullUrl){
 	var pairs = [];
 	for( var name in query ){
 		var value = query[name];
-		pairs.push( {'name':name, 'value':value.toString()} );
+		pairs.push( {
+			'name':name,
+			'value':value.toString()
+		} );
 	}
 	return pairs;
 }
 
 function convertHeaders(headers){
-	headersObject = {'pairs':[], 'size':-1};
+	headersObject = {
+		'pairs':[],
+		'size':-1
+	};
 	if( Object.keys( headers ).length ){
 		headersObject.size = 2; // trailing "\r\n"
 		for( var name in headers ){
 			var value = headers[name];
-			headersObject.pairs.push( {'name':name, 'value':value} );
+			headersObject.pairs.push( {
+				'name':name,
+				'value':value
+			} );
 			headersObject.size += name.length + value.length + 4; // ": " + "\r\n"
 		}
 	}
