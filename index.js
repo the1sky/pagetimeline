@@ -104,7 +104,9 @@ pagetimeline.prototype = {
 	changeUrl:function(url){
 		this.params.url = url;
 		this.uid = this.getUid( url );
+		this.md5 = this.getMd5( url );
 		this.params.uid = this.uid;
+		this.params.md5 = this.md5;
 	},
 
 	getMd5:function(url){
