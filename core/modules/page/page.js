@@ -46,9 +46,8 @@ exports.module = function(pagetimeline, callback){
 			pagetimeline.setMetric( 'domready_event', parseInt( domready_time ) );
 			setTimeout( function(){
 				if( !afteronload ){
-					getExternalIP( function(ip){
-						callback( false, {message:'analyze page done!'} );
-					} );
+					getExternalIP( function(ip){} );
+					screenshotAfterLoad( callback );
 				}
 			}, analysisDomreadyTimeout );
 		} );
@@ -67,22 +66,33 @@ exports.module = function(pagetimeline, callback){
 
 			setTimeout( function(){
 				getExternalIP( function(ip){});
-				screenshot( function(err, res){
-					if( !err ){
-						getScreenshot( function(err, res){
-							if( !err ){
-								var screenshotValue = res.result.value;
-								saveScreenshot( screenshotValue[0],screenshotValue[1],screenshotValue[2],function(err,res){
-									callback( false, {message:'analyze page done!'} );
-								} );
-
-							}
-						} );
-					}
-				} );
+				screenshotAfterLoad( callback );
 			}, analysisOnloadTimeout );
 		} );
 	} );
+
+	/**
+	 * 页面加载完成时截图处理逻辑
+	 *
+	 * @param callback
+	 */
+	function screenshotAfterLoad(callback){
+		screenshot( function(err, res){
+			if( !err ){
+				getScreenshot( function(err, res){
+					if( !err ){
+						var screenshotValue = res.result.value;
+						saveScreenshot( screenshotValue[0],screenshotValue[1],screenshotValue[2],function(err,res){
+							callback( false, {message:'analyze page done!'} );
+						} );
+
+					}
+				} );
+			}else{
+				callback(false, {message:'screenshot error!'});
+			}
+		} );
+	}
 
 	function getTiming(){
 		return window.performance.timing;
@@ -113,40 +123,43 @@ exports.module = function(pagetimeline, callback){
 				fs.mkdirSync( screenshotDir );
 			}
 			var imageBuffer = decodeBase64Image( base64Data );
-			var perfmapMap = "perfmap_" + md5 + '.png';
-			var perfmapPath= path.resolve( screenshotDir, perfmapMap );
-			fs.writeFileSync( perfmapPath,imageBuffer.data );
+			if( imageBuffer){
+				var perfmapMap = "perfmap_" + md5 + '.png';
+				var perfmapPath = path.resolve( screenshotDir, perfmapMap );
+				fs.writeFileSync( perfmapPath, imageBuffer.data );
 
-			var perfmapFirstScreen = "perfmap_first_screen_" + md5 + '.png';
-			var perfmapFirstScreenPath= path.resolve( screenshotDir, perfmapFirstScreen );
-			var gm = require('gm');
-			gm(perfmapPath)
-				.crop(docClientW, docClientH )
-				.write(perfmapFirstScreenPath, function (err) {
-					if (!err){
-						callback( 0, 'crazytown has arrived' );
-					}else{
-						callback( 0, 'maybe not install GraphicsMagick!');
-					}
-				});
+				var perfmapFirstScreen = "perfmap_first_screen_" + md5 + '.png';
+				var perfmapFirstScreenPath = path.resolve( screenshotDir, perfmapFirstScreen );
+				var gm = require( 'gm' );
+				gm( perfmapPath ).crop( docClientW, docClientH ).write( perfmapFirstScreenPath, function(err){
+						if( !err ){
+							callback( 0, 'crazytown has arrived' );
+						}else{
+							callback( 0, 'maybe not install GraphicsMagick!' );
+						}
+					} );
+			}else{
+				callback( 0, 'not exist screenshot data!' );
+			}
 		}else{
 			callback( 0, 'no need to screenshot!');
 		}
 	}
 
 	function decodeBase64Image(dataString) {
-		dataString = dataString.substr( 1, dataString.length - 2 );
-		var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
-			response = {};
+		if( dataString ){
+			dataString = dataString.substr( 1, dataString.length - 2 );
+			var matches = dataString.match( /^data:([A-Za-z-+\/]+);base64,(.+)$/ ), response = {};
 
-		if (matches.length !== 3) {
-			return new Error('Invalid input string');
+			if( matches && matches.length !== 3 ){
+				return null;
+			}
+			response.type = matches[1];
+			response.data = new Buffer( matches[2], 'base64' );
+			return response;
+		}else{
+			return null;
 		}
-
-		response.type = matches[1];
-		response.data = new Buffer(matches[2], 'base64');
-
-		return response;
 	}
 
 
