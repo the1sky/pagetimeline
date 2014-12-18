@@ -151,7 +151,7 @@ exports.module = function(pagetimeline, callback){
 			dataString = dataString.substr( 1, dataString.length - 2 );
 			var matches = dataString.match( /^data:([A-Za-z-+\/]+);base64,(.+)$/ ), response = {};
 
-			if( matches && matches.length !== 3 ){
+			if( !matches || ( matches && matches.length != 3 ) ){
 				return null;
 			}
 			response.type = matches[1];
