@@ -184,12 +184,19 @@ exports.module = function(pagetimeline, callback){
 			var allBackgroundImageDoms = getStylePropertyDoms( document.getElementsByTagName( "*" ), "background-image" );
 			var doms = imageDoms.concat( allBackgroundImageDoms );
 
+			/**
+			 * 计算偏移值，offsetleft
+			 * @param node
+			 * @param offsetLeft
+			 * @param offsetTop
+			 * @returns {{ol: *, ot: *}}
+			 */
 			var calOffset = function(node, offsetLeft, offsetTop){
-				var parentNode = node.parentNode;
-				if( parentNode && parentNode.offsetLeft != undefined ){
-					var parentOffsetLeft = parentNode.offsetLeft;
-					var parentOffsetTop = parentNode.offsetTop;
-					return calOffset( parentNode, offsetLeft + parentOffsetLeft, offsetTop + parentOffsetTop );
+				var offsetParentNode = node.offsetParent;
+				if( offsetParentNode && offsetParentNode.offsetLeft != undefined ){
+					var parentOffsetLeft = offsetParentNode.offsetLeft;
+					var parentOffsetTop = offsetParentNode.offsetTop;
+					return calOffset( offsetParentNode, offsetLeft + parentOffsetLeft, offsetTop + parentOffsetTop );
 				}else{
 					return {ol:offsetLeft, ot:offsetTop};
 				}
@@ -199,7 +206,7 @@ exports.module = function(pagetimeline, callback){
 			for( var i = 0; i < len; i++ ){
 				var dom = doms[i];
 				if( dom.src ){
-					var offset = calOffset( dom.parentNode, dom.offsetLeft, dom.offsetTop );
+					var offset = calOffset( dom, dom.offsetLeft, dom.offsetTop );
 					offset["src"] = dom.src;
 					imagesInfo.push( offset );
 				}else if( window.getComputedStyle( dom, "" ).getPropertyValue( "background-image" ) != "none" ){
@@ -207,7 +214,7 @@ exports.module = function(pagetimeline, callback){
 					if( url ) url = /url\(['"]?([^")]+)/.exec( url ) || [];
 					url = url[1];
 					if( url ){
-						var offset = calOffset( dom.parentNode, dom.offsetLeft, dom.offsetTop );
+						var offset = calOffset( dom, dom.offsetLeft, dom.offsetTop );
 						offset['src'] = url;
 						imagesInfo.push( offset );
 					}
